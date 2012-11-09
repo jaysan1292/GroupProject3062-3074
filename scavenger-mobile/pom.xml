@@ -6,10 +6,12 @@
     <parent>
         <groupId>com.jaysan1292.groupproject</groupId>
         <artifactId>scavenger-hunt</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <name>Android Client</name>
-    <artifactId>mobile-client</artifactId>
+    <groupId>com.jaysan1292.groupproject</groupId>
+    <artifactId>mobile</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>apk</packaging>
     <properties>
         <platform.version>4.0.1.2</platform.version>
@@ -18,6 +20,7 @@
         <dependency>
             <groupId>com.jaysan1292.groupproject</groupId>
             <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>

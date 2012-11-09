@@ -5,27 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jaysan1292.groupproject</groupId>
     <artifactId>scavenger-hunt</artifactId>
-    <name>COMP 3062/COMP 3074 Group Project</name>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
+    <name>GBC Scavenger Hunt</name>
+    <description>
+        Group project for Advanced Web Application Development and Mobile Application Development.
+        GBC scavenger hunt game for Android, with backing RESTful Web Service.
+    </description>
     <packaging>pom</packaging>
+    <!---->
     <modules>
-        <module>core</module>
-        <module>web-service</module>
-        <module>admin-webapp</module>
-        <module>mobile-client</module>
+        <module>scavenger-core</module>
+        <module>scavenger-service</module>
+        <module>scavenger-web</module>
+        <module>scavenger-mobile</module>
     </modules>
+    <!---->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.submission.archiveprefix>COMP3062-3074-GroupProject-</project.submission.archiveprefix>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.jaysan1292.groupproject</groupId>
-                <artifactId>core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <!---->
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -59,8 +58,69 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <!---->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.jaysan1292.groupproject</groupId>
+                <artifactId>core</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <!--<scope>runtime</scope>-->
+                <!--<scope>system</scope>-->
+                <!--<systemPath>${core.project.pom}</systemPath>-->
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!---->
     <build>
+        <finalName>COMP3062-3074-GroupProject (Jason Recillo, Peter Le, Mellicent Dres)</finalName>
+        <!--<pluginManagement>-->
+        <!--<plugins>-->
+        <!--<plugin>-->
+        <!--<inherited>true</inherited>-->
+        <!--<artifactId>maven-assembly-plugin</artifactId>-->
+        <!--<version>2.3</version>-->
+        <!--&lt;!&ndash;<configuration>&ndash;&gt;-->
+        <!--&lt;!&ndash;<descriptors>&ndash;&gt;-->
+        <!--&lt;!&ndash;<descriptor>src/main/assembly/assembly.xml</descriptor>&ndash;&gt;-->
+        <!--&lt;!&ndash;</descriptors>&ndash;&gt;-->
+        <!--&lt;!&ndash;<formats>&ndash;&gt;-->
+        <!--&lt;!&ndash;<format>zip</format>&ndash;&gt;-->
+        <!--&lt;!&ndash;</formats>&ndash;&gt;-->
+        <!--&lt;!&ndash;</configuration>&ndash;&gt;-->
+        <!--<executions>-->
+        <!--<execution>-->
+        <!--<id>make-assembly</id>-->
+        <!--<phase>package</phase>-->
+        <!--<goals>-->
+        <!--<goal>single</goal>-->
+        <!--</goals>-->
+        <!--</execution>-->
+        <!--</executions>-->
+        <!--</plugin>-->
+        <!--</plugins>-->
+        <!--</pluginManagement>-->
+        <!---->
         <plugins>
+            <plugin>
+                <inherited>false</inherited>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -68,22 +128,51 @@
             </plugin>
         </plugins>
     </build>
-    <!--<reporting>-->
-    <!--<plugins>-->
-    <!--<plugin>-->
-    <!--<groupId>org.apache.maven.plugins</groupId>-->
-    <!--<artifactId>maven-changelog-plugin</artifactId>-->
-    <!--<version>2.2</version>-->
-    <!--<inherited>true</inherited>-->
-    <!--</plugin>-->
-    <!--</plugins>-->
-    <!--</reporting>-->
-    <!--<scm>-->
-    <!--TODO: Source code management links-->
-    <!--http://maven.apache.org/scm/git.html-->
-    <!--<connection></connection>-->
-    <!--<developerConnection></developerConnection>-->
-    <!--<tag></tag>-->
-    <!--<url></url>-->
-    <!--</scm>-->
+    <!---->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </reporting>
+    <!---->
+    <scm>
+        <connection>
+            scm:git:http://github.com/jaysan1292/GroupProject3062-3074
+        </connection>
+        <developerConnection>
+            scm:git:ssh://github.com/jaysan1292/GroupProject3062-3074
+        </developerConnection>
+    </scm>
+    <!---->
+    <developers>
+        <developer>
+            <id>jaysan1292</id>
+            <name>Jason Recillo</name>
+            <roles>
+                <role>Web Service</role>
+                <role>UI</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>kazedayz</id>
+            <name>Peter Le</name>
+            <roles>
+                <role>Admin Web Application</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>melavi</id>
+            <name>Mellicent Dres</name>
+            <roles>
+                <role>Android App</role>
+            </roles>
+        </developer>
+    </developers>
 </project>
