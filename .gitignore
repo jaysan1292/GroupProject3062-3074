@@ -53,8 +53,7 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-###### Database-specific
-derby.log
+###### Database
 /scavengerdb
 
 ###### Maven
@@ -71,3 +70,7 @@ target/
 # generated files
 bin/
 gen/
+
+###### Other files
+*.log
+scavengerdb
