@@ -11,7 +11,7 @@
     <modules>
     </modules>
     <name>Core</name>
-    <artifactId>core</artifactId>
+    <artifactId>scavenger-core</artifactId>
     <packaging>jar</packaging>
     <!--<build>-->
     <!--<plugins>-->
