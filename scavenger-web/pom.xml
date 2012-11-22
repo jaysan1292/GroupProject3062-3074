@@ -14,7 +14,6 @@
         <dependency>
             <groupId>com.jaysan1292.groupproject</groupId>
             <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
