@@ -1,6 +1,8 @@
 package com.jaysan1292.groupproject.service;
 
+import com.google.common.base.Preconditions;
 import com.jaysan1292.groupproject.Global;
+import com.jaysan1292.groupproject.service.db.DatabaseHelper;
 import com.sun.grizzly.http.SelectorThread;
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
@@ -17,23 +19,41 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Main {
+public class ScavengerService {
 
     public static URI BASE_URI;
+    private static SelectorThread threadSelector;
+    private static boolean _started;
 
-    private Main() {}
+    private ScavengerService() {}
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
+        start(args);
+        System.in.read();
+        stop();
+    }
+
+    public static void start(String[] args) throws Exception {
+        Preconditions.checkState(!_started);
+
         Global.log.info("Starting web service...");
-        SelectorThread threadSelector = startServer(args);
+        DatabaseHelper.initDatabase();
+        threadSelector = startServer(args);
         Global.log.info(String.format("Service is now running, with WADL available at %sapplication.wadl", BASE_URI));
         Global.log.info("Press <ENTER> to stop...");
 
-        System.in.read();
+        _started = true;
+    }
+
+    public static void stop() {
+        Preconditions.checkState(_started);
 
         Global.log.info("Server shutting down...");
         threadSelector.stopEndpoint();
+        DatabaseHelper.cleanDatabase();
         Global.log.info("Done!");
+
+        _started = false;
     }
 
     protected static SelectorThread startServer(String... args) throws IOException {
