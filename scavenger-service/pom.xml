@@ -36,7 +36,7 @@
                             <finalName>COMP3062-3074-GroupProject-WebService_executable</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.jaysan1292.groupproject.service.Main</mainClass>
+                                    <mainClass>com.jaysan1292.groupproject.service.ScavengerService</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -58,7 +58,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.jaysan1292.com.jaysan1292.groupproject.service.Main</mainClass>
+                    <mainClass>com.jaysan1292.com.jaysan1292.groupproject.service.ScavengerService</mainClass>
                 </configuration>
             </plugin>
         </plugins>
