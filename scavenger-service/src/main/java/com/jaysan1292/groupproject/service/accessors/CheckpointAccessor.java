@@ -12,6 +12,10 @@ import javax.ws.rs.core.Response;
 public class CheckpointAccessor extends AbstractAccessor<Checkpoint> {
     private static final CheckpointManager manager = new CheckpointManager();
 
+    public CheckpointAccessor() {
+        super(Checkpoint.class);
+    }
+
     protected CheckpointManager getManager() {
         return manager;
     }

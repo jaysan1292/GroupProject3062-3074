@@ -5,7 +5,6 @@ import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.data.JSONSerializable;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.db.AbstractManager;
-import com.jaysan1292.groupproject.util.JsonMap;
 import com.jaysan1292.groupproject.util.SerializationUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -14,9 +13,7 @@ import javax.ws.rs.core.*;
 import javax.ws.rs.ext.Providers;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The AbstractAccessor (and its subclasses) are the interface
@@ -26,11 +23,16 @@ import java.util.Map;
  */
 public abstract class AbstractAccessor<T extends BaseEntity> {
     private static final String ERROR_TEMPLATE = "{\"error\":\"%s\"}";
+    private Class<T> _cls;
 
     @Context
     SecurityContext context;
     @Context
     Providers providers;
+
+    public AbstractAccessor(Class<T> cls) {
+        this._cls = cls;
+    }
 
     protected abstract AbstractManager<T> getManager();
 
@@ -43,11 +45,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                     .ok(JSONSerializable.writeJSONArray(items), MediaType.APPLICATION_JSON_TYPE)
                     .build();
         } catch (Exception e) {
-            Global.log.error(e.getMessage(), e);
-            String errMessage = StringEscapeUtils.escapeEcmaScript(e.getMessage());
-            return Response
-                    .ok(String.format(ERROR_TEMPLATE, errMessage), MediaType.APPLICATION_JSON_TYPE)
-                    .build();
+            return returnErrorResponse(e);
         }
     }
 
@@ -57,25 +55,30 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     public Response get(@PathParam("id") long id, @Context UriInfo uri) {
         try {
             return Response
-                    .ok(getManager().get(id).toString(true), MediaType.APPLICATION_JSON_TYPE)
+                    .ok(getManager().get(id).toString(), MediaType.APPLICATION_JSON_TYPE)
                     .build();
-        } catch (Exception e) {
-            Global.log.error(e.getMessage(), e);
-            String errMessage = StringEscapeUtils.escapeEcmaScript(e.getMessage());
-            return Response
-                    .ok(encodeErrorMessage(e), MediaType.APPLICATION_JSON_TYPE)
-                    .build();
+        } catch (GeneralServiceException e) {
+            return returnErrorResponse(e);
+        } catch (RuntimeException e) {
+            return logErrorAndReturnGenericErrorResponse(e);
         }
     }
 
-    @POST
-    @Consumes(MediaType.TEXT_PLAIN)
-    public Response create(String json) throws GeneralServiceException {
-        Map<String, String> createdItem = new HashMap<String, String>();
-        createdItem.put("createdItem", getManager().create(json).toString());
-        return Response
-                .ok(SerializationUtils.serialize(createdItem), MediaType.APPLICATION_JSON_TYPE)
-                .build();
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(String json) {
+        try {
+            T item = _cls.newInstance().readJSON(json);
+            return Response
+                    .ok(getManager().create(item), MediaType.APPLICATION_JSON_TYPE)
+                    .build();
+        } catch (ReflectiveOperationException e) {
+            return logErrorAndReturnGenericErrorResponse(e);
+        } catch (GeneralServiceException e) {
+            return returnErrorResponse(e);
+        } catch (IOException e) {
+            return returnErrorResponse(e);
+        }
     }
 
     @POST
@@ -83,20 +86,54 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     @Path("/{id: [0-9]*}")
     public Response update(@PathParam("id") long id, String json) {
         try {
-            JsonMap map = new JsonMap(json);
+            T item = _cls.newInstance().readJSON(json);
 
-            return doUpdate(id, map);
-        } catch (IOException e) {
             return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(encodeErrorMessage(e))
+                    .ok(SerializationUtils.serialize(item), MediaType.APPLICATION_JSON_TYPE)
                     .build();
+        } catch (ReflectiveOperationException e) {
+            return logErrorAndReturnGenericErrorResponse(e);
+        } catch (IOException e) {
+            return returnErrorResponse(e);
         }
     }
 
-    protected abstract Response doUpdate(long id, JsonMap map);
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id: [0-9]*}")
+    public Response delete(@PathParam("id") long id, String json) {
+        try {
+            T item = _cls.newInstance().readJSON(json);
+
+            getManager().delete(item);
+            return Response
+                    .ok(SerializationUtils.serialize(item), MediaType.APPLICATION_JSON_TYPE)
+                    .build();
+        } catch (ReflectiveOperationException e) {
+            return logErrorAndReturnGenericErrorResponse(e);
+        } catch (IOException e) {
+            return returnErrorResponse(e);
+        } catch (GeneralServiceException e) {
+            return returnErrorResponse(e);
+        }
+    }
 
     protected static String encodeErrorMessage(Throwable e) {
         return String.format(ERROR_TEMPLATE, StringEscapeUtils.escapeEcmaScript(e.getMessage()));
+    }
+
+    protected static Response logErrorAndReturnGenericErrorResponse(Throwable t) {
+        Global.log.error(t.getMessage(), t);
+        return Response
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .build();
+    }
+
+    protected static Response returnErrorResponse(Throwable t) {
+        Global.log.error(t.getMessage(), t);
+        return Response
+                .status(Response.Status.BAD_REQUEST)
+                .entity(encodeErrorMessage(t))
+                .build();
     }
 }

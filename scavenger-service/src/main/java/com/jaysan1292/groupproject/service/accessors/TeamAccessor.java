@@ -12,6 +12,10 @@ import javax.ws.rs.core.Response;
 public class TeamAccessor extends AbstractAccessor<Team> {
     public static final TeamManager manager = new TeamManager();
 
+    public TeamAccessor() {
+        super(Team.class);
+    }
+
     protected TeamManager getManager() {
         return manager;
     }

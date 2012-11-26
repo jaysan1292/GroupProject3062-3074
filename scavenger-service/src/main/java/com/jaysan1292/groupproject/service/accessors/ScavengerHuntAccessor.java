@@ -12,6 +12,10 @@ import javax.ws.rs.core.Response;
 public class ScavengerHuntAccessor extends AbstractAccessor<ScavengerHunt> {
     private static final ScavengerHuntManager manager = new ScavengerHuntManager();
 
+    public ScavengerHuntAccessor() {
+        super(ScavengerHunt.class);
+    }
+
     protected ScavengerHuntManager getManager() {
         return manager;
     }

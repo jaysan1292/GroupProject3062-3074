@@ -2,53 +2,60 @@ package com.jaysan1292.groupproject.service.db;
 
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.PlayerBuilder;
-import org.apache.commons.dbutils.ResultSetHandler;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class PlayerManager extends AbstractManager<Player> {
+    private static final String TABLE_NAME = "Player";
+    private static final String ID_COLUMN = "player_id";
+    private static final String FIRST_NAME_COLUMN = "first_name";
+    private static final String LAST_NAME_COLUMN = "last_name";
+    private static final String STUDENT_NUMBER_COLUMN = "student_number";
+
     public PlayerManager() {
-        super(Player.class, "Player", "player_id");
-    }
-
-    protected ResultSetHandler<Player> getResultSetHandler() {
-        return new ResultSetHandler<Player>() {
-            public Player handle(ResultSet rs) throws SQLException {
-                if (!rs.next()) return null;
-
-                return new PlayerBuilder()
-                        .setPlayerId(rs.getLong("player_id"))
-                        .setFirstName(rs.getString("first_name"))
-                        .setLastName(rs.getString("last_name"))
-                        .setStudentId(rs.getString("student_number"))
-                        .build();
-            }
-        };
-    }
-
-    protected ResultSetHandler<Player[]> getArrayResultSetHandler() {
-        return new ResultSetHandler<Player[]>() {
-            public Player[] handle(ResultSet rs) throws SQLException {
-                if (!rs.next()) return null;
-
-                ArrayList<Player> players = new ArrayList<Player>();
-                do {
-                    players.add(new PlayerBuilder()
-                                        .setPlayerId(rs.getLong("player_id"))
-                                        .setFirstName(rs.getString("first_name"))
-                                        .setLastName(rs.getString("last_name"))
-                                        .setStudentId(rs.getString("student_number"))
-                                        .build());
-                } while (rs.next());
-
-                return players.toArray(new Player[players.size()]);
-            }
-        };
+        super(Player.class, TABLE_NAME, ID_COLUMN);
     }
 
     protected Player createNewInstance() {
         return new Player();
+    }
+
+    protected Player buildObject(ResultSet rs) throws SQLException {
+        return new PlayerBuilder()
+                .setPlayerId(rs.getLong(ID_COLUMN))
+                .setFirstName(rs.getString(FIRST_NAME_COLUMN))
+                .setLastName(rs.getString(LAST_NAME_COLUMN))
+                .setStudentId(rs.getString(STUDENT_NUMBER_COLUMN))
+                .build();
+    }
+
+    protected void doCreate(Connection conn, Player item) throws SQLException {
+        String query = "INSERT INTO " + TABLE_NAME + " (" +
+                       FIRST_NAME_COLUMN + ", " +
+                       LAST_NAME_COLUMN + ", " +
+                       STUDENT_NUMBER_COLUMN + ") VALUES (?, ?, ?)";
+        runner.update(conn, query,
+                      item.getFirstName(),
+                      item.getLastName(),
+                      item.getStudentNumber());
+    }
+
+    protected void doUpdate(Connection conn, Player item) throws SQLException {
+        String query = "UPDATE " + TABLE_NAME + " SET " +
+                       FIRST_NAME_COLUMN + "=?, " +
+                       LAST_NAME_COLUMN + "=?, " +
+                       STUDENT_NUMBER_COLUMN + "=? " +
+                       "WHERE " + ID_COLUMN + "=?";
+        runner.update(conn, query,
+                      item.getFirstName(),
+                      item.getLastName(),
+                      item.getStudentNumber());
+    }
+
+    protected void doDelete(Connection conn, Player item) throws SQLException {
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
+        runner.update(conn, query, item.getId());
     }
 }

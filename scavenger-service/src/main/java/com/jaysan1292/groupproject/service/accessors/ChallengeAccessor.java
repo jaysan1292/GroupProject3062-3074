@@ -12,6 +12,10 @@ import javax.ws.rs.core.Response;
 public class ChallengeAccessor extends AbstractAccessor<Challenge> {
     private static final ChallengeManager manager = new ChallengeManager();
 
+    public ChallengeAccessor() {
+        super(Challenge.class);
+    }
+
     protected ChallengeManager getManager() {
         return manager;
     }

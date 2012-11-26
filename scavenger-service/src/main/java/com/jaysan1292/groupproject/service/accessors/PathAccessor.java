@@ -11,6 +11,10 @@ import javax.ws.rs.core.Response;
 public class PathAccessor extends AbstractAccessor<Path> {
     private static final PathManager manager = new PathManager();
 
+    public PathAccessor() {
+        super(Path.class);
+    }
+
     protected PathManager getManager() {
         return manager;
     }
