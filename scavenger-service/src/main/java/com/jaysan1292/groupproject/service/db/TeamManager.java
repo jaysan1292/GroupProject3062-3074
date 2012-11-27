@@ -5,7 +5,6 @@ import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.data.TeamBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -47,15 +46,15 @@ public class TeamManager extends AbstractManager<Team> {
         return builder.build();
     }
 
-    protected void doCreate(Connection conn, Team item) throws SQLException {
+    protected void doCreate(Team item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 
-    protected void doUpdate(Connection conn, Team item) throws SQLException {
+    protected void doUpdate(Team item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 
-    protected void doDelete(Connection conn, Team item) throws SQLException {
+    protected void doDelete(Team item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 }

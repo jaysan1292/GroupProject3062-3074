@@ -5,7 +5,6 @@ import com.jaysan1292.groupproject.data.Path;
 import com.jaysan1292.groupproject.data.PathBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,19 +53,19 @@ public class PathManager extends AbstractManager<Path> {
         return builder.build();
     }
 
-    protected void doCreate(Connection conn, Path item) throws SQLException {
+    protected void doCreate(Path item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        CHECKPOINT_COLUMN + ") VALUES (?)";
-        runner.update(conn, query, item.getCheckpointString());
+        runner.update(query, item.getCheckpointString());
     }
 
-    protected void doUpdate(Connection conn, Path item) throws SQLException {
+    protected void doUpdate(Path item) throws SQLException {
         String query = "UPDATE " + TABLE_NAME + " SET " + CHECKPOINT_COLUMN + "=? WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getCheckpointString(), item.getId());
+        runner.update(query, item.getCheckpointString(), item.getId());
     }
 
-    protected void doDelete(Connection conn, Path item) throws SQLException {
+    protected void doDelete(Path item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getId());
+        runner.update(query, item.getId());
     }
 }

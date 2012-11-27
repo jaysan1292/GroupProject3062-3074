@@ -1,7 +1,7 @@
 package com.jaysan1292.groupproject.service.db;
 
-import com.jaysan1292.groupproject.data.Challenge;
-import com.jaysan1292.groupproject.data.ChallengeBuilder;
+import com.jaysan1292.groupproject.data.Player;
+import com.jaysan1292.groupproject.data.PlayerBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +26,12 @@ public class DatabaseTest {
     @BeforeClass
     public static void setUpOnce() throws Exception {
         log.info("Starting database tests.");
-        DatabaseHelper.initDatabase();
+        try {
+            DatabaseHelper.initDatabase();
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            System.exit(-1);
+        }
     }
 
     @AfterClass
@@ -35,18 +40,20 @@ public class DatabaseTest {
         DatabaseHelper.cleanDatabase();
     }
 
-    public static class ChallengeManagerTest {
-        private final ChallengeManager manager = new ChallengeManager();
+    public static class PlayerManagerTest {
+        private final PlayerManager manager = new PlayerManager();
 
         @Test
         public void testGet() throws Exception {
-            log.info("Test: Get single challenge");
-            Challenge expected = new ChallengeBuilder()
-                    .setChallengeId(0)
-                    .setChallengeText("First go there and do this thing.")
+            log.info("Test: Get single Player");
+            Player expected = new PlayerBuilder()
+                    .setPlayerId(0)
+                    .setFirstName("Jason")
+                    .setLastName("Recillo")
+                    .setStudentId("100726948")
                     .build();
 
-            Challenge actual = manager.get(0);
+            Player actual = manager.get(0);
 
             assertEquals(expected, actual);
         }
@@ -54,23 +61,37 @@ public class DatabaseTest {
         @Test
         public void testUpdate() throws Exception {
             log.info("Test: Update a challenege");
-            Challenge original = manager.get(0);
+            Player original = manager.get(0);
 
-            Challenge expected = new ChallengeBuilder(original)
-                    .setChallengeText("Edited challenge: First go there and do this thing.")
+            Player expected = new PlayerBuilder(original)
+                    .setFirstName("John")
+                    .setLastName("Smith")
                     .build();
 
             manager.update(expected);
 
-            Challenge actual = manager.get(0);
+            Player actual = manager.get(0);
 
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
             // Other tests will depend on an unchanged databse so revert changes here :p
-            manager.delete(actual);
-            manager.create(original);
-            assertEquals(original, manager.get(0));
+            manager.update(original);
+        }
+
+        @Test
+        public void testCreate() throws Exception {
+            log.info("Test: Create new Player");
+
+            Player newPlayer = new PlayerBuilder()
+                    .setFirstName("John")
+                    .setLastName("Smith")
+                    .setStudentId("123456789")
+                    .build();
+
+            manager.create(newPlayer);
+
+            throw new Exception("This test isn't done being written yet :3");
         }
     }
 }

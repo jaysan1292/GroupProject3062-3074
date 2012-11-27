@@ -3,7 +3,6 @@ package com.jaysan1292.groupproject.service.db;
 import com.jaysan1292.groupproject.data.Challenge;
 import com.jaysan1292.groupproject.data.ChallengeBuilder;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -32,18 +31,18 @@ public class ChallengeManager extends AbstractManager<Challenge> {
                 .build();
     }
 
-    protected void doCreate(Connection conn, Challenge item) throws SQLException {
+    protected void doCreate(Challenge item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" + TEXT_COLUMN + ") VALUES (?)";
-        runner.update(conn, query, item.getChallengeText());
+        runner.update(query, item.getChallengeText());
     }
 
-    protected void doUpdate(Connection conn, Challenge item) throws SQLException {
+    protected void doUpdate(Challenge item) throws SQLException {
         String query = "UPDATE " + TABLE_NAME + " SET " + TEXT_COLUMN + "=? WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getChallengeText(), item.getId());
+        runner.update(query, item.getChallengeText(), item.getId());
     }
 
-    protected void doDelete(Connection conn, Challenge item) throws SQLException {
+    protected void doDelete(Challenge item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getId());
+        runner.update(query, item.getId());
     }
 }

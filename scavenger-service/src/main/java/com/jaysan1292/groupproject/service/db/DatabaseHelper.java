@@ -1,5 +1,6 @@
 package com.jaysan1292.groupproject.service.db;
 
+import com.google.common.base.Preconditions;
 import com.jaysan1292.groupproject.Global;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.io.FileDeleteStrategy;
@@ -16,13 +17,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 //TODO: Move to DataSource rather than using raw Connection objects
-public class DatabaseHelper {
-    private static final String DB_DRIVER_CLASS = "org.apache.derby.jdbc.EmbeddedDriver";
+public final class DatabaseHelper {
     private static final String DB_NAME = "scavengerdb";
     public static final String DB_URL = "jdbc:derby:" + DB_NAME;
+
     private static EmbeddedDataSource _dataSource;
+    private static boolean _initialized;
 
     public static void initDatabase() throws Exception {
+        Preconditions.checkState(!_initialized);
+
         _dataSource = new EmbeddedDataSource();
         _dataSource.setDatabaseName(DB_NAME);
         _dataSource.setCreateDatabase("create");
@@ -36,22 +40,29 @@ public class DatabaseHelper {
             // while executing the script; this should be exactly 0.
             int errors = ij.runScript(connection, sql, "UTF-8", System.out, "UTF-8");
 
-            if (errors != 0)
-                throw new RuntimeException("There was an error executing scavengerdb.sql.");
+            if (errors != 0) {
+                String errMsg = "There was an error initializing the database.";
+                Global.log.error(errMsg);
+                _initialized = true;
+                cleanDatabase();
+                throw new RuntimeException(errMsg);
+            }
             Global.log.info("Database creation successful!");
         } catch (UnsupportedEncodingException ignored) {
         } finally {
             IOUtils.closeQuietly(sql);
             DbUtils.closeQuietly(connection);
         }
+
+        _initialized = true;
     }
 
     public static void cleanDatabase() {
+        Preconditions.checkState(_initialized);
         try {
             Global.log.info("Shutting down database.");
-            EmbeddedDataSource ds = (EmbeddedDataSource) getDataSource();
-            ds.setShutdownDatabase("shutdown");
-            ds.getConnection();
+            _dataSource.setShutdownDatabase("shutdown");
+            _dataSource.getConnection();
         } catch (SQLException e) {
             if ((e.getErrorCode() == 45000) && ("08006".equals(e.getSQLState()))) {
                 Global.log.info("Database shutdown successfully!");
@@ -65,19 +76,15 @@ public class DatabaseHelper {
                     Global.log.error(e1.getMessage(), e1);
                 }
             } else {
-                Global.log.info("Database did not shutdown successfully. Please delete the database directory manually to prevent further errors.");
+                Global.log.error("Database did not shutdown successfully. Please delete the database directory manually to prevent further errors.", e);
             }
         }
     }
 
     private DatabaseHelper() {}
 
-    /** Returns a Connection object that points to the main database. */
-    public static Connection createDbConnection() throws SQLException {
-        return getDataSource().getConnection();
-    }
-
     public static DataSource getDataSource() {
+        Preconditions.checkState(_initialized);
         return _dataSource;
     }
 }

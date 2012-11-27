@@ -3,7 +3,6 @@ package com.jaysan1292.groupproject.service.db;
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.PlayerBuilder;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,31 +34,31 @@ public class PlayerManager extends AbstractManager<Player> {
                 .build();
     }
 
-    protected void doCreate(Connection conn, Player item) throws SQLException {
+    protected void doCreate(Player item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        FIRST_NAME_COLUMN + ", " +
                        LAST_NAME_COLUMN + ", " +
                        STUDENT_NUMBER_COLUMN + ") VALUES (?, ?, ?)";
-        runner.update(conn, query,
+        runner.update(query,
                       item.getFirstName(),
                       item.getLastName(),
                       item.getStudentNumber());
     }
 
-    protected void doUpdate(Connection conn, Player item) throws SQLException {
+    protected void doUpdate(Player item) throws SQLException {
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        FIRST_NAME_COLUMN + "=?, " +
                        LAST_NAME_COLUMN + "=?, " +
                        STUDENT_NUMBER_COLUMN + "=? " +
                        "WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query,
+        runner.update(query,
                       item.getFirstName(),
                       item.getLastName(),
                       item.getStudentNumber());
     }
 
-    protected void doDelete(Connection conn, Player item) throws SQLException {
+    protected void doDelete(Player item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getId());
+        runner.update(query, item.getId());
     }
 }

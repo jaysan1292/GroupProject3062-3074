@@ -5,7 +5,6 @@ import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.jaysan1292.groupproject.data.ScavengerHuntBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -50,15 +49,15 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         return builder.build();
     }
 
-    protected void doCreate(Connection conn, ScavengerHunt item) throws SQLException {
+    protected void doCreate(ScavengerHunt item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 
-    protected void doUpdate(Connection conn, ScavengerHunt item) throws SQLException {
+    protected void doUpdate(ScavengerHunt item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 
-    protected void doDelete(Connection conn, ScavengerHunt item) throws SQLException {
+    protected void doDelete(ScavengerHunt item) throws SQLException {
         //TODO: Auto-generated method stub
     }
 }

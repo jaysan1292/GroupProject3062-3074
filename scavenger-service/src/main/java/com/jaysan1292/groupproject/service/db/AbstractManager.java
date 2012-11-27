@@ -5,13 +5,11 @@ import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 /** @author Jason Recillo */
 public abstract class AbstractManager<T extends BaseEntity> {
     protected static final ObjectMapper mapper = new ObjectMapper();
-    protected static final QueryRunner runner = new QueryRunner();
+    protected static final QueryRunner runner = new QueryRunner(DatabaseHelper.getDataSource());
     private static final Object lock = new Object();
     private String _itemName;
     private Class<T> _cls;
@@ -76,23 +74,20 @@ public abstract class AbstractManager<T extends BaseEntity> {
      * @throws GeneralServiceException
      */
     public T get(long id) throws GeneralServiceException {
-        Connection connection = null;
-        T item = null;
+        T item;
         try {
             synchronized (lock) {
                 String query = "SELECT * FROM " + tableName() + " WHERE " + idColumn() + "=?";
-                connection = DatabaseHelper.createDbConnection();
-                item = runner.query(connection, query, getResultSetHandler(), id);
+                item = runner.query(query, getResultSetHandler(), id);
             }
-            if (item == null)
+            if (item == null) {
                 throw new GeneralServiceException(new ItemNotFoundException(id, _cls));
+            }
+
+            return item;
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
-        } finally {
-            DbUtils.closeQuietly(connection);
         }
-
-        return item;
     }
 
     /**
@@ -101,21 +96,17 @@ public abstract class AbstractManager<T extends BaseEntity> {
      * @return An Array containing all of the items in the database.
      */
     public T[] getAll() {
-        Connection connection = null;
-        T[] items = null;
+        T[] items;
         try {
             synchronized (lock) {
                 String query = "SELECT * FROM " + tableName();
-                connection = DatabaseHelper.createDbConnection();
-                items = runner.query(connection, query, getArrayResultSetHandler());
+                items = runner.query(query, getArrayResultSetHandler());
             }
 
             if (items == null)
                 throw new ItemNotFoundException("There are no " + _itemName + "s in the database.");
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
-        } finally {
-            DbUtils.closeQuietly(connection);
         }
 
         Global.log.debug("Retrieved all " + _itemName + "s.");
@@ -133,52 +124,40 @@ public abstract class AbstractManager<T extends BaseEntity> {
      * @throws GeneralServiceException
      */
     public T create(T item) throws GeneralServiceException {
-        Connection conn = null;
         try {
             synchronized (lock) {
-                conn = DatabaseHelper.createDbConnection();
-                doCreate(conn, item);
+                doCreate(item);
             }
         } catch (SQLException e) {
             throw new GeneralServiceException("There was an error updating the database.", e);
-        } finally {
-            DbUtils.closeQuietly(conn);
         }
 
         return item;
     }
 
     public void update(T item) throws GeneralServiceException {
-        Connection connection = null;
         try {
             synchronized (lock) {
-                connection = DatabaseHelper.createDbConnection();
-                doUpdate(connection, item);
+                doUpdate(item);
             }
         } catch (SQLException e) {
             throw new GeneralServiceException("There was a problem updating the given item.", e);
-        } finally {
-            DbUtils.closeQuietly(connection);
         }
     }
 
     public void delete(T item) throws GeneralServiceException {
-        Connection conn = null;
         try {
             synchronized (lock) {
-                conn = DatabaseHelper.createDbConnection();
-                doDelete(conn, item);
+                doDelete(item);
             }
         } catch (SQLException e) {
             throw new GeneralServiceException("There was a problem deleting the given item from the database.", e);
-        } finally {
-            DbUtils.closeQuietly(conn);
         }
     }
 
-    protected abstract void doCreate(Connection conn, T item) throws SQLException;
+    protected abstract void doCreate(T item) throws SQLException;
 
-    protected abstract void doUpdate(Connection conn, T item) throws SQLException;
+    protected abstract void doUpdate(T item) throws SQLException;
 
-    protected abstract void doDelete(Connection conn, T item) throws SQLException;
+    protected abstract void doDelete(T item) throws SQLException;
 }

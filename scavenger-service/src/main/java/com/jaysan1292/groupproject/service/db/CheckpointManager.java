@@ -4,7 +4,6 @@ import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.CheckpointBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -43,32 +42,32 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
         return builder.build();
     }
 
-    protected void doCreate(Connection conn, Checkpoint item) throws SQLException {
+    protected void doCreate(Checkpoint item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        LATITUDE_COLUMN + ", " +
                        LONGITUDE_COLUMN + ", " +
                        CHALLENGE_COLUMN + ") VALUES (?, ?, ?)";
-        runner.update(conn, query,
+        runner.update(query,
                       item.getLatitude(),
                       item.getLongitude(),
                       item.getChallenge().getId());
     }
 
-    protected void doUpdate(Connection conn, Checkpoint item) throws SQLException {
+    protected void doUpdate(Checkpoint item) throws SQLException {
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        LATITUDE_COLUMN + "=?, " +
                        LONGITUDE_COLUMN + "=?, " +
                        CHALLENGE_COLUMN + "=? " +
                        "WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query,
+        runner.update(query,
                       item.getLatitude(),
                       item.getLongitude(),
                       item.getChallenge().getId(),
                       item.getId());
     }
 
-    protected void doDelete(Connection conn, Checkpoint item) throws SQLException {
+    protected void doDelete(Checkpoint item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(conn, query, item.getId());
+        runner.update(query, item.getId());
     }
 }
