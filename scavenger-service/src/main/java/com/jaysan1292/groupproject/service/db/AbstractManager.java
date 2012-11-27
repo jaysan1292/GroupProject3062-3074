@@ -123,7 +123,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
      *
      * @throws GeneralServiceException
      */
-    public T create(T item) throws GeneralServiceException {
+    public T insert(T item) throws GeneralServiceException {
         try {
             synchronized (lock) {
                 doCreate(item);

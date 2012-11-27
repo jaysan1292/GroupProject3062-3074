@@ -89,7 +89,7 @@ public class DatabaseTest {
                     .setStudentId("123456789")
                     .build();
 
-            manager.create(newPlayer);
+            manager.insert(newPlayer);
 
             throw new Exception("This test isn't done being written yet :3");
         }

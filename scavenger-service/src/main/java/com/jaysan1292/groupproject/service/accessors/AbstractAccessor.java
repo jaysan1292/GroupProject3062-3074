@@ -69,7 +69,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     public Response create(String json) {
         try {
             T item = _cls.newInstance().readJSON(json);
-            getManager().create(item);
+            getManager().insert(item);
             return Response
                     .ok()
                     .build();
