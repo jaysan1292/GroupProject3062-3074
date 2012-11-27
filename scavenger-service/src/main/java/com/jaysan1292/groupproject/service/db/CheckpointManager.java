@@ -1,35 +1,74 @@
 package com.jaysan1292.groupproject.service.db;
 
 import com.jaysan1292.groupproject.data.Checkpoint;
+import com.jaysan1292.groupproject.data.CheckpointBuilder;
+import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CheckpointManager extends AbstractManager<Checkpoint> {
-    private final ChallengeManager challengeManager = new ChallengeManager();
+    private static final String TABLE_NAME = "checkpoint_t";
+    private static final String ID_COLUMN = "checkpoint_id";
+    private static final String LATITUDE_COLUMN = "latitude";
+    private static final String LONGITUDE_COLUMN = "longitude";
+    private static final String CHALLENGE_COLUMN = "challenge";
+    private static final ChallengeManager challengeManager = new ChallengeManager();
 
     public CheckpointManager() {
-        super(Checkpoint.class, "Checkpoint", "checkpoint_id");
+        super(Checkpoint.class);
     }
 
-    protected Checkpoint createNewInstance() {
-        return new Checkpoint();
+    protected String tableName() {
+        return TABLE_NAME;
     }
 
-    protected Checkpoint buildObject(ResultSet rs) {
-        return null;  //TODO: Auto-generated method stub
+    protected String idColumn() {
+        return ID_COLUMN;
+    }
+
+    protected Checkpoint buildObject(ResultSet rs) throws SQLException {
+        CheckpointBuilder builder = new CheckpointBuilder()
+                .setCheckpointId(rs.getLong(ID_COLUMN))
+                .setLatitude(rs.getFloat(LATITUDE_COLUMN))
+                .setLongitude(rs.getFloat(LONGITUDE_COLUMN));
+
+        try {
+            builder.setChallenge(challengeManager.get(rs.getLong(CHALLENGE_COLUMN)));
+        } catch (GeneralServiceException e) {
+            builder.setChallenge(null);
+        }
+
+        return builder.build();
     }
 
     protected void doCreate(Connection conn, Checkpoint item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "INSERT INTO " + TABLE_NAME + " (" +
+                       LATITUDE_COLUMN + ", " +
+                       LONGITUDE_COLUMN + ", " +
+                       CHALLENGE_COLUMN + ") VALUES (?, ?, ?)";
+        runner.update(conn, query,
+                      item.getLatitude(),
+                      item.getLongitude(),
+                      item.getChallenge().getId());
     }
 
     protected void doUpdate(Connection conn, Checkpoint item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "UPDATE " + TABLE_NAME + " SET " +
+                       LATITUDE_COLUMN + "=?, " +
+                       LONGITUDE_COLUMN + "=?, " +
+                       CHALLENGE_COLUMN + "=? " +
+                       "WHERE " + ID_COLUMN + "=?";
+        runner.update(conn, query,
+                      item.getLatitude(),
+                      item.getLongitude(),
+                      item.getChallenge().getId(),
+                      item.getId());
     }
 
     protected void doDelete(Connection conn, Checkpoint item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
+        runner.update(conn, query, item.getId());
     }
 }

@@ -1,7 +1,9 @@
 package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Iterables;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 
@@ -80,6 +82,17 @@ public class Team extends BaseEntity {
             throw new ItemNotFoundException("Player #%d is not part of Team #%d.", member.getId(), teamId);
         teamMembers.remove(member.getId());
         return this;
+    }
+
+    @JsonIgnore
+    public String getPlayerString() {
+        Long[] ids = new Long[teamMembers.size()];
+
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = Iterables.get(teamMembers.values(), i).getId();
+        }
+
+        return StringUtils.join(ids, ',');
     }
 
     @Override

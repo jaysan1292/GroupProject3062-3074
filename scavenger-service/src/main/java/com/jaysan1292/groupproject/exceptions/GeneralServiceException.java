@@ -9,6 +9,10 @@ public class GeneralServiceException extends Exception {
         super(message);
     }
 
+    public GeneralServiceException(Throwable throwable) {
+        super(throwable.getMessage(), throwable);
+    }
+
     public GeneralServiceException(String message, Throwable throwable) {
         super(message, throwable);
     }

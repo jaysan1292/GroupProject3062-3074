@@ -9,7 +9,7 @@ public class ChallengeBuilder extends AbstractBuilder<Challenge> {
     }
 
     public ChallengeBuilder(Challenge challenge) {
-        this.challenge = challenge;
+        this.challenge = new Challenge(challenge);
     }
 
     protected void init() {

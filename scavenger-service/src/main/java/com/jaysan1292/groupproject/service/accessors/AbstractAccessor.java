@@ -69,8 +69,9 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     public Response create(String json) {
         try {
             T item = _cls.newInstance().readJSON(json);
+            getManager().create(item);
             return Response
-                    .ok(getManager().create(item), MediaType.APPLICATION_JSON_TYPE)
+                    .ok()
                     .build();
         } catch (ReflectiveOperationException e) {
             return logErrorAndReturnGenericErrorResponse(e);

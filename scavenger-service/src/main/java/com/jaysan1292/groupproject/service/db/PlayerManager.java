@@ -8,18 +8,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PlayerManager extends AbstractManager<Player> {
-    private static final String TABLE_NAME = "Player";
+    private static final String TABLE_NAME = "player_t";
     private static final String ID_COLUMN = "player_id";
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String STUDENT_NUMBER_COLUMN = "student_number";
 
     public PlayerManager() {
-        super(Player.class, TABLE_NAME, ID_COLUMN);
+        super(Player.class);
     }
 
-    protected Player createNewInstance() {
-        return new Player();
+    protected String tableName() {
+        return TABLE_NAME;
+    }
+
+    protected String idColumn() {
+        return ID_COLUMN;
     }
 
     protected Player buildObject(ResultSet rs) throws SQLException {

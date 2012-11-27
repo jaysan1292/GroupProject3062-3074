@@ -21,21 +21,17 @@ public abstract class AbstractManager<T extends BaseEntity> {
     protected static final ObjectMapper mapper = new ObjectMapper();
     protected static final QueryRunner runner = new QueryRunner();
     private static final Object lock = new Object();
-    private String SELECT_QUERY;
-    private String SELECT_ALL_QUERY;
     private String _itemName;
     private Class<T> _cls;
 
-    protected AbstractManager(Class<T> _cls, String tableName, String idColumnName) {
-        SELECT_QUERY = "SELECT * FROM " + tableName + " WHERE " + idColumnName + "=?";
-        SELECT_ALL_QUERY = "SELECT * FROM " + tableName;
+    protected AbstractManager(Class<T> cls) {
 
-        String[] name = StringUtils.split(_cls.getName(), '.');
+        String[] name = StringUtils.split(cls.getName(), '.');
         String s = StringUtils.splitByCharacterTypeCamelCase(name[name.length - 1])[0].toLowerCase();
 
         _itemName = s.equals("scavenger") ? "scavenger hunt" : s;
 
-        this._cls = _cls;
+        this._cls = cls;
     }
 
     protected ResultSetHandler<T> getResultSetHandler() {
@@ -64,39 +60,58 @@ public abstract class AbstractManager<T extends BaseEntity> {
         };
     }
 
-    protected abstract T createNewInstance();
+    protected abstract String tableName();
+
+    protected abstract String idColumn();
 
     protected abstract T buildObject(ResultSet rs) throws SQLException;
 
+    /**
+     * Retrieves an item with the given ID from the database.
+     *
+     * @param id The ID of the item to get.
+     *
+     * @return The item.
+     *
+     * @throws GeneralServiceException
+     */
     public T get(long id) throws GeneralServiceException {
         Connection connection = null;
         T item = null;
         try {
             synchronized (lock) {
+                String query = "SELECT * FROM " + tableName() + " WHERE " + idColumn() + "=?";
                 connection = DatabaseHelper.createDbConnection();
-                item = runner.query(connection, SELECT_QUERY, getResultSetHandler(), id);
+                item = runner.query(connection, query, getResultSetHandler(), id);
             }
-            if (item == null) throw new ItemNotFoundException(id, _cls);
+            if (item == null)
+                throw new GeneralServiceException(new ItemNotFoundException(id, _cls));
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         } finally {
             DbUtils.closeQuietly(connection);
         }
-        Global.log.debug("Retrieved " + _itemName + " #" + item.getId());
 
         return item;
     }
 
+    /**
+     * Gets all items from the given database table.
+     *
+     * @return An Array containing all of the items in the database.
+     */
     public T[] getAll() {
         Connection connection = null;
         T[] items = null;
         try {
             synchronized (lock) {
+                String query = "SELECT * FROM " + tableName();
                 connection = DatabaseHelper.createDbConnection();
-                items = runner.query(connection, SELECT_ALL_QUERY, getArrayResultSetHandler());
+                items = runner.query(connection, query, getArrayResultSetHandler());
             }
 
-            if (items == null) throw new ItemNotFoundException("There are no " + _itemName + "s in the database.");
+            if (items == null)
+                throw new ItemNotFoundException("There are no " + _itemName + "s in the database.");
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         } finally {
@@ -108,6 +123,15 @@ public abstract class AbstractManager<T extends BaseEntity> {
         return items;
     }
 
+    /**
+     * Inserts an item into the database.
+     *
+     * @param item The item to insert
+     *
+     * @return The ID of the new object.
+     *
+     * @throws GeneralServiceException
+     */
     public T create(T item) throws GeneralServiceException {
         Connection conn = null;
         try {

@@ -20,10 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScavengerService {
-
     public static URI BASE_URI;
     private static SelectorThread threadSelector;
     private static boolean _started;
+
+    //Disable logging by the Jersey and Grizzly frameworks
+    private static final Logger SUN_LOGGER = Logger.getLogger("com.sun");
+    private static final java.util.logging.Logger JUL_SUN_LOGGER = java.util.logging.Logger.getLogger("com.sun");
+
+    static {
+        SUN_LOGGER.setLevel(Level.OFF);
+        JUL_SUN_LOGGER.setLevel(java.util.logging.Level.SEVERE);
+    }
 
     private ScavengerService() {}
 
@@ -36,11 +44,18 @@ public class ScavengerService {
     public static void start(String[] args) throws Exception {
         Preconditions.checkState(!_started);
 
-        Global.log.info("Starting web service...");
-        DatabaseHelper.initDatabase();
-        threadSelector = startServer(args);
-        Global.log.info(String.format("Service is now running, with WADL available at %sapplication.wadl", BASE_URI));
-        Global.log.info("Press <ENTER> to stop...");
+        try {
+            Global.log.info("Starting web service...");
+            threadSelector = startServer(args);
+            DatabaseHelper.initDatabase();
+            Global.log.info(String.format("Service is now running, with WADL available at %sapplication.wadl", BASE_URI));
+            Global.log.info("Press <ENTER> to stop...");
+        } catch (Exception e) {
+            Global.log.info("An exception was thrown when starting the server. Shutting down...", e);
+            _started = true; //stop() expects _started == true
+            stop();
+            System.exit(-1);
+        }
 
         _started = true;
     }
@@ -48,10 +63,14 @@ public class ScavengerService {
     public static void stop() {
         Preconditions.checkState(_started);
 
-        Global.log.info("Server shutting down...");
-        threadSelector.stopEndpoint();
-        DatabaseHelper.cleanDatabase();
-        Global.log.info("Done!");
+        try {
+            Global.log.info("Server shutting down...");
+            threadSelector.stopEndpoint();
+            DatabaseHelper.cleanDatabase();
+            Global.log.info("Done!");
+        } catch (Exception e) {
+            Global.log.error("There was an error shutting down the service: ", e);
+        }
 
         _started = false;
     }
@@ -77,11 +96,7 @@ public class ScavengerService {
         BASE_URI = UriBuilder.fromUri(String.format("http://%s/service/", host)).port(9000).build();
         Map<String, String> initParams = new HashMap<String, String>();
 
-        initParams.put(PackagesResourceConfig.PROPERTY_PACKAGES,
-                       "com.jaysan1292.groupproject");
-//        initParams.put(LoggingFilter.FEATURE_LOGGING_DISABLE_ENTITY,
-//                       "true");
-//        initParams.put(ResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, )
+        initParams.put(PackagesResourceConfig.PROPERTY_PACKAGES, "com.jaysan1292.groupproject");
 
         return GrizzlyWebContainerFactory.create(BASE_URI, initParams);
     }

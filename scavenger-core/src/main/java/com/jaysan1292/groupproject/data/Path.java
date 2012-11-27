@@ -1,5 +1,7 @@
 package com.jaysan1292.groupproject.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 
@@ -58,7 +60,7 @@ public class Path extends BaseEntity {
     }
 
     public void setId(long id) {
-        setPathId(id);
+        pathId = id;
     }
 
     public List<Checkpoint> getCheckpoints() {
@@ -113,6 +115,17 @@ public class Path extends BaseEntity {
     public Path moveCheckpoint(int index, int direction) {
         if ((index < 0) || (index > checkpoints.size())) return this;
         return moveCheckpoint(checkpoints.get(index), direction);
+    }
+
+    @JsonIgnore
+    public String getCheckpointString() {
+        Long[] ids = new Long[checkpoints.size()];
+
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = checkpoints.get(i).getId();
+        }
+
+        return StringUtils.join(ids, ',');
     }
 
     @Override
