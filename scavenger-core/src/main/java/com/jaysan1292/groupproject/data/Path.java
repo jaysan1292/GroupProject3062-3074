@@ -134,7 +134,7 @@ public class Path extends BaseEntity {
         if (!(obj instanceof Path)) return false;
         Path other = (Path) obj;
         return (pathId == other.pathId) &&
-               (checkpoints == other.checkpoints);
+               (checkpoints.equals(other.checkpoints));
     }
 
     @Override

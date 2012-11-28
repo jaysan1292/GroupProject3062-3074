@@ -50,7 +50,7 @@ public class Team extends BaseEntity {
     }
 
     public void setId(long id) {
-        setTeamId(id);
+        teamId = id;
     }
 
     public Map<Long, Player> getTeamMembers() {
@@ -101,7 +101,7 @@ public class Team extends BaseEntity {
         if (!(obj instanceof Team)) return false;
         Team other = (Team) obj;
         return (teamId == other.teamId) &&
-               (teamMembers == other.teamMembers);
+               (teamMembers.equals(other.teamMembers));
     }
 
     @Override

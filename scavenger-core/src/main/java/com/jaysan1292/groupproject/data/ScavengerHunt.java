@@ -52,7 +52,7 @@ public final class ScavengerHunt extends BaseEntity {
     }
 
     public void setId(long id) {
-        setScavengerHuntId(id);
+        scavengerHuntId = id;
     }
 
     public Team getTeam() {

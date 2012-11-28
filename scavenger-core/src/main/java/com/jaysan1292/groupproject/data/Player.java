@@ -40,7 +40,7 @@ public class Player extends BaseEntity {
     }
 
     public void setId(long id) {
-        setPlayerId(id);
+        playerId = id;
     }
 
     public String getStudentNumber() {
