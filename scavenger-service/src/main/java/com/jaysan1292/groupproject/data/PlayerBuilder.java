@@ -9,7 +9,7 @@ public class PlayerBuilder extends AbstractBuilder<Player> {
     }
 
     public PlayerBuilder(Player player) {
-        this.player = player;
+        this.player = new Player(player);
     }
 
     protected void init() {

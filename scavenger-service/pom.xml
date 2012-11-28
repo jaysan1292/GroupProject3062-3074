@@ -20,6 +20,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
             </plugin>
             <plugin>
                 <!--Build an executable jar for the web service-->
@@ -36,7 +37,9 @@
                             <finalName>COMP3062-3074-GroupProject-WebService_executable</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.jaysan1292.groupproject.service.ScavengerService</mainClass>
+                                    <mainClass>
+                                        com.jaysan1292.groupproject.service.ScavengerService
+                                    </mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -58,7 +61,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.jaysan1292.com.jaysan1292.groupproject.service.ScavengerService</mainClass>
+                    <mainClass>com.jaysan1292.com.jaysan1292.groupproject.service.ScavengerService
+                    </mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -107,7 +111,7 @@
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
-            <version>1.5</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -125,6 +129,11 @@
             <id>m2.java.net</id>
             <name>Java.net Maven 2 Repository</name>
             <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Commons Snapshot Repository</name>
+            <url>https://repository.apache.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 </project>

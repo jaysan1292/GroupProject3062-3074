@@ -11,7 +11,7 @@ public class PathBuilder extends AbstractBuilder<Path> {
     }
 
     public PathBuilder(Path path) {
-        this.path = path;
+        this.path = new Path(path);
     }
 
     protected void init() {

@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
-//TODO: Move to DataSource rather than using raw Connection objects
 public final class DatabaseHelper {
     private static final String DB_NAME = "scavengerdb";
     public static final String DB_URL = "jdbc:derby:" + DB_NAME;
@@ -27,11 +27,24 @@ public final class DatabaseHelper {
     public static void initDatabase() throws Exception {
         Preconditions.checkState(!_initialized);
 
+        Global.log.debug("Current working directory is: " + System.getProperty("user.dir"));
+
+        // Clear database directory if exists
+        removeDatabaseDirectory();
+
         _dataSource = new EmbeddedDataSource();
         _dataSource.setDatabaseName(DB_NAME);
+        _dataSource.setShutdownDatabase(null);
         _dataSource.setCreateDatabase("create");
 
-        Connection connection = _dataSource.getConnection();
+        Connection connection;
+        try {
+            connection = _dataSource.getConnection();
+        } catch (SQLException e) {
+            // Delete the database directory and try again
+            FileDeleteStrategy.FORCE.delete(new File(DB_NAME));
+            connection = _dataSource.getConnection();
+        }
         // Populate its tables with preset data
         InputStream sql = null;
         try {
@@ -57,28 +70,28 @@ public final class DatabaseHelper {
         _initialized = true;
     }
 
-    public static void cleanDatabase() {
+    public static void cleanDatabase() throws Exception {
         Preconditions.checkState(_initialized);
         try {
             Global.log.info("Shutting down database.");
-            _dataSource.setShutdownDatabase("shutdown");
-            _dataSource.getConnection();
+//            _dataSource.setShutdownDatabase("shutdown");
+//            _dataSource.getConnection();
+            DriverManager.getConnection("jdbc:derby:" + DB_NAME + ";shutdown=true");
         } catch (SQLException e) {
+            // It doesn't really matter whether or not it shuts down properly because it will just
+            // be deleted anyways later :p
             if ((e.getErrorCode() == 45000) && ("08006".equals(e.getSQLState()))) {
                 Global.log.info("Database shutdown successfully!");
-
-                try {
-                    Global.log.info("Cleaning database directory.");
-                    FileDeleteStrategy.FORCE.delete(new File(DB_NAME));
-                    Global.log.info("Database directory cleaned successfully!");
-                } catch (IOException e1) {
-                    Global.log.error("There was a problem deleting the database directory. Please delete it manually.");
-                    Global.log.error(e1.getMessage(), e1);
-                }
             } else {
-                Global.log.error("Database did not shutdown successfully. Please delete the database directory manually to prevent further errors.", e);
+                Global.log.error("Database did not shutdown successfully.");
             }
         }
+
+        Thread.sleep(1000); // Wait a bit before deleting database directory
+
+        removeDatabaseDirectory();
+
+        _initialized = false;
     }
 
     private DatabaseHelper() {}
@@ -86,5 +99,16 @@ public final class DatabaseHelper {
     public static DataSource getDataSource() {
         Preconditions.checkState(_initialized);
         return _dataSource;
+    }
+
+    private static void removeDatabaseDirectory() {
+        try {
+            Global.log.info("Cleaning database directory.");
+            FileDeleteStrategy.FORCE.delete(new File(DB_NAME));
+            Global.log.info("Database directory cleaned successfully!");
+        } catch (IOException e1) {
+            Global.log.error("There was a problem deleting the database directory. Please delete it manually.");
+            Global.log.error(e1.getMessage(), e1);
+        }
     }
 }

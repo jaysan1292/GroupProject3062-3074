@@ -4,7 +4,9 @@ import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.data.TeamBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -46,15 +48,25 @@ public class TeamManager extends AbstractManager<Team> {
         return builder.build();
     }
 
-    protected void doCreate(Team item) throws SQLException {
-        //TODO: Auto-generated method stub
+    protected long doInsert(Team item) throws SQLException {
+        String query = "INSERT INTO " + TABLE_NAME + " (" +
+                       PLAYER_COLUMN + ") VALUES (?)";
+        return runner.insert(query,
+                             new ScalarHandler<BigDecimal>(1),
+                             item.getTeamPlayerString()).longValue();
     }
 
     protected void doUpdate(Team item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "UPDATE " + TABLE_NAME + " SET " +
+                       PLAYER_COLUMN + "=? " +
+                       "WHERE " + ID_COLUMN + "=?";
+        runner.update(query,
+                      item.getTeamPlayerString(),
+                      item.getId());
     }
 
     protected void doDelete(Team item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
+        runner.update(query, item.getId());
     }
 }

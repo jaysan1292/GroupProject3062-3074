@@ -22,7 +22,9 @@
     <!---->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.submission.archiveprefix>COMP3062-3074-GroupProject-</project.submission.archiveprefix>
+        <project.submission.archiveprefix>COMP3062-3074-GroupProject-
+        </project.submission.archiveprefix>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <!---->
     <dependencies>
@@ -54,7 +56,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11-beta-1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -122,25 +124,25 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
-                <inherited>false</inherited>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+            <!--<inherited>false</inherited>-->
+            <!--<artifactId>maven-assembly-plugin</artifactId>-->
+            <!--<version>2.3</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>make-assembly</id>-->
+            <!--<phase>package</phase>-->
+            <!--<goals>-->
+            <!--<goal>single</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<descriptors>-->
+            <!--<descriptor>src/main/assembly/assembly.xml</descriptor>-->
+            <!--</descriptors>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

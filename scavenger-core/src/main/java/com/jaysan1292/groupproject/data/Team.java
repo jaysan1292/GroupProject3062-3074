@@ -85,7 +85,7 @@ public class Team extends BaseEntity {
     }
 
     @JsonIgnore
-    public String getPlayerString() {
+    public String getTeamPlayerString() {
         Long[] ids = new Long[teamMembers.size()];
 
         for (int i = 0; i < ids.length; i++) {

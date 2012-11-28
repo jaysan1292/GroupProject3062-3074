@@ -19,7 +19,8 @@ CREATE TABLE player_t(
   first_name varchar(64) NOT NULL,
   last_name varchar(64) NOT NULL,
   student_number char(9) NOT NULL,
-  CONSTRAINT player_pk PRIMARY KEY (player_id)
+  CONSTRAINT player_pk PRIMARY KEY (player_id),
+  CONSTRAINT player_sid UNIQUE (student_number)
 );
 
 CREATE TABLE team_t(
@@ -51,9 +52,9 @@ CREATE TABLE scavengerhunt_t(
 
 INSERT INTO
     player_t(first_name, last_name, student_number)
-    VALUES ('Jason', 'Recillo', '100726948'),
-        ('Peter', 'Le', '100714258'),
-        ('Mellicent', 'Dres', '100726767');
+    VALUES ('Jason', 'Recillo', '100123123'),
+        ('Peter', 'Le', '100145965'),
+        ('Mellicent', 'Dres', '100793317');
 
 INSERT INTO team_t(players) VALUES ('1,2');
 

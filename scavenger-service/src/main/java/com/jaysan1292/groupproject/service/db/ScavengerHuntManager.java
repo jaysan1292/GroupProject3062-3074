@@ -49,8 +49,8 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         return builder.build();
     }
 
-    protected void doCreate(ScavengerHunt item) throws SQLException {
-        //TODO: Auto-generated method stub
+    protected long doInsert(ScavengerHunt item) throws SQLException {
+        return 0; //TODO: Auto-generated method stub
     }
 
     protected void doUpdate(ScavengerHunt item) throws SQLException {

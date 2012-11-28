@@ -123,16 +123,14 @@ public abstract class AbstractManager<T extends BaseEntity> {
      *
      * @throws GeneralServiceException
      */
-    public T insert(T item) throws GeneralServiceException {
+    public long insert(T item) throws GeneralServiceException {
         try {
             synchronized (lock) {
-                doCreate(item);
+                return doInsert(item);
             }
         } catch (SQLException e) {
             throw new GeneralServiceException("There was an error updating the database.", e);
         }
-
-        return item;
     }
 
     public void update(T item) throws GeneralServiceException {
@@ -155,7 +153,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
         }
     }
 
-    protected abstract void doCreate(T item) throws SQLException;
+    protected abstract long doInsert(T item) throws SQLException;
 
     protected abstract void doUpdate(T item) throws SQLException;
 

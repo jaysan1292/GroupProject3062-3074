@@ -2,6 +2,7 @@ package com.jaysan1292.groupproject.service.db;
 
 import com.jaysan1292.groupproject.data.Challenge;
 import com.jaysan1292.groupproject.data.ChallengeBuilder;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,9 +32,11 @@ public class ChallengeManager extends AbstractManager<Challenge> {
                 .build();
     }
 
-    protected void doCreate(Challenge item) throws SQLException {
+    protected long doInsert(Challenge item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" + TEXT_COLUMN + ") VALUES (?)";
-        runner.update(query, item.getChallengeText());
+        return runner.insert(query,
+                             new ScalarHandler<Long>(ID_COLUMN),
+                             item.getChallengeText());
     }
 
     protected void doUpdate(Challenge item) throws SQLException {

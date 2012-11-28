@@ -4,6 +4,7 @@ import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.Path;
 import com.jaysan1292.groupproject.data.PathBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,10 +54,10 @@ public class PathManager extends AbstractManager<Path> {
         return builder.build();
     }
 
-    protected void doCreate(Path item) throws SQLException {
+    protected long doInsert(Path item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        CHECKPOINT_COLUMN + ") VALUES (?)";
-        runner.update(query, item.getCheckpointString());
+        return runner.insert(query, new ScalarHandler<Long>(1), item.getCheckpointString());
     }
 
     protected void doUpdate(Path item) throws SQLException {

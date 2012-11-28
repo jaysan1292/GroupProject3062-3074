@@ -10,7 +10,7 @@ public class ScavengerHuntBuilder extends AbstractBuilder<ScavengerHunt> {
     }
 
     public ScavengerHuntBuilder(ScavengerHunt scavengerHunt) {
-        this.scavengerHunt = scavengerHunt;
+        this.scavengerHunt = new ScavengerHunt(scavengerHunt);
     }
 
     protected void init() {

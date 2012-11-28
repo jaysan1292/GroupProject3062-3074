@@ -9,7 +9,7 @@ public class CheckpointBuilder extends AbstractBuilder<Checkpoint> {
     }
 
     public CheckpointBuilder(Checkpoint checkpoint) {
-        this.checkpoint = checkpoint;
+        this.checkpoint = new Checkpoint(checkpoint);
     }
 
     protected void init() {

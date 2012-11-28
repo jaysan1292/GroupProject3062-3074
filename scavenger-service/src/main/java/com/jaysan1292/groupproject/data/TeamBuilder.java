@@ -11,7 +11,7 @@ public class TeamBuilder extends AbstractBuilder<Team> {
     }
 
     public TeamBuilder(Team team) {
-        this.team = team;
+        this.team = new Team(team);
     }
 
     protected void init() {

@@ -3,6 +3,7 @@ package com.jaysan1292.groupproject.service.db;
 import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.CheckpointBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,15 +43,16 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
         return builder.build();
     }
 
-    protected void doCreate(Checkpoint item) throws SQLException {
+    protected long doInsert(Checkpoint item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        LATITUDE_COLUMN + ", " +
                        LONGITUDE_COLUMN + ", " +
                        CHALLENGE_COLUMN + ") VALUES (?, ?, ?)";
-        runner.update(query,
-                      item.getLatitude(),
-                      item.getLongitude(),
-                      item.getChallenge().getId());
+        return runner.insert(query,
+                             new ScalarHandler<Long>(ID_COLUMN),
+                             item.getLatitude(),
+                             item.getLongitude(),
+                             item.getChallenge().getId());
     }
 
     protected void doUpdate(Checkpoint item) throws SQLException {

@@ -2,7 +2,9 @@ package com.jaysan1292.groupproject.service.db;
 
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.PlayerBuilder;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,15 +36,22 @@ public class PlayerManager extends AbstractManager<Player> {
                 .build();
     }
 
-    protected void doCreate(Player item) throws SQLException {
+    protected long doInsert(Player item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        FIRST_NAME_COLUMN + ", " +
                        LAST_NAME_COLUMN + ", " +
                        STUDENT_NUMBER_COLUMN + ") VALUES (?, ?, ?)";
-        runner.update(query,
-                      item.getFirstName(),
-                      item.getLastName(),
-                      item.getStudentNumber());
+
+        /*
+         * For some reason, using ScalarHandler<Long> causes ClassCastException, as the default
+         * implementation of ScalarHandler calls getObject() on the ResultSet, which in this case
+         * returns java.math.BigDecimal, which can't be casted to Long
+         */
+        return runner.insert(query,
+                             new ScalarHandler<BigDecimal>(1),
+                             item.getFirstName(),
+                             item.getLastName(),
+                             item.getStudentNumber()).longValue();
     }
 
     protected void doUpdate(Player item) throws SQLException {
@@ -54,7 +63,8 @@ public class PlayerManager extends AbstractManager<Player> {
         runner.update(query,
                       item.getFirstName(),
                       item.getLastName(),
-                      item.getStudentNumber());
+                      item.getStudentNumber(),
+                      item.getId());
     }
 
     protected void doDelete(Player item) throws SQLException {
