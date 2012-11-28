@@ -37,6 +37,7 @@ public class ScavengerService {
 
     public static void main(String[] args) throws Exception {
         start(args);
+        Global.log.info("Press <ENTER> to stop...");
         System.in.read();
         stop();
     }
@@ -49,7 +50,6 @@ public class ScavengerService {
             threadSelector = startServer(args);
             DatabaseHelper.initDatabase();
             Global.log.info(String.format("Service is now running, with WADL available at %sapplication.wadl", BASE_URI));
-            Global.log.info("Press <ENTER> to stop...");
         } catch (Exception e) {
             Global.log.info("An exception was thrown when starting the server. Shutting down...", e);
             _started = true; //stop() expects _started == true

@@ -20,8 +20,6 @@ import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
-//TODO: Update all references to java.util.Date to org.joda.time.DateTime
-
 /**
  * Created with IntelliJ IDEA.
  * Date: 27/11/12
@@ -610,9 +608,9 @@ public class DatabaseTest {
                     .setPath(paths.get(0))
                     .setTeam(teams.get(0))
                     .setStartTime(new DateTime(2012, 11, 27, 10, 0,
-                                               DateTimeZone.getDefault()).toDate())
+                                               DateTimeZone.getDefault()))
                     .setFinishTime(new DateTime(2012, 11, 27, 16, 0,
-                                                DateTimeZone.getDefault()).toDate())
+                                                DateTimeZone.getDefault()))
                     .build();
 
             ScavengerHunt actual = manager.get(0);
@@ -628,7 +626,7 @@ public class DatabaseTest {
 
             ScavengerHunt expected = new ScavengerHuntBuilder(original)
                     .setFinishTime(new DateTime(2012, 11, 27, 20, 0,
-                                                DateTimeZone.getDefault()).toDate())
+                                                DateTimeZone.getDefault()))
                     .build();
 
             manager.update(expected);
@@ -651,9 +649,9 @@ public class DatabaseTest {
                     .setTeam(teams.get(1))
                     .setPath(paths.get(0))
                     .setStartTime(new DateTime(2012, 11, 30, 11, 0,
-                                               DateTimeZone.getDefault()).toDate())
+                                               DateTimeZone.getDefault()))
                     .setFinishTime(new DateTime(2012, 11, 30, 16, 0,
-                                                DateTimeZone.getDefault()).toDate())
+                                                DateTimeZone.getDefault()))
                     .build();
 
             long id = manager.insert(expected);
@@ -675,9 +673,9 @@ public class DatabaseTest {
                     .setTeam(teams.get(1))
                     .setPath(paths.get(0))
                     .setStartTime(new DateTime(2012, 11, 30, 11, 0,
-                                               DateTimeZone.getDefault()).toDate())
+                                               DateTimeZone.getDefault()))
                     .setFinishTime(new DateTime(2012, 11, 30, 16, 0,
-                                                DateTimeZone.getDefault()).toDate())
+                                                DateTimeZone.getDefault()))
                     .build();
             long id = manager.insert(toDelete);
 

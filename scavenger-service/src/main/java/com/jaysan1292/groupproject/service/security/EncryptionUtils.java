@@ -3,8 +3,8 @@ package com.jaysan1292.groupproject.service.security;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+import org.joda.time.DateTime;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -34,10 +34,10 @@ public final class EncryptionUtils {
         return encryptor.encryptPassword(password);
     }
 
-    protected static String generateAuthToken(String userId, char[] password, int authenticationLevel, Date generationDate) {
+    protected static String generateAuthToken(String userId, char[] password, int authenticationLevel, DateTime generationDate) {
         initializeStringEncryptor(password);
 
-        String key = UUID.randomUUID().toString().toUpperCase() + '|' + userId + '|' + authenticationLevel + '|' + generationDate.getTime();
+        String key = UUID.randomUUID().toString().toUpperCase() + '|' + userId + '|' + authenticationLevel + '|' + generationDate.getMillis();
         return stringEncryptor.encrypt(key);
     }
 

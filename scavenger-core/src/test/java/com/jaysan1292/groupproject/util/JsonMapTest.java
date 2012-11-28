@@ -1,13 +1,10 @@
 package com.jaysan1292.groupproject.util;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotSame;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 /** @author Jason Recillo */
 public class JsonMapTest {
@@ -39,7 +36,7 @@ public class JsonMapTest {
             put("doubleNaN", Double.NaN);
             put("doubleNaNString", "NaN");
             put("byteArray", new byte[]{32, 64, 96, 24, 127});
-            put("date", new Date(127000000000L));
+            put("date", new DateTime(127000000000L));
             put("dateLong", 127000000000L);
         }};
     }
@@ -92,18 +89,18 @@ public class JsonMapTest {
 
     @Test
     public void testGetFloat() throws Exception {
-        assertEquals(32.3455465f, map.getFloat("float"));
-        assertEquals(33.45456656532f, map.getFloat("floatString"));
-        assertEquals(Float.NaN, map.getFloat("floatNaN"));
-        assertEquals(Float.NaN, map.getFloat("floatNaNString"));
+        assertTrue(new Float(32.3455465f).equals(map.getFloat("float")));
+        assertTrue(new Float(33.45456656532f).equals(map.getFloat("floatString")));
+        assertTrue(new Float(Float.NaN).equals(map.getFloat("floatNaN")));
+        assertTrue(new Float(Float.NaN).equals(map.getFloat("floatNaNString")));
     }
 
     @Test
     public void testGetDouble() throws Exception {
-        assertEquals(46.234387434545653446, map.getDouble("double"));
-        assertEquals(32.34276372343849, map.getDouble("doubleString"));
-        assertEquals(Double.NaN, map.getDouble("doubleNaN"));
-        assertEquals(Double.NaN, map.getDouble("doubleNaNString"));
+        assertTrue(new Double(46.234387434545653446).equals(map.getDouble("double")));
+        assertTrue(new Double(32.34276372343849).equals(map.getDouble("doubleString")));
+        assertTrue(new Double(Double.NaN).equals(map.getDouble("doubleNaN")));
+        assertTrue(new Double(Double.NaN).equals(map.getDouble("doubleNaNString")));
     }
 
     @Test
@@ -113,7 +110,7 @@ public class JsonMapTest {
 
     @Test
     public void testGetDate() throws Exception {
-        assertEquals(new Date(127000000000L), map.getDate("date"));
-        assertEquals(new Date(127000000000L), map.getDate("dateLong"));
+        assertEquals(new DateTime(127000000000L), map.getDate("date"));
+        assertEquals(new DateTime(127000000000L), map.getDate("dateLong"));
     }
 }

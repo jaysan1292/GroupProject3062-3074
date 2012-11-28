@@ -5,6 +5,7 @@ import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.jaysan1292.groupproject.data.ScavengerHuntBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -38,8 +39,8 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         Calendar cal = Calendar.getInstance();
         ScavengerHuntBuilder builder = new ScavengerHuntBuilder()
                 .setScavengerHuntId(rs.getLong(ID_COLUMN))
-                .setStartTime(rs.getTimestamp(START_TIME_COLUMN, cal))
-                .setFinishTime(rs.getTimestamp(FINISH_TIME_COLUMN, cal));
+                .setStartTime(new DateTime(rs.getTimestamp(START_TIME_COLUMN, cal)))
+                .setFinishTime(new DateTime(rs.getTimestamp(FINISH_TIME_COLUMN, cal)));
 
         try {
             builder.setPath(pathManager.get(rs.getLong(PATH_COLUMN)));
@@ -62,8 +63,8 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
                              new ScalarHandler<BigDecimal>(1),
                              item.getPath().getId(),
                              item.getTeam().getId(),
-                             item.getStartTime(),
-                             item.getFinishTime()).longValue();
+                             item.getStartTime().toDate(),
+                             item.getFinishTime().toDate()).longValue();
     }
 
     protected void doUpdate(ScavengerHunt item) throws SQLException {
@@ -76,8 +77,8 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         runner.update(query,
                       item.getPath().getId(),
                       item.getTeam().getId(),
-                      item.getStartTime(),
-                      item.getFinishTime(),
+                      item.getStartTime().toDate(),
+                      item.getFinishTime().toDate(),
                       item.getId());
     }
 

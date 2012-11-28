@@ -1,6 +1,6 @@
 package com.jaysan1292.groupproject.data;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class ScavengerHuntBuilder extends AbstractBuilder<ScavengerHunt> {
     private ScavengerHunt scavengerHunt;
@@ -36,12 +36,12 @@ public class ScavengerHuntBuilder extends AbstractBuilder<ScavengerHunt> {
         return this;
     }
 
-    public ScavengerHuntBuilder setStartTime(Date start) {
+    public ScavengerHuntBuilder setStartTime(DateTime start) {
         scavengerHunt.setStartTime(start);
         return this;
     }
 
-    public ScavengerHuntBuilder setFinishTime(Date finish) {
+    public ScavengerHuntBuilder setFinishTime(DateTime finish) {
         scavengerHunt.setFinishTime(finish);
         return this;
     }

@@ -1,12 +1,11 @@
 package com.jaysan1292.groupproject.data;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /** @author Jason Recillo */
 public final class ScavengerHunt extends BaseEntity {
-    public static final ScavengerHunt INVALID = new ScavengerHunt(-1, new Team(), new Path(), new Date(0), new Date(0));
+    public static final ScavengerHunt INVALID = new ScavengerHunt(-1, new Team(), new Path(), new DateTime(0), new DateTime(0));
     /**
      * The ID for this particular instance of the scavenger hunt.
      * Corresponds with the ID for this entry in the database.
@@ -24,16 +23,16 @@ public final class ScavengerHunt extends BaseEntity {
     private Path path;
 
     /** The time that this team started the Scavenger Hunt. */
-    private Date startTime;
+    private DateTime startTime;
 
     /** The time that this team finished the Scavenger Hunt. */
-    private Date finishTime;
+    private DateTime finishTime;
 
     public ScavengerHunt() {
         this(INVALID);
     }
 
-    public ScavengerHunt(long scavengerHuntId, Team team, Path path, Date startTime, Date finishTime) {
+    public ScavengerHunt(long scavengerHuntId, Team team, Path path, DateTime startTime, DateTime finishTime) {
         this.scavengerHuntId = scavengerHuntId;
         this.team = team;
         this.path = path;
@@ -63,11 +62,11 @@ public final class ScavengerHunt extends BaseEntity {
         return path;
     }
 
-    public Date getStartTime() {
+    public DateTime getStartTime() {
         return startTime;
     }
 
-    public Date getFinishTime() {
+    public DateTime getFinishTime() {
         return finishTime;
     }
 
@@ -83,11 +82,11 @@ public final class ScavengerHunt extends BaseEntity {
         this.path = path;
     }
 
-    protected void setStartTime(Date startTime) {
+    protected void setStartTime(DateTime startTime) {
         this.startTime = startTime;
     }
 
-    protected void setFinishTime(Date finishTime) {
+    protected void setFinishTime(DateTime finishTime) {
         this.finishTime = finishTime;
     }
 //endregion JavaBean

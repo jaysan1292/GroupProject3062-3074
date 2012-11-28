@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.SimpleType;
 import org.apache.commons.lang3.BooleanUtils;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -124,11 +124,11 @@ public class JsonMap extends LinkedHashMap<String, Object> implements Iterable<M
         return (byte[]) get(key);
     }
 
-    public Date getDate(String key) {
+    public DateTime getDate(String key) {
         try {
-            return (Date) get(key);
+            return (DateTime) get(key);
         } catch (ClassCastException e) {
-            return new Date(getLong(key));
+            return new DateTime(getLong(key));
         }
     }
 
