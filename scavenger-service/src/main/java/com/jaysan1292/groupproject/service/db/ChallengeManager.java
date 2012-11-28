@@ -4,6 +4,7 @@ import com.jaysan1292.groupproject.data.Challenge;
 import com.jaysan1292.groupproject.data.ChallengeBuilder;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,17 +36,20 @@ public class ChallengeManager extends AbstractManager<Challenge> {
     protected long doInsert(Challenge item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" + TEXT_COLUMN + ") VALUES (?)";
         return runner.insert(query,
-                             new ScalarHandler<Long>(ID_COLUMN),
-                             item.getChallengeText());
+                             new ScalarHandler<BigDecimal>(1),
+                             item.getChallengeText()).longValue();
     }
 
     protected void doUpdate(Challenge item) throws SQLException {
         String query = "UPDATE " + TABLE_NAME + " SET " + TEXT_COLUMN + "=? WHERE " + ID_COLUMN + "=?";
-        runner.update(query, item.getChallengeText(), item.getId());
+        runner.update(query,
+                      item.getChallengeText(),
+                      item.getId());
     }
 
     protected void doDelete(Challenge item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query, item.getId());
+        runner.update(query,
+                      item.getId());
     }
 }

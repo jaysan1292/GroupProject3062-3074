@@ -4,7 +4,9 @@ import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.jaysan1292.groupproject.data.ScavengerHuntBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -50,14 +52,38 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
     }
 
     protected long doInsert(ScavengerHunt item) throws SQLException {
-        return 0; //TODO: Auto-generated method stub
+        String query = "INSERT INTO " + TABLE_NAME + " (" +
+                       PATH_COLUMN + ", " +
+                       TEAM_COLUMN + ", " +
+                       START_TIME_COLUMN + ", " +
+                       FINISH_TIME_COLUMN + ") VALUES (?, ?, ?, ?)";
+
+        return runner.insert(query,
+                             new ScalarHandler<BigDecimal>(1),
+                             item.getPath().getId(),
+                             item.getTeam().getId(),
+                             item.getStartTime(),
+                             item.getFinishTime()).longValue();
     }
 
     protected void doUpdate(ScavengerHunt item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "UPDATE " + TABLE_NAME + " SET " +
+                       PATH_COLUMN + "=?, " +
+                       TEAM_COLUMN + "=?, " +
+                       START_TIME_COLUMN + "=?, " +
+                       FINISH_TIME_COLUMN + "=? " +
+                       "WHERE " + ID_COLUMN + "=?";
+        runner.update(query,
+                      item.getPath().getId(),
+                      item.getTeam().getId(),
+                      item.getStartTime(),
+                      item.getFinishTime(),
+                      item.getId());
     }
 
     protected void doDelete(ScavengerHunt item) throws SQLException {
-        //TODO: Auto-generated method stub
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
+        runner.update(query,
+                      item.getId());
     }
 }

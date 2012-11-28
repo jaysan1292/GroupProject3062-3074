@@ -54,18 +54,22 @@ INSERT INTO
     player_t(first_name, last_name, student_number)
     VALUES ('Jason', 'Recillo', '100123123'),
         ('Peter', 'Le', '100145965'),
-        ('Mellicent', 'Dres', '100793317');
+        ('Mellicent', 'Dres', '100793317'),
+        ('Lincoln', 'Earlls', '100158465'),
+        ('James', 'Mackin', '100456415');
 
-INSERT INTO team_t(players) VALUES ('1,2');
+INSERT INTO team_t(players) VALUES ('1,2'), ('0,3');
 
 INSERT INTO challenge_t (challenge_text)
     VALUES ('First go there and do this thing.'),
-        ('Go here and there.');
+        ('Go here and there.'),
+        ('Do this thing at this place.');
 
 INSERT INTO
     checkpoint_t(latitude, longitude, challenge)
     VALUES (43.675854, -79.71069, 0),
-        (43.676130, -79.410492, 1);
+        (43.676130, -79.410492, 1),
+        (43.6754555, -79.410492, 2);
 
 INSERT INTO path_t (checkpoints) VALUES ('0,1');
 

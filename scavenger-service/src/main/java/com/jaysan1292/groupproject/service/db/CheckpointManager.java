@@ -5,6 +5,7 @@ import com.jaysan1292.groupproject.data.CheckpointBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -49,10 +50,10 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
                        LONGITUDE_COLUMN + ", " +
                        CHALLENGE_COLUMN + ") VALUES (?, ?, ?)";
         return runner.insert(query,
-                             new ScalarHandler<Long>(ID_COLUMN),
+                             new ScalarHandler<BigDecimal>(1),
                              item.getLatitude(),
                              item.getLongitude(),
-                             item.getChallenge().getId());
+                             item.getChallenge().getId()).longValue();
     }
 
     protected void doUpdate(Checkpoint item) throws SQLException {
@@ -70,6 +71,7 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
 
     protected void doDelete(Checkpoint item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query, item.getId());
+        runner.update(query,
+                      item.getId());
     }
 }

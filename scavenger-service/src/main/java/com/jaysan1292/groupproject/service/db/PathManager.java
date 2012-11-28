@@ -1,11 +1,13 @@
 package com.jaysan1292.groupproject.service.db;
 
+import com.google.common.collect.Lists;
 import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.Path;
 import com.jaysan1292.groupproject.data.PathBuilder;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class PathManager extends AbstractManager<Path> {
                 .setPathId(rs.getLong(ID_COLUMN));
 
         String[] checkpointIdStrings = CHECKPOINT_SPLIT.split(rs.getString(CHECKPOINT_COLUMN));
-        ArrayList<Checkpoint> checkpoints = new ArrayList<Checkpoint>(checkpointIdStrings.length);
+        ArrayList<Checkpoint> checkpoints = Lists.newArrayList();
         CheckpointManager manager = new CheckpointManager();
         try {
             for (String checkpointId : checkpointIdStrings) {
@@ -57,16 +59,22 @@ public class PathManager extends AbstractManager<Path> {
     protected long doInsert(Path item) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        CHECKPOINT_COLUMN + ") VALUES (?)";
-        return runner.insert(query, new ScalarHandler<Long>(1), item.getCheckpointString());
+        return runner.insert(query,
+                             new ScalarHandler<BigDecimal>(1),
+                             item.getCheckpointString()).longValue();
     }
 
     protected void doUpdate(Path item) throws SQLException {
-        String query = "UPDATE " + TABLE_NAME + " SET " + CHECKPOINT_COLUMN + "=? WHERE " + ID_COLUMN + "=?";
-        runner.update(query, item.getCheckpointString(), item.getId());
+        String query = "UPDATE " + TABLE_NAME + " SET " +
+                       CHECKPOINT_COLUMN + "=? WHERE " + ID_COLUMN + "=?";
+        runner.update(query,
+                      item.getCheckpointString(),
+                      item.getId());
     }
 
     protected void doDelete(Path item) throws SQLException {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query, item.getId());
+        runner.update(query,
+                      item.getId());
     }
 }

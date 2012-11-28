@@ -1,18 +1,18 @@
 package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /** @author Jason Recillo */
 public class Path extends BaseEntity {
     private static final Logger log = Logger.getLogger(BaseEntity.class);
-    public static final Path INVALID = new Path(-1, new ArrayList<Checkpoint>());
+    public static final Path INVALID = new Path(-1, Lists.<Checkpoint>newArrayList());
     public static final int DIRECTION_UP = -1;
     public static final int DIRECTION_DOWN = 1;
 
@@ -32,21 +32,17 @@ public class Path extends BaseEntity {
 
     public Path(long pathId, List<Checkpoint> checkpoints) {
         this.pathId = pathId;
-        this.checkpoints = new ArrayList<Checkpoint>(checkpoints);
+        this.checkpoints = Lists.newArrayList(checkpoints);
     }
 
     public Path(List<Checkpoint> checkpoints) {
         this();
-        this.checkpoints = new ArrayList<Checkpoint>(checkpoints);
+        this.checkpoints = Lists.newArrayList(checkpoints);
     }
 
-    public Path(final Checkpoint... checkpoints) {
+    public Path(Checkpoint... checkpoints) {
         this();
-        this.checkpoints = new ArrayList<Checkpoint>() {{
-            for (Checkpoint checkpoint : checkpoints) {
-                add(checkpoint);
-            }
-        }};
+        this.checkpoints = Lists.newArrayList(checkpoints);
     }
 
     public Path(Path other) {
@@ -72,7 +68,7 @@ public class Path extends BaseEntity {
     }
 
     public void setCheckpoints(List<Checkpoint> checkpoints) {
-        this.checkpoints = new ArrayList<Checkpoint>(checkpoints);
+        this.checkpoints = Lists.newArrayList(checkpoints);
     }
 
     //endregion JavaBean
@@ -104,7 +100,8 @@ public class Path extends BaseEntity {
     public Path moveCheckpoint(Checkpoint checkpoint, int direction) {
         int idx = checkpoints.indexOf(checkpoint);
 
-        if (idx == -1) throw new RuntimeException("The specified checkpoint does not exist in this path.");
+        if (idx == -1)
+            throw new RuntimeException("The specified checkpoint does not exist in this path.");
         if ((idx == 0) || (idx == (checkpoints.size() - 1))) return this;
 
         Collections.swap(checkpoints, idx, idx + direction);

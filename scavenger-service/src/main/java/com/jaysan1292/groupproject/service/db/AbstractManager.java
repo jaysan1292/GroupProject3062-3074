@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.service.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
@@ -48,7 +49,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
             public T[] handle(ResultSet rs) throws SQLException {
                 if (!rs.next()) return null;
 
-                ArrayList<T> items = new ArrayList<T>();
+                ArrayList<T> items = Lists.newArrayList();
                 do {
                     items.add(buildObject(rs));
                 } while (rs.next());

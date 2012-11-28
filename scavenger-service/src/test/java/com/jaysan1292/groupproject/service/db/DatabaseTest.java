@@ -1,10 +1,10 @@
 package com.jaysan1292.groupproject.service.db;
 
-import com.jaysan1292.groupproject.data.Player;
-import com.jaysan1292.groupproject.data.PlayerBuilder;
-import com.jaysan1292.groupproject.data.Team;
-import com.jaysan1292.groupproject.data.TeamBuilder;
+import com.google.common.collect.Lists;
+import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -13,11 +13,14 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+
+//TODO: Update all references to java.util.Date to org.joda.time.DateTime
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,6 +61,7 @@ public class DatabaseTest {
         private final PlayerManager manager = new PlayerManager();
 
         @Test
+        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single player");
             Player expected = new PlayerBuilder()
@@ -73,6 +77,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a player");
             Player original = manager.get(0);
@@ -94,6 +99,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new player");
 
@@ -116,6 +122,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing player");
 
@@ -149,6 +156,7 @@ public class DatabaseTest {
         private final TeamManager manager = new TeamManager();
 
         @Test
+        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single team");
             Team expected = new TeamBuilder()
@@ -175,6 +183,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update existing team");
             final Team original = manager.get(0);
@@ -203,6 +212,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new team");
 
@@ -238,6 +248,7 @@ public class DatabaseTest {
         }
 
         @Test
+        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing team");
 
@@ -267,7 +278,429 @@ public class DatabaseTest {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static class PathManagerTest implements ManagerTest {
+        private final PathManager manager = new PathManager();
+        private final ArrayList<Checkpoint> checkpoints = Lists.newArrayList(
+                new CheckpointBuilder()
+                        .setCheckpointId(0)
+                        .setLatitude(43.675854f)
+                        .setLongitude(-79.71069f)
+                        .setChallenge(new ChallengeBuilder()
+                                              .setChallengeId(0)
+                                              .setChallengeText("First go there and do this thing.")
+                                              .build())
+                        .build(),
+                new CheckpointBuilder()
+                        .setCheckpointId(1)
+                        .setLatitude(43.676130f)
+                        .setLongitude(-79.410492f)
+                        .setChallenge(new ChallengeBuilder()
+                                              .setChallengeId(1)
+                                              .setChallengeText("Go here and there.")
+                                              .build())
+                        .build(),
+                new CheckpointBuilder()
+                        .setCheckpointId(2)
+                        .setLatitude(43.6754555f)
+                        .setLongitude(-79.410492f)
+                        .setChallenge(new ChallengeBuilder()
+                                              .setChallengeId(2)
+                                              .setChallengeText("Do this thing at this place.")
+                                              .build())
+                        .build());
+
+        @Test
+        @Override
+        public void testGet() throws Exception {
+            log.info("Test: Get path from database");
+            Path expected = new PathBuilder()
+                    .setPathId(0)
+                    .setCheckpoints(new ArrayList<Checkpoint>(2) {{
+                        add(checkpoints.get(0));
+                        add(checkpoints.get(1));
+                    }})
+                    .build();
+
+            Path actual = manager.get(0);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testUpdate() throws Exception {
+            log.info("Test: Update a path");
+            final Path original = manager.get(0);
+
+            Path expected = new PathBuilder(original)
+                    .setCheckpoints(new ArrayList<Checkpoint>() {{
+                        for (Checkpoint checkpoint : original.getCheckpoints()) {
+                            add(checkpoint);
+                        }
+                        add(checkpoints.get(2));
+                    }})
+                    .build();
+
+            manager.update(expected);
+
+            Path actual = manager.get(0);
+
+            assertNotSame(original, actual);
+            assertEquals(expected, actual);
+
+            // Other tests will depend on an unchanged databse so revert changes here :p
+            manager.update(original);
+        }
+
+        @Test
+        @Override
+        public void testInsert() throws Exception {
+            log.info("Test: Create new path");
+
+            Path expected = new PathBuilder()
+                    .setCheckpoints(new ArrayList<Checkpoint>() {{
+                        add(checkpoints.get(1));
+                        add(checkpoints.get(2));
+                    }})
+                    .build();
+
+            long id = manager.insert(expected);
+
+            Path actual = manager.get(id);
+
+            expected.setId(id);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testDelete() throws Exception {
+            log.info("Test: Delete existing path");
+
+            // Create a new item for use in this test
+            Path toDelete = new PathBuilder()
+                    .setCheckpoints(new ArrayList<Checkpoint>(2) {{
+                        add(checkpoints.get(0));
+                        add(checkpoints.get(1));
+                        add(checkpoints.get(2));
+                    }})
+                    .build();
+            long id = manager.insert(toDelete);
+
+            Path path = manager.get(id);
+
+            manager.delete(path);
+
+            try {
+                manager.get(path.getId());
+            } catch (GeneralServiceException ignored) {
+                // If that statement throws an exception; the item was not found in the database,
+                // which is totally expected and what we want. So, this test passed.
+                return;
+            }
+
+            throw new Exception("Delete team failed.");
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static class CheckpointManagerTest implements ManagerTest {
+        private final CheckpointManager manager = new CheckpointManager();
+        private final ArrayList<Challenge> challenges = Lists.newArrayList(
+                new ChallengeBuilder()
+                        .setChallengeId(0)
+                        .setChallengeText("First go there and do this thing.")
+                        .build(),
+                new ChallengeBuilder()
+                        .setChallengeId(1)
+                        .setChallengeText("Go here and there.")
+                        .build(),
+                new ChallengeBuilder()
+                        .setChallengeId(2)
+                        .setChallengeText("Do this thing at this place.")
+                        .build());
+
+        @Test
+        @Override
+        public void testGet() throws Exception {
+            log.info("Test: Get checkpoint from database");
+            Checkpoint expected = new CheckpointBuilder()
+                    .setCheckpointId(0)
+                    .setLatitude(43.675854f)
+                    .setLongitude(-79.71069f)
+                    .setChallenge(challenges.get(0))
+                    .build();
+
+            Checkpoint actual = manager.get(0);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testUpdate() throws Exception {
+            log.info("Test: Update a checkpoint");
+            Checkpoint original = manager.get(0);
+
+            Checkpoint expected = new CheckpointBuilder(original)
+                    .setLongitude(42.424242f)
+                    .setLatitude(-79.123456f)
+                    .build();
+
+            manager.update(expected);
+
+            Checkpoint actual = manager.get(0);
+
+            assertNotSame(original, actual);
+            assertEquals(expected, actual);
+
+            // Other tests will depend on an unchanged databse so revert changes here :p
+            manager.update(original);
+        }
+
+        @Test
+        @Override
+        public void testInsert() throws Exception {
+            log.info("Test: Create new checkpoint");
+
+            Checkpoint expected = new CheckpointBuilder()
+                    .setLatitude(42.123456f)
+                    .setLongitude(-79.192168f)
+                    .setChallenge(challenges.get(0))
+                    .build();
+
+            long id = manager.insert(expected);
+
+            Checkpoint actual = manager.get(id);
+
+            expected.setId(id);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testDelete() throws Exception {
+            log.info("Test: Delete existing checkpoint");
+
+            // Create a new item for use in this test
+            Checkpoint toDelete = new CheckpointBuilder()
+                    .setLatitude(43.197545f)
+                    .setLongitude(-79.456454f)
+                    .setChallenge(challenges.get(2))
+                    .build();
+            long id = manager.insert(toDelete);
+
+            Checkpoint checkpoint = manager.get(id);
+
+            manager.delete(checkpoint);
+
+            try {
+                manager.get(checkpoint.getId());
+            } catch (GeneralServiceException ignored) {
+                // If that statement throws an exception; the item was not found in the database,
+                // which is totally expected and what we want. So, this test passed.
+                return;
+            }
+
+            throw new Exception("Delete team failed.");
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static class ChallengeManagerTest implements ManagerTest {
+        private final ChallengeManager manager = new ChallengeManager();
+
+        @Test
+        @Override
+        public void testGet() throws Exception {
+            log.info("Test: Get single challenge");
+            Challenge expected = new ChallengeBuilder()
+                    .setChallengeId(0)
+                    .setChallengeText("First go there and do this thing.")
+                    .build();
+
+            Challenge actual = manager.get(0);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testUpdate() throws Exception {
+            log.info("Test: Update a challenge");
+            Challenge original = manager.get(0);
+
+            Challenge expected = new ChallengeBuilder(original)
+                    .setChallengeText("First go there and do this thing, and then you have to go somewhere completely different.")
+                    .build();
+
+            manager.update(expected);
+
+            Challenge actual = manager.get(0);
+
+            assertNotSame(original, actual);
+            assertEquals(expected, actual);
+
+            // Other tests will depend on an unchanged databse so revert changes here :p
+            manager.update(original);
+        }
+
+        @Test
+        @Override
+        public void testInsert() throws Exception {
+            log.info("Test: Create new challenge");
+
+            Challenge expected = new ChallengeBuilder()
+                    .setChallengeText("Do something here.")
+                    .build();
+
+            long id = manager.insert(expected);
+
+            Challenge actual = manager.get(id);
+
+            expected.setId(id);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testDelete() throws Exception {
+            log.info("Test: Delete existing challenge");
+
+            // Create a new challenge for this test
+            Challenge toDelete = new ChallengeBuilder()
+                    .setChallengeText("Do something at this location.")
+                    .build();
+            long id = manager.insert(toDelete);
+
+            Challenge challenge = manager.get(id);
+
+            manager.delete(challenge);
+
+            try {
+                manager.get(challenge.getId());
+            } catch (GeneralServiceException ignored) {
+                // If that statement throws an exception; the item was not found in the database,
+                // which is totally expected and what we want. So, this test passed.
+                return;
+            }
+
+            throw new Exception("Delete challenge failed.");
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static class ScavengerHuntManagerTest implements ManagerTest {
+        private final ScavengerHuntManager manager = new ScavengerHuntManager();
+        private final PathManager paths = new PathManager();
+        private final TeamManager teams = new TeamManager();
+
+        @Test
+        @Override
+        public void testGet() throws Exception {
+            log.info("Test: Get single scavenger hunt");
+            ScavengerHunt expected = new ScavengerHuntBuilder()
+                    .setScavengerHuntId(0)
+                    .setPath(paths.get(0))
+                    .setTeam(teams.get(0))
+                    .setStartTime(new DateTime(2012, 11, 27, 10, 0,
+                                               DateTimeZone.getDefault()).toDate())
+                    .setFinishTime(new DateTime(2012, 11, 27, 16, 0,
+                                                DateTimeZone.getDefault()).toDate())
+                    .build();
+
+            ScavengerHunt actual = manager.get(0);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testUpdate() throws Exception {
+            log.info("Test: Update a scavenger hunt");
+            ScavengerHunt original = manager.get(0);
+
+            ScavengerHunt expected = new ScavengerHuntBuilder(original)
+                    .setFinishTime(new DateTime(2012, 11, 27, 20, 0,
+                                                DateTimeZone.getDefault()).toDate())
+                    .build();
+
+            manager.update(expected);
+
+            ScavengerHunt actual = manager.get(0);
+
+            assertNotSame(original, actual);
+            assertEquals(expected, actual);
+
+            // Other tests will depend on an unchanged databse so revert changes here :p
+            manager.update(original);
+        }
+
+        @Test
+        @Override
+        public void testInsert() throws Exception {
+            log.info("Test: Create new scavenger hunt");
+
+            ScavengerHunt expected = new ScavengerHuntBuilder()
+                    .setTeam(teams.get(1))
+                    .setPath(paths.get(0))
+                    .setStartTime(new DateTime(2012, 11, 30, 11, 0,
+                                               DateTimeZone.getDefault()).toDate())
+                    .setFinishTime(new DateTime(2012, 11, 30, 16, 0,
+                                                DateTimeZone.getDefault()).toDate())
+                    .build();
+
+            long id = manager.insert(expected);
+
+            ScavengerHunt actual = manager.get(id);
+
+            expected.setId(id);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        @Override
+        public void testDelete() throws Exception {
+            log.info("Test: Delete existing scavenger hunt");
+
+            // Create a new scavenger hunt for this test
+            ScavengerHunt toDelete = new ScavengerHuntBuilder()
+                    .setTeam(teams.get(1))
+                    .setPath(paths.get(0))
+                    .setStartTime(new DateTime(2012, 11, 30, 11, 0,
+                                               DateTimeZone.getDefault()).toDate())
+                    .setFinishTime(new DateTime(2012, 11, 30, 16, 0,
+                                                DateTimeZone.getDefault()).toDate())
+                    .build();
+            long id = manager.insert(toDelete);
+
+            ScavengerHunt scavengerhunt = manager.get(id);
+
+            manager.delete(scavengerhunt);
+
+            try {
+                manager.get(scavengerhunt.getId());
+            } catch (GeneralServiceException ignored) {
+                // If that statement throws an exception; the item was not found in the database,
+                // which is totally expected and what we want. So, this test passed.
+                return;
+            }
+
+            throw new Exception("Delete scavenger hunt failed.");
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private interface ManagerTest {
+
         public void testGet() throws Exception;
 
         public void testUpdate() throws Exception;
