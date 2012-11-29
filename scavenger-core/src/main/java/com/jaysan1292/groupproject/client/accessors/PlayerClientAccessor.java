@@ -16,7 +16,7 @@ public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
     private static final Client client = Client.create();
 
     protected PlayerClientAccessor() {
-        super(Player.class, client.resource(getDefaultHost()).path("players"));
+        super(Player.class, client.resource(Accessors.getDefaultHost()).path("players"));
     }
 
     protected PlayerClientAccessor(URI host) {

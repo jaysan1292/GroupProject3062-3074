@@ -1,6 +1,5 @@
 package com.jaysan1292.groupproject.client;
 
-import com.jaysan1292.groupproject.client.accessors.AbstractClientAccessor;
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.sun.jersey.api.client.Client;
@@ -8,8 +7,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import java.net.URI;
 
-import static com.jaysan1292.groupproject.client.accessors.Accessors.getPlayerAccessor;
-import static com.jaysan1292.groupproject.client.accessors.Accessors.setHost;
+import static com.jaysan1292.groupproject.client.accessors.Accessors.*;
 
 //TODO: Authentication
 
@@ -50,8 +48,4 @@ public class ScavengerClient {
     }
 
     //endregion
-
-    protected static URI getDefaultHost() {
-        return AbstractClientAccessor.getDefaultHost();
-    }
 }
