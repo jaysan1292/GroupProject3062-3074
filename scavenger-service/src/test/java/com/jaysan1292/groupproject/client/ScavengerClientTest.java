@@ -2,6 +2,7 @@ package com.jaysan1292.groupproject.client;
 
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.PlayerBuilder;
+import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.ScavengerService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -88,7 +89,25 @@ public class ScavengerClientTest {
 
         @Test
         public void testDelete() throws Exception {
-            //TODO: Auto-generated method stub
+            log.info("Test: Delete player from service");
+            Player toDelete = new PlayerBuilder()
+                    .setLastName("Seo")
+                    .setFirstName("Joohyun")
+                    .setStudentId("100489456")
+                    .build();
+            long id = client.createPlayer(toDelete).getId();
+
+            Player player = client.getPlayer(id);
+
+            client.deletePlayer(player);
+
+            try {
+                client.getPlayer(player.getId());
+            } catch (GeneralServiceException e) {
+                return;
+            }
+
+            throw new Exception("Delete player failed.");
         }
     }
 
