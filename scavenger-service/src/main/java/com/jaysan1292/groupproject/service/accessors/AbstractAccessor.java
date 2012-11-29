@@ -64,14 +64,16 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         }
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(String json) {
         try {
             T item = _cls.newInstance().readJSON(json);
-            getManager().insert(item);
+            item.setId(getManager().insert(item));
+
             return Response
-                    .ok()
+                    .status(Response.Status.CREATED)
+                    .entity(item.toString())
                     .build();
         } catch (ReflectiveOperationException e) {
             return logErrorAndReturnGenericErrorResponse(e);

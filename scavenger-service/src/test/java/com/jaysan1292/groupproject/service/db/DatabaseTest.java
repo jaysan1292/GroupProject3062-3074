@@ -39,6 +39,7 @@ public class DatabaseTest {
         log.info("Starting database tests.");
         try {
             DatabaseHelper.initDatabase();
+            log.info("-------------------------------------");
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
             System.exit(-1);

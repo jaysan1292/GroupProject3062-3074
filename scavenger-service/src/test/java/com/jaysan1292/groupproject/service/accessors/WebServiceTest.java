@@ -1,18 +1,18 @@
 package com.jaysan1292.groupproject.service.accessors;
 
-import com.jaysan1292.groupproject.data.ChallengeBuilder;
-import com.jaysan1292.groupproject.data.Checkpoint;
-import com.jaysan1292.groupproject.data.CheckpointBuilder;
-import com.jaysan1292.groupproject.data.Player;
+import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.service.ScavengerService;
 import com.jaysan1292.groupproject.service.db.PlayerManager;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+
+import javax.ws.rs.core.MediaType;
 
 import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +49,6 @@ public class WebServiceTest {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /** Player tests */
-    @SuppressWarnings("ZeroLengthArrayAllocation")
     public static class PlayerAccessorTest {
         private final WebResource playerRes = resource.path("players");
         private final PlayerManager manager = new PlayerManager();
@@ -66,7 +65,26 @@ public class WebServiceTest {
 
         @Test
         public void testCreate() throws Exception {
+            log.info("Test: Add new player");
+            Player expected = new PlayerBuilder()
+                    .setLastName("Kim")
+                    .setFirstName("Taeyeon")
+                    .setStudentId("100548956")
+                    .build();
 
+            ClientResponse response = playerRes.type(MediaType.APPLICATION_JSON_TYPE)
+                                               .post(ClientResponse.class, expected.toString());
+
+            // HTTP status 201: CREATED
+            if (response.getStatus() != 201) {
+                throw new RuntimeException("Failed: HTTP code " + response.getStatus() + " returned, expected 201");
+            }
+
+            Player actual = new Player().readJSON(response.getEntity(String.class));
+
+            expected.setId(actual.getId());
+
+            assertEquals(expected, actual);
         }
 
         @Test
