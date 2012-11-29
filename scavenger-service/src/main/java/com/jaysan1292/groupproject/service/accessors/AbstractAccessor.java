@@ -84,7 +84,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         }
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id: [0-9]*}")
     public Response update(@PathParam("id") long id, String json) {
