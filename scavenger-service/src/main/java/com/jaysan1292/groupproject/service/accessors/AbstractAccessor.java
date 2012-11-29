@@ -104,25 +104,21 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id: [0-9]*}")
-    public Response delete(@PathParam("id") long id, String json) {
+    public Response delete(@PathParam("id") long id) {
         try {
-            T item = _cls.newInstance().readJSON(json);
+            T item = getManager().get(id);
 
             getManager().delete(item);
             return Response
                     .ok(SerializationUtils.serialize(item), MediaType.APPLICATION_JSON_TYPE)
                     .build();
-        } catch (ReflectiveOperationException e) {
-            return logErrorAndReturnGenericErrorResponse(e);
-        } catch (IOException e) {
-            return returnErrorResponse(e);
         } catch (GeneralServiceException e) {
             return returnErrorResponse(e);
         }
     }
 
-    protected static String encodeErrorMessage(Throwable e) {
-        return String.format(ERROR_TEMPLATE, StringEscapeUtils.escapeEcmaScript(e.getMessage()));
+    protected static String encodeErrorMessage(Throwable t) {
+        return String.format(ERROR_TEMPLATE, StringEscapeUtils.escapeEcmaScript(t.getMessage()));
     }
 
     protected static Response logErrorAndReturnGenericErrorResponse(Throwable t) {
@@ -133,7 +129,6 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     }
 
     protected static Response returnErrorResponse(Throwable t) {
-        Global.log.error(t.getMessage(), t);
         return Response
                 .status(Response.Status.BAD_REQUEST)
                 .entity(encodeErrorMessage(t))

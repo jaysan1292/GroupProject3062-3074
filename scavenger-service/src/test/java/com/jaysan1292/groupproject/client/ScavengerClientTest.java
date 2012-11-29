@@ -66,6 +66,8 @@ public class ScavengerClientTest {
 
             Player actual = client.createPlayer(expected);
 
+            expected.setId(actual.getId());
+
             assertEquals(expected, actual);
         }
 

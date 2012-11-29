@@ -1,10 +1,10 @@
 package com.jaysan1292.groupproject.client.accessors;
 
-import com.jaysan1292.groupproject.client.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 import javax.ws.rs.core.MediaType;
@@ -32,8 +32,9 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
     public T get(long id) throws GeneralServiceException {
         try {
             return _cls.newInstance().readJSON(_res.path(String.valueOf(id)).get(String.class));
+        } catch (UniformInterfaceException e) {
+            throw new GeneralServiceException(e);
         } catch (IOException e) {
-            Global.log.error(e.getMessage(), e);
             throw new GeneralServiceException(e);
         } catch (ReflectiveOperationException ignored) {}
         return null;
