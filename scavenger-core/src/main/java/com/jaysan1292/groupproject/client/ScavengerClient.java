@@ -1,7 +1,6 @@
 package com.jaysan1292.groupproject.client;
 
-import com.jaysan1292.groupproject.client.accessors.AbstractAccessor;
-import com.jaysan1292.groupproject.client.accessors.PlayerAccessor;
+import com.jaysan1292.groupproject.client.accessors.AbstractClientAccessor;
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.sun.jersey.api.client.Client;
@@ -9,16 +8,22 @@ import com.sun.jersey.api.client.WebResource;
 
 import java.net.URI;
 
+import static com.jaysan1292.groupproject.client.accessors.Accessors.getPlayerAccessor;
+import static com.jaysan1292.groupproject.client.accessors.Accessors.setHost;
+
 //TODO: Authentication
 
 /** @author Jason Recillo */
+@SuppressWarnings("MethodMayBeStatic")
 public class ScavengerClient {
     private final Client client;
     private final WebResource root;
 
     public ScavengerClient() {
         client = Client.create();
-        root = client.resource(getDefaultHost());
+        URI host = getDefaultHost();
+        root = client.resource(host);
+        setHost(host);
     }
 
     public ScavengerClient(URI host) {
@@ -28,13 +33,25 @@ public class ScavengerClient {
 
     //region /players
 
-    public Player get(long id) throws GeneralServiceException {
-        return new PlayerAccessor().get(id);
+    public Player getPlayer(long id) throws GeneralServiceException {
+        return getPlayerAccessor().get(id);
+    }
+
+    public Player updatePlayer(Player player) throws GeneralServiceException {
+        return getPlayerAccessor().update(player);
+    }
+
+    public Player createPlayer(Player player) throws GeneralServiceException {
+        return getPlayerAccessor().create(player);
+    }
+
+    public void deletePlayer(Player player) throws GeneralServiceException {
+        getPlayerAccessor().delete(player);
     }
 
     //endregion
 
     protected static URI getDefaultHost() {
-        return AbstractAccessor.getDefaultHost();
+        return AbstractClientAccessor.getDefaultHost();
     }
 }
