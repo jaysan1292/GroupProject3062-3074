@@ -3,6 +3,7 @@ package com.jaysan1292.groupproject.client.accessors;
 import com.jaysan1292.groupproject.client.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 public abstract class AbstractClientAccessor<T extends BaseEntity> {
     private final Class<T> _cls;
     private final WebResource _res;
+    protected static final Client client = Client.create();
 
     public AbstractClientAccessor(Class<T> _cls, WebResource _res) {
         this._cls = _cls;

@@ -18,12 +18,12 @@ import java.util.List;
  * @author Jason Recillo
  */
 public class Accessors {
-    private static ChallengeAccessor challenges;
-    private static CheckpointAccessor checkpoints;
-    private static PathAccessor paths;
+    private static ChallengeClientAccessor challenges;
+    private static CheckpointClientAccessor checkpoints;
+    private static PathClientAccessor paths;
     private static PlayerClientAccessor players;
-    private static ScavengerHuntAccessor scavengerHunts;
-    private static TeamAccessor teams;
+    private static ScavengerHuntClientAccessor scavengerHunts;
+    private static TeamClientAccessor teams;
 
     private static boolean _hostSet;
     private static URI _hostUri;
@@ -35,21 +35,21 @@ public class Accessors {
         _hostSet = true;
     }
 
-    public static ChallengeAccessor getChallengeAccessor() {
+    public static ChallengeClientAccessor getChallengeAccessor() {
         Preconditions.checkState(_hostSet, "Service host was not set!");
-        if (challenges == null) challenges = new ChallengeAccessor(_hostUri);
+        if (challenges == null) challenges = new ChallengeClientAccessor(_hostUri);
         return challenges;
     }
 
-    public static CheckpointAccessor getCheckpointAccessor() {
+    public static CheckpointClientAccessor getCheckpointAccessor() {
         Preconditions.checkState(_hostSet, "Service host was not set!");
-        if (checkpoints == null) checkpoints = new CheckpointAccessor(_hostUri);
+        if (checkpoints == null) checkpoints = new CheckpointClientAccessor(_hostUri);
         return checkpoints;
     }
 
-    public static PathAccessor getPathAccessor() {
+    public static PathClientAccessor getPathAccessor() {
         Preconditions.checkState(_hostSet, "Service host was not set!");
-        if (paths == null) paths = new PathAccessor(_hostUri);
+        if (paths == null) paths = new PathClientAccessor(_hostUri);
         return paths;
     }
 
@@ -59,15 +59,15 @@ public class Accessors {
         return players;
     }
 
-    public static ScavengerHuntAccessor getScavengerHuntAccessor() {
+    public static ScavengerHuntClientAccessor getScavengerHuntAccessor() {
         Preconditions.checkState(_hostSet, "Service host was not set!");
-        if (scavengerHunts == null) scavengerHunts = new ScavengerHuntAccessor(_hostUri);
+        if (scavengerHunts == null) scavengerHunts = new ScavengerHuntClientAccessor(_hostUri);
         return scavengerHunts;
     }
 
-    public static TeamAccessor getTeamAccessor() {
+    public static TeamClientAccessor getTeamAccessor() {
         Preconditions.checkState(_hostSet, "Service host was not set!");
-        if (teams == null) teams = new TeamAccessor(_hostUri);
+        if (teams == null) teams = new TeamClientAccessor(_hostUri);
         return teams;
     }
 
