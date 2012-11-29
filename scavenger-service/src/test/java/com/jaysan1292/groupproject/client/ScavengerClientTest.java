@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Created with IntelliJ IDEA.
@@ -69,7 +70,20 @@ public class ScavengerClientTest {
 
         @Test
         public void testUpdate() throws Exception {
-            //TODO: Auto-generated method stub
+            log.info("Test: Update player in service");
+            Player original = client.getPlayer(0);
+
+            Player expected = new PlayerBuilder(original)
+                    .setFirstName("JD")
+                    .build();
+
+            Player actual = client.updatePlayer(expected);
+
+            assertNotSame(original, actual);
+            assertEquals(expected, actual);
+
+            //revert changes
+            client.updatePlayer(original);
         }
 
         @Test
