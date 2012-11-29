@@ -6,9 +6,11 @@ import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -29,6 +31,8 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         this._res = _res;
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public T get(long id) throws GeneralServiceException {
         try {
             return _cls.newInstance().readJSON(_res.path(String.valueOf(id)).get(String.class));
@@ -38,6 +42,39 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         } catch (ReflectiveOperationException ignored) {}
         return null;
     }
+
+    public T create(T item) throws GeneralServiceException {
+        ClientResponse response = _res.entity(item.writeJSON())
+                                      .type(MediaType.APPLICATION_JSON_TYPE)
+                                      .post(ClientResponse.class);
+
+        int status = response.getStatus();
+
+        // HTTP status 201: CREATED
+        if (status != 201) {
+            throw new GeneralServiceException("Failed: HTTP code 201 expected, got " +
+                                              status + " instead.");
+        }
+
+        String json = response.getEntity(String.class);
+        try {
+            return _cls.newInstance().readJSON(json);
+        } catch (IOException e) {
+            throw new GeneralServiceException("Failed: Malformed JSON object returned: " + json);
+        } catch (ReflectiveOperationException e) {
+            throw new GeneralServiceException("Failed: Unknown error occurred:", e);
+        }
+    }
+
+    public void update(T item) throws GeneralServiceException {
+
+    }
+
+    public void delete(T item) throws GeneralServiceException {
+
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final List<URI> hosts = Lists.newArrayList(
             URI.create("http://jaysan1292.com:9000/service"),
