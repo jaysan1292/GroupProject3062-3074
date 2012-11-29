@@ -12,14 +12,14 @@ import java.net.URI;
  *
  * @author Jason Recillo
  */
-public class PlayerAccessor extends AbstractAccessor<Player> {
+public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
     private static final Client client = Client.create();
 
-    protected PlayerAccessor() {
+    protected PlayerClientAccessor() {
         super(Player.class, client.resource(getDefaultHost()).path("players"));
     }
 
-    protected PlayerAccessor(URI host) {
+    protected PlayerClientAccessor(URI host) {
         super(Player.class, client.resource(host).path("players"));
     }
 }

@@ -22,11 +22,11 @@ import java.util.List;
  *
  * @author Jason Recillo
  */
-public abstract class AbstractAccessor<T extends BaseEntity> {
+public abstract class AbstractClientAccessor<T extends BaseEntity> {
     private final Class<T> _cls;
     private final WebResource _res;
 
-    public AbstractAccessor(Class<T> _cls, WebResource _res) {
+    public AbstractClientAccessor(Class<T> _cls, WebResource _res) {
         this._cls = _cls;
         this._res = _res;
     }
@@ -66,8 +66,28 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         }
     }
 
-    public void update(T item) throws GeneralServiceException {
+    public T update(T item) throws GeneralServiceException {
+        ClientResponse response = _res.path(String.valueOf(item.getId()))
+                                      .entity(item.writeJSON())
+                                      .type(MediaType.APPLICATION_JSON_TYPE)
+                                      .put(ClientResponse.class);
 
+        int status = response.getStatus();
+
+        // HTTP status 200: OK
+        if (status != 200) {
+            throw new GeneralServiceException("Failed: HTTP code 200 expected, got " +
+                                              status + " instead.");
+        }
+
+        String json = response.getEntity(String.class);
+        try {
+            return _cls.newInstance().readJSON(json);
+        } catch (IOException e) {
+            throw new GeneralServiceException("Failed: Malformed JSON objet returned: " + json);
+        } catch (ReflectiveOperationException e) {
+            throw new GeneralServiceException("Failed: Unknown error occurred:", e);
+        }
     }
 
     public void delete(T item) throws GeneralServiceException {
