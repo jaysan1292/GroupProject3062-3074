@@ -48,14 +48,23 @@ public class ScavengerClientTest {
                     .setStudentId("100123123")
                     .build();
 
-            Player actual = client.get(0);
+            Player actual = client.getPlayer(0);
 
             assertEquals(expected, actual);
         }
 
         @Test
         public void testCreate() throws Exception {
-            //TODO: Auto-generated method stub
+            log.info("Test: Create new player and send to service");
+            Player expected = new PlayerBuilder()
+                    .setLastName("Choi")
+                    .setFirstName("Sooyoung")
+                    .setStudentId("100145665")
+                    .build();
+
+            Player actual = client.createPlayer(expected);
+
+            assertEquals(expected, actual);
         }
 
         @Test
