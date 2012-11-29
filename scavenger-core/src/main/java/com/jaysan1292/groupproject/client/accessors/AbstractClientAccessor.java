@@ -84,14 +84,23 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
         try {
             return _cls.newInstance().readJSON(json);
         } catch (IOException e) {
-            throw new GeneralServiceException("Failed: Malformed JSON objet returned: " + json);
+            throw new GeneralServiceException("Failed: Malformed JSON object returned: " + json);
         } catch (ReflectiveOperationException e) {
             throw new GeneralServiceException("Failed: Unknown error occurred:", e);
         }
     }
 
     public void delete(T item) throws GeneralServiceException {
+        ClientResponse response = _res.path(String.valueOf(item.getId()))
+                                      .delete(ClientResponse.class);
 
+        int status = response.getStatus();
+
+        // HTTP status 200: OK
+        if (status != 200) {
+            throw new GeneralServiceException("Failed: HTTP code 200 expected, got " +
+                                              status + " instead.");
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
