@@ -33,7 +33,7 @@ public class WebServiceTest {
 
     @BeforeClass
     public static void setUpOnce() throws Exception {
-        log.info("Starting tests.");
+        log.info("Starting web service tests.");
         ScavengerService.start(new String[]{"--local", "--debug"});
 
         client = Client.create();
@@ -42,7 +42,7 @@ public class WebServiceTest {
 
     @AfterClass
     public static void tearDownOnce() throws Exception {
-        log.info("Tests finished!");
+        log.info("Web service tests finished!");
         ScavengerService.stop();
     }
 

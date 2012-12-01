@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /** @author Jason Recillo */
 public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
     public static final String TABLE_NAME = "scavengerhunt_t";
@@ -53,6 +55,7 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
     }
 
     protected long doInsert(ScavengerHunt item) throws SQLException {
+        validate(item);
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        PATH_COLUMN + ", " +
                        TEAM_COLUMN + ", " +
@@ -68,6 +71,7 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
     }
 
     protected void doUpdate(ScavengerHunt item) throws SQLException {
+        validate(item);
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        PATH_COLUMN + "=?, " +
                        TEAM_COLUMN + "=?, " +
@@ -86,5 +90,13 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
         runner.update(query,
                       item.getId());
+    }
+
+    private static void validate(ScavengerHunt s) {
+        // Ensure that team and path are valid; i.e., make sure they exist in the database
+        checkArgument(s.getTeam().getId() != -1);
+        checkArgument(s.getPath().getId() != -1);
+        checkArgument(s.getStartTime().isBefore(s.getFinishTime()),
+                      "Start time of scavenger hunt must be before the finish time.");
     }
 }

@@ -70,7 +70,7 @@ public final class ScavengerHunt extends BaseEntity {
         return finishTime;
     }
 
-    protected void setScavengerHuntId(long scavengerHuntId) {
+    public void setScavengerHuntId(long scavengerHuntId) {
         this.scavengerHuntId = scavengerHuntId;
     }
 
@@ -82,14 +82,15 @@ public final class ScavengerHunt extends BaseEntity {
         this.path = path;
     }
 
-    protected void setStartTime(DateTime startTime) {
+    public void setStartTime(DateTime startTime) {
         this.startTime = startTime;
     }
 
-    protected void setFinishTime(DateTime finishTime) {
+    public void setFinishTime(DateTime finishTime) {
         this.finishTime = finishTime;
     }
-//endregion JavaBean
+
+    //endregion JavaBean
 
     @Override
     public boolean equals(Object obj) {

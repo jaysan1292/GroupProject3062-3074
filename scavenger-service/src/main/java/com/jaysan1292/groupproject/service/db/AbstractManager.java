@@ -15,6 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /** @author Jason Recillo */
 public abstract class AbstractManager<T extends BaseEntity> {
     protected static final ObjectMapper mapper = new ObjectMapper();
@@ -75,6 +78,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
      * @throws GeneralServiceException
      */
     public T get(long id) throws GeneralServiceException {
+        checkArgument(id >= 0, "ID must be non-negative.");
         T item;
         try {
             synchronized (lock) {
@@ -125,6 +129,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
      * @throws GeneralServiceException
      */
     public long insert(T item) throws GeneralServiceException {
+        checkNotNull(item);
         try {
             synchronized (lock) {
                 return doInsert(item);
@@ -135,6 +140,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
     }
 
     public void update(T item) throws GeneralServiceException {
+        checkNotNull(item);
         try {
             synchronized (lock) {
                 doUpdate(item);
@@ -145,6 +151,7 @@ public abstract class AbstractManager<T extends BaseEntity> {
     }
 
     public void delete(T item) throws GeneralServiceException {
+        checkNotNull(item);
         try {
             synchronized (lock) {
                 doDelete(item);

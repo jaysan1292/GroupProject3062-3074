@@ -60,7 +60,6 @@ public class DatabaseTest {
         private final PlayerManager manager = new PlayerManager();
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single player");
             Player expected = new PlayerBuilder()
@@ -76,7 +75,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a player");
             Player original = manager.get(0);
@@ -93,18 +91,17 @@ public class DatabaseTest {
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
-            // Other tests will depend on an unchanged databse so revert changes here :p
+            // Other tests will depend on an unchanged database so revert changes here :p
             manager.update(original);
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new player");
 
             Player expected = new PlayerBuilder()
-                    .setFirstName("John")
-                    .setLastName("Smith")
+                    .setLastName("Jung")
+                    .setFirstName("Sooyeon")
                     .setStudentId("123456789")
                     .build();
 
@@ -121,7 +118,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing player");
 
@@ -147,6 +143,33 @@ public class DatabaseTest {
 
             throw new Exception("Delete player failed.");
         }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non-existent player");
+            manager.get(100);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testUpdateBadData() throws Exception {
+            log.info("Test: Update player with invalid data");
+            Player player = manager.get(0);
+            player.setStudentNumber("1"); //student number must be 9 digits
+
+            manager.update(player);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testInsertBadData() throws Exception {
+            log.info("Test: Insert player with invalid data");
+            Player player = new PlayerBuilder()
+                    .setLastName("Gong")
+                    .setFirstName("Minji")
+                    .setStudentId("123") //invalid
+                    .build();
+
+            manager.insert(player);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +178,6 @@ public class DatabaseTest {
         private final TeamManager manager = new TeamManager();
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single team");
             Team expected = new TeamBuilder()
@@ -182,7 +204,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update existing team");
             final Team original = manager.get(0);
@@ -211,7 +232,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new team");
 
@@ -247,14 +267,14 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing team");
 
             // Create a new team for use in this test
             Team toDelete = new TeamBuilder()
-                    .setTeamMembers(new HashMap<Long, Player>(1) {{
+                    .setTeamMembers(new HashMap<Long, Player>(2) {{
                         put(1L, new PlayerManager().get(1));
+                        put(2L, new PlayerManager().get(2));
                     }})
                     .build();
             long id = manager.insert(toDelete);
@@ -272,6 +292,36 @@ public class DatabaseTest {
             }
 
             throw new Exception("Delete team failed.");
+        }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non existing team");
+            manager.get(100);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testUpdateBadData() throws Exception {
+            log.info("Test: Update team with bad data");
+            Team team = manager.get(0);
+            // Teams must have at least two members
+            team.setTeamMembers(new HashMap<Long, Player>() {{
+                new Player();
+            }});
+
+            manager.update(team);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testInsertBadData() throws Exception {
+            log.info("Test: Insert team with bad data");
+            Team team = new TeamBuilder()
+                    .setTeamMembers(new HashMap<Long, Player>() {{
+                        put(-1L, new Player());
+                    }})
+                    .build();
+
+            manager.insert(team);
         }
     }
 
@@ -309,7 +359,6 @@ public class DatabaseTest {
                         .build());
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get path from database");
             Path expected = new PathBuilder()
@@ -326,7 +375,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a path");
             final Path original = manager.get(0);
@@ -347,12 +395,11 @@ public class DatabaseTest {
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
-            // Other tests will depend on an unchanged databse so revert changes here :p
+            // Other tests will depend on an unchanged database so revert changes here :p
             manager.update(original);
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new path");
 
@@ -373,7 +420,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing path");
 
@@ -399,8 +445,18 @@ public class DatabaseTest {
                 return;
             }
 
-            throw new Exception("Delete team failed.");
+            throw new Exception("Delete path failed.");
         }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non-existing path");
+            manager.get(100);
+        }
+
+        public void testUpdateBadData() throws Exception { /* ignore */ }
+
+        public void testInsertBadData() throws Exception { /* ignore */ }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +478,6 @@ public class DatabaseTest {
                         .build());
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get checkpoint from database");
             Checkpoint expected = new CheckpointBuilder()
@@ -438,7 +493,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a checkpoint");
             Checkpoint original = manager.get(0);
@@ -455,12 +509,11 @@ public class DatabaseTest {
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
-            // Other tests will depend on an unchanged databse so revert changes here :p
+            // Other tests will depend on an unchanged database so revert changes here :p
             manager.update(original);
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new checkpoint");
 
@@ -480,7 +533,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing checkpoint");
 
@@ -504,7 +556,35 @@ public class DatabaseTest {
                 return;
             }
 
-            throw new Exception("Delete team failed.");
+            throw new Exception("Delete checkpoint failed.");
+        }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non-existing checkpoint");
+            manager.get(100);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testUpdateBadData() throws Exception {
+            log.info("Test: Update checkpoint with bad data");
+            Checkpoint checkpoint = manager.get(0);
+            checkpoint.setLatitude(-107.123584f);
+            checkpoint.setLongitude(188.185545f);
+
+            manager.update(checkpoint);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testInsertBadData() throws Exception {
+            log.info("Test: Create new checkpoint with bad data");
+            Checkpoint checkpoint = new CheckpointBuilder()
+                    .setLatitude(-107.123584f)
+                    .setLongitude(188.185545f)
+                    .setChallenge(new ChallengeManager().get(0))
+                    .build();
+
+            manager.insert(checkpoint);
         }
     }
 
@@ -514,7 +594,6 @@ public class DatabaseTest {
         private final ChallengeManager manager = new ChallengeManager();
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single challenge");
             Challenge expected = new ChallengeBuilder()
@@ -528,7 +607,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a challenge");
             Challenge original = manager.get(0);
@@ -544,12 +622,11 @@ public class DatabaseTest {
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
-            // Other tests will depend on an unchanged databse so revert changes here :p
+            // Other tests will depend on an unchanged database so revert changes here :p
             manager.update(original);
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new challenge");
 
@@ -567,7 +644,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing challenge");
 
@@ -591,6 +667,16 @@ public class DatabaseTest {
 
             throw new Exception("Delete challenge failed.");
         }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non-existing challenge");
+            manager.get(100);
+        }
+
+        public void testUpdateBadData() throws Exception { /* ignore */ }
+
+        public void testInsertBadData() throws Exception { /* ignore */ }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,7 +687,6 @@ public class DatabaseTest {
         private final TeamManager teams = new TeamManager();
 
         @Test
-        @Override
         public void testGet() throws Exception {
             log.info("Test: Get single scavenger hunt");
             ScavengerHunt expected = new ScavengerHuntBuilder()
@@ -620,7 +705,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testUpdate() throws Exception {
             log.info("Test: Update a scavenger hunt");
             ScavengerHunt original = manager.get(0);
@@ -637,12 +721,11 @@ public class DatabaseTest {
             assertNotSame(original, actual);
             assertEquals(expected, actual);
 
-            // Other tests will depend on an unchanged databse so revert changes here :p
+            // Other tests will depend on an unchanged database so revert changes here :p
             manager.update(original);
         }
 
         @Test
-        @Override
         public void testInsert() throws Exception {
             log.info("Test: Create new scavenger hunt");
 
@@ -665,7 +748,6 @@ public class DatabaseTest {
         }
 
         @Test
-        @Override
         public void testDelete() throws Exception {
             log.info("Test: Delete existing scavenger hunt");
 
@@ -694,6 +776,37 @@ public class DatabaseTest {
 
             throw new Exception("Delete scavenger hunt failed.");
         }
+
+        @Test(expected = GeneralServiceException.class)
+        public void testGetNonExisting() throws Exception {
+            log.info("Test: Get non-existing scavenger hunt");
+            manager.get(100);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testUpdateBadData() throws Exception {
+            log.info("Test: Update existing scavenger hunt with bad data");
+            ScavengerHunt sh = manager.get(0);
+
+            // Start time must be before finish time
+            sh.setStartTime(new DateTime(2012, 12, 3, 14, 0));
+            sh.setFinishTime(new DateTime(2012, 12, 3, 13, 0));
+
+            manager.update(sh);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testInsertBadData() throws Exception {
+            log.info("Test: Create new scavenger hunt with bad data");
+            ScavengerHunt sh = new ScavengerHuntBuilder()
+                    .setPath(new PathManager().get(0))
+                    .setTeam(new TeamManager().get(0))
+                    .setStartTime(new DateTime(2012, 12, 3, 14, 0))
+                    .setFinishTime(new DateTime(2012, 12, 3, 13, 0))
+                    .build();
+
+            manager.insert(sh);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -707,5 +820,11 @@ public class DatabaseTest {
         public void testInsert() throws Exception;
 
         public void testDelete() throws Exception;
+
+        public void testGetNonExisting() throws Exception;
+
+        public void testUpdateBadData() throws Exception;
+
+        public void testInsertBadData() throws Exception;
     }
 }

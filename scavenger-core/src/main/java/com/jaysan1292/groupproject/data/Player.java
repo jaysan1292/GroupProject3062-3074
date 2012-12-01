@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /** @author Jason Recillo */
 public class Player extends BaseEntity {
     public static final Player INVALID = new Player(-1, "(null)", "(null)", "(null)");
+
     /** The player's ID. Corresponds with the ID for this entry in the database. */
     private long playerId;
 
@@ -55,19 +56,19 @@ public class Player extends BaseEntity {
         return lastName;
     }
 
-    protected void setPlayerId(long playerId) {
+    public void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
 
-    protected void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    protected void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    protected void setStudentNumber(String studentNumber) {
+    public void setStudentNumber(String studentNumber) {
         this.studentNumber = studentNumber;
     }
 

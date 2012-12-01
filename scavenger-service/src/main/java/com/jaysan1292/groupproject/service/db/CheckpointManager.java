@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class CheckpointManager extends AbstractManager<Checkpoint> {
     private static final String TABLE_NAME = "checkpoint_t";
     private static final String ID_COLUMN = "checkpoint_id";
@@ -45,6 +47,7 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
     }
 
     protected long doInsert(Checkpoint item) throws SQLException {
+        validate(item);
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        LATITUDE_COLUMN + ", " +
                        LONGITUDE_COLUMN + ", " +
@@ -57,6 +60,7 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
     }
 
     protected void doUpdate(Checkpoint item) throws SQLException {
+        validate(item);
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        LATITUDE_COLUMN + "=?, " +
                        LONGITUDE_COLUMN + "=?, " +
@@ -73,5 +77,16 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
         runner.update(query,
                       item.getId());
+    }
+
+    private static void validate(Checkpoint c) {
+        // latitude ranges from -90 (south pole) to 90 (north pole)
+        // longitude ranges from -180 to 180, with 0 being the Prime Meridian
+        checkArgument((c.getLatitude() >= -90f) && (c.getLatitude() <= 90f),
+                      "Invalid coordinates received. Latitude must lie within the range " +
+                      "-90 to 90. Got %s instead.", c.getLatitude());
+        checkArgument((c.getLongitude() >= -180f) && (c.getLongitude() <= 180f),
+                      "Invalid coordinates recieved. Longitude must lie within the range " +
+                      "-180 to 180. Got %s instead.", c.getLongitude());
     }
 }

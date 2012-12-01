@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class TeamManager extends AbstractManager<Team> {
     public static final String TABLE_NAME = "team_t";
     public static final String ID_COLUMN = "team_id";
@@ -49,6 +51,8 @@ public class TeamManager extends AbstractManager<Team> {
     }
 
     protected long doInsert(Team item) throws SQLException {
+        checkArgument(item.isValid());
+
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        PLAYER_COLUMN + ") VALUES (?)";
         return runner.insert(query,
@@ -57,6 +61,8 @@ public class TeamManager extends AbstractManager<Team> {
     }
 
     protected void doUpdate(Team item) throws SQLException {
+        checkArgument(item.isValid());
+
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        PLAYER_COLUMN + "=? " +
                        "WHERE " + ID_COLUMN + "=?";

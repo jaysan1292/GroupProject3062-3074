@@ -7,8 +7,12 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class PlayerManager extends AbstractManager<Player> {
+    private static final Pattern STUDENT_NUMBER_REGEX = Pattern.compile("([0-9]{9})");
     private static final String TABLE_NAME = "player_t";
     private static final String ID_COLUMN = "player_id";
     private static final String FIRST_NAME_COLUMN = "first_name";
@@ -37,6 +41,8 @@ public class PlayerManager extends AbstractManager<Player> {
     }
 
     protected long doInsert(Player item) throws SQLException {
+        validate(item);
+
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        FIRST_NAME_COLUMN + ", " +
                        LAST_NAME_COLUMN + ", " +
@@ -55,6 +61,8 @@ public class PlayerManager extends AbstractManager<Player> {
     }
 
     protected void doUpdate(Player item) throws SQLException {
+        validate(item);
+
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        FIRST_NAME_COLUMN + "=?, " +
                        LAST_NAME_COLUMN + "=?, " +
@@ -71,5 +79,11 @@ public class PlayerManager extends AbstractManager<Player> {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
         runner.update(query,
                       item.getId());
+    }
+
+    private static void validate(Player p) {
+        checkArgument(STUDENT_NUMBER_REGEX.matcher(p.getStudentNumber()).matches(),
+                      "Student number must be 9 numerical digits only, got %s instead.",
+                      p.getStudentNumber());
     }
 }

@@ -25,9 +25,11 @@ import static org.junit.Assert.assertNotSame;
 public class ScavengerClientTest {
     private static ScavengerClient client;
 
+    private ScavengerClientTest() {}
+
     @BeforeClass
     public static void setUpService() throws Exception {
-        log.info("Starting tests.");
+        log.info("Starting web service client tests.");
         ScavengerService.start(new String[]{"--local", "--debug"});
 
         client = new ScavengerClient();
@@ -35,7 +37,7 @@ public class ScavengerClientTest {
 
     @AfterClass
     public static void tearDownService() throws Exception {
-        log.info("Tests finished!");
+        log.info("Web service client tests finished!");
         ScavengerService.stop();
     }
 
