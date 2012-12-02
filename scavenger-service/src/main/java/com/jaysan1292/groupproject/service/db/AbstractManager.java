@@ -1,6 +1,5 @@
 package com.jaysan1292.groupproject.service.db;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
@@ -19,7 +18,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** @author Jason Recillo */
 public abstract class AbstractManager<T extends BaseEntity> {
-    protected static final ObjectMapper mapper = new ObjectMapper();
     protected static final QueryRunner runner = new QueryRunner(DatabaseHelper.getDataSource());
     private static final Object lock = new Object();
     private String _itemName;
