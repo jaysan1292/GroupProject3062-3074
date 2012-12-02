@@ -51,6 +51,15 @@ public class WebServiceTest {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static class AuthTest {
+        @Test
+        public void testAuthorizeAdmin() throws Exception {
+            Player admin = new Player().readJSON(resource.path("players/5").get(String.class));
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     /** Player tests */
     public static class PlayerAccessorTest {
         private final WebResource playerRes = resource.path("players");

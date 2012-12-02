@@ -20,11 +20,12 @@ import java.io.IOException;
 public abstract class AbstractClientAccessor<T extends BaseEntity> {
     private final Class<T> _cls;
     private final WebResource _res;
-    protected static final Client client = Client.create();
+    protected final Client client;
 
-    public AbstractClientAccessor(Class<T> _cls, WebResource _res) {
-        this._cls = _cls;
-        this._res = _res;
+    public AbstractClientAccessor(Class<T> cls, Client client, WebResource res) {
+        this._cls = cls;
+        this._res = res;
+        this.client = client;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

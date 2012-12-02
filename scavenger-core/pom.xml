@@ -13,21 +13,4 @@
     <name>Core</name>
     <artifactId>scavenger-core</artifactId>
     <packaging>jar</packaging>
-    <!--<build>-->
-    <!--<plugins>-->
-    <!--<plugin>-->
-    <!--<groupId>org.codehaus.mojo</groupId>-->
-    <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-    <!--<version>1.7</version>-->
-    <!--<executions>-->
-    <!--<execution>-->
-    <!--&lt;!&ndash;overriding parent configuration&ndash;&gt;-->
-    <!--<id>copy-core-sources</id>-->
-    <!--<phase>none</phase>-->
-    <!--</execution>-->
-    <!--</executions>-->
-    <!--<inherited>true</inherited>-->
-    <!--</plugin>-->
-    <!--</plugins>-->
-    <!--</build>-->
 </project>

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /** @author Jason Recillo */
 public class Player extends BaseEntity {
-    public static final Player INVALID = new Player(-1, "(null)", "(null)", "(null)");
+    public static final Player INVALID = new Player(-1, "(null)", "(null)", "(null)", "(null)", false);
 
     /** The player's ID. Corresponds with the ID for this entry in the database. */
     private long playerId;
@@ -19,19 +19,29 @@ public class Player extends BaseEntity {
     /** The student's GBC student ID. */
     private String studentNumber;
 
+    /** The user's password, MD5 hashed. (NEVER STORE PLAIN PASSWORD) */
+    private String password;
+
+    /** Whether or not this user is an admin or not */
+    private boolean admin;
+
     public Player() {
         this(INVALID);
     }
 
-    public Player(long pid, String fn, String ln, String sid) {
-        playerId = pid;
-        studentNumber = sid;
-        firstName = fn;
-        lastName = ln;
+    public Player(long playerId, String firstName, String lastName,
+                  String studentNumber, String password, boolean admin) {
+        this.playerId = playerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.studentNumber = studentNumber;
+        this.password = password;
+        this.admin = admin;
     }
 
     public Player(Player other) {
-        this(other.playerId, other.firstName, other.lastName, other.studentNumber);
+        this(other.playerId, other.firstName, other.lastName,
+             other.studentNumber, other.password, other.admin);
     }
 
     //region JavaBean
@@ -56,6 +66,16 @@ public class Player extends BaseEntity {
         return lastName;
     }
 
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonIgnore
+    public boolean isAdmin() {
+        return admin;
+    }
+
     public void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
@@ -70,6 +90,14 @@ public class Player extends BaseEntity {
 
     public void setStudentNumber(String studentNumber) {
         this.studentNumber = studentNumber;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     //endregion JavaBean
@@ -87,7 +115,9 @@ public class Player extends BaseEntity {
         return (playerId == other.playerId) &&
                (studentNumber.equals(other.studentNumber)) &&
                (firstName.equals(other.firstName)) &&
-               (lastName.equals(other.lastName));
+               (lastName.equals(other.lastName)) &&
+               (password.equals(other.password)) &&
+               (admin == other.admin);
     }
 
     @Override
@@ -97,6 +127,8 @@ public class Player extends BaseEntity {
                 .append(studentNumber)
                 .append(firstName)
                 .append(lastName)
+                .append(password)
+                .append(admin)
                 .toHashCode();
     }
 }

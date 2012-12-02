@@ -1,5 +1,7 @@
 package com.jaysan1292.groupproject.data;
 
+import com.jaysan1292.groupproject.service.security.EncryptionUtils;
+
 /** @author Jason Recillo */
 public class PlayerBuilder extends AbstractBuilder<Player> {
     private Player player;
@@ -37,6 +39,21 @@ public class PlayerBuilder extends AbstractBuilder<Player> {
 
     public PlayerBuilder setStudentId(String studentId) {
         player.setStudentNumber(studentId);
+        return this;
+    }
+
+    public PlayerBuilder setPassword(String encryptedPassword) {
+        player.setPassword(encryptedPassword);
+        return this;
+    }
+
+    public PlayerBuilder setPasswordUnencrypted(String plainPassword) {
+        player.setPassword(EncryptionUtils.encryptPassword(plainPassword));
+        return this;
+    }
+
+    public PlayerBuilder setAdmin(boolean admin) {
+        player.setAdmin(admin);
         return this;
     }
 }

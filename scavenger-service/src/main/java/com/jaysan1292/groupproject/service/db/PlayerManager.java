@@ -18,6 +18,8 @@ public class PlayerManager extends AbstractManager<Player> {
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String STUDENT_NUMBER_COLUMN = "student_number";
+    private static final String PASSWORD_COLUMN = "password";
+    private static final String ADMIN_COLUMN = "administrator";
 
     public PlayerManager() {
         super(Player.class);
@@ -37,6 +39,8 @@ public class PlayerManager extends AbstractManager<Player> {
                 .setFirstName(rs.getString(FIRST_NAME_COLUMN))
                 .setLastName(rs.getString(LAST_NAME_COLUMN))
                 .setStudentId(rs.getString(STUDENT_NUMBER_COLUMN))
+                .setPassword(rs.getString(PASSWORD_COLUMN))
+                .setAdmin(rs.getBoolean(ADMIN_COLUMN))
                 .build();
     }
 
@@ -46,7 +50,9 @@ public class PlayerManager extends AbstractManager<Player> {
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        FIRST_NAME_COLUMN + ", " +
                        LAST_NAME_COLUMN + ", " +
-                       STUDENT_NUMBER_COLUMN + ") VALUES (?, ?, ?)";
+                       STUDENT_NUMBER_COLUMN + ", " +
+                       PASSWORD_COLUMN + ", " +
+                       ADMIN_COLUMN + ") VALUES (?, ?, ?, ?, ?)";
 
         /*
          * For some reason, using ScalarHandler<Long> causes ClassCastException, as the default
@@ -57,7 +63,9 @@ public class PlayerManager extends AbstractManager<Player> {
                              new ScalarHandler<BigDecimal>(1),
                              item.getFirstName(),
                              item.getLastName(),
-                             item.getStudentNumber()).longValue();
+                             item.getStudentNumber(),
+                             item.getPassword(),
+                             item.isAdmin()).longValue();
     }
 
     protected void doUpdate(Player item) throws SQLException {
@@ -66,12 +74,16 @@ public class PlayerManager extends AbstractManager<Player> {
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        FIRST_NAME_COLUMN + "=?, " +
                        LAST_NAME_COLUMN + "=?, " +
-                       STUDENT_NUMBER_COLUMN + "=? " +
+                       STUDENT_NUMBER_COLUMN + "=?, " +
+                       PASSWORD_COLUMN + "=?, " +
+                       ADMIN_COLUMN + "=? " +
                        "WHERE " + ID_COLUMN + "=?";
         runner.update(query,
                       item.getFirstName(),
                       item.getLastName(),
                       item.getStudentNumber(),
+                      item.getPassword(),
+                      item.isAdmin(),
                       item.getId());
     }
 
@@ -79,5 +91,14 @@ public class PlayerManager extends AbstractManager<Player> {
         checkArgument(STUDENT_NUMBER_REGEX.matcher(p.getStudentNumber()).matches(),
                       "Student number must be 9 numerical digits only, got %s instead.",
                       p.getStudentNumber());
+        checkArgument(p.getPassword().length() == 32, "Passwords going into the database must be " +
+                                                      "MD5 hashed into a 32 charater string.");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Player getPlayer(String studentNumber) throws SQLException {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + STUDENT_NUMBER_COLUMN + "=?";
+        return runner.query(query, getResultSetHandler(), studentNumber);
     }
 }

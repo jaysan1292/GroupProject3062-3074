@@ -31,8 +31,7 @@ public class ScavengerClientTest {
     public static void setUpService() throws Exception {
         log.info("Starting web service client tests.");
         ScavengerService.start(new String[]{"--local", "--debug"});
-
-        client = new ScavengerClient();
+        client = new ScavengerClient("999999999", "admin");
     }
 
     @AfterClass

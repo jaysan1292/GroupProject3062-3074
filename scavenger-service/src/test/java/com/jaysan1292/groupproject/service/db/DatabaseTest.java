@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.jaysan1292.groupproject.Global.log;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
 
 /**
  * Created with IntelliJ IDEA.
