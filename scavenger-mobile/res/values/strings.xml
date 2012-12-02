@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">mobile-client</string>
+    <string name="app_name">GBC Scavenger Hunt</string>
+    <string name="login_username_hint">Student ID</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_signin_label">Sign in</string>
 </resources>
