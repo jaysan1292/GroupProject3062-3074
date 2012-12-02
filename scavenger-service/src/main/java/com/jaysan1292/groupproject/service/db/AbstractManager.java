@@ -2,7 +2,6 @@ package com.jaysan1292.groupproject.service.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
@@ -114,8 +113,6 @@ public abstract class AbstractManager<T extends BaseEntity> {
             throw new RuntimeException(e.getMessage(), e);
         }
 
-        Global.log.debug("Retrieved all " + _itemName + "s.");
-
         return items;
     }
 
@@ -150,11 +147,22 @@ public abstract class AbstractManager<T extends BaseEntity> {
         }
     }
 
+    public void delete(long id) throws GeneralServiceException {
+        checkArgument(id >= 0);
+        try {
+            synchronized (lock) {
+                doDelete(id);
+            }
+        } catch (SQLException e) {
+            throw new GeneralServiceException("There was a problem deleting the given item from the database.", e);
+        }
+    }
+
     public void delete(T item) throws GeneralServiceException {
         checkNotNull(item);
         try {
             synchronized (lock) {
-                doDelete(item);
+                doDelete(item.getId());
             }
         } catch (SQLException e) {
             throw new GeneralServiceException("There was a problem deleting the given item from the database.", e);
@@ -165,5 +173,8 @@ public abstract class AbstractManager<T extends BaseEntity> {
 
     protected abstract void doUpdate(T item) throws SQLException;
 
-    protected abstract void doDelete(T item) throws SQLException;
+    private void doDelete(long id) throws SQLException {
+        String query = "DELETE FROM " + tableName() + " WHERE " + idColumn() + "=?";
+        runner.update(query, id);
+    }
 }

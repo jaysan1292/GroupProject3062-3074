@@ -73,12 +73,6 @@ public class CheckpointManager extends AbstractManager<Checkpoint> {
                       item.getId());
     }
 
-    protected void doDelete(Checkpoint item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
-
     private static void validate(Checkpoint c) {
         // latitude ranges from -90 (south pole) to 90 (north pole)
         // longitude ranges from -180 to 180, with 0 being the Prime Meridian

@@ -75,12 +75,6 @@ public class PlayerManager extends AbstractManager<Player> {
                       item.getId());
     }
 
-    protected void doDelete(Player item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
-
     private static void validate(Player p) {
         checkArgument(STUDENT_NUMBER_REGEX.matcher(p.getStudentNumber()).matches(),
                       "Student number must be 9 numerical digits only, got %s instead.",

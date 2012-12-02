@@ -29,7 +29,7 @@ public class ScavengerService {
     private static final java.util.logging.Logger JUL_SUN_LOGGER = java.util.logging.Logger.getLogger("com.sun");
 
     static {
-        SUN_LOGGER.setLevel(Level.OFF);
+        SUN_LOGGER.setLevel(Level.ERROR);
         JUL_SUN_LOGGER.setLevel(java.util.logging.Level.SEVERE);
     }
 
@@ -47,12 +47,14 @@ public class ScavengerService {
 
         try {
             Global.log.info("Starting web service...");
-            threadSelector = startServer(args);
             DatabaseHelper.initDatabase();
-            Global.log.info(String.format("Service is now running, with WADL available at %sapplication.wadl", BASE_URI));
+            threadSelector = startServer(args);
+            Global.log.info(String.format("Service is now running, with WADL available at %s/application.wadl", BASE_URI));
         } catch (Exception e) {
             Global.log.info("An exception was thrown when starting the server. Shutting down...", e);
             _started = true; //stop() expects _started == true
+            //if initDatabase() threw the exception, threadSelector will be null
+            threadSelector = new SelectorThread();
             stop();
             System.exit(-1);
         }
@@ -93,7 +95,7 @@ public class ScavengerService {
         Logger.getLogger(ScanningResourceConfig.class.getName()).setLevel(Level.OFF);
 
         String host = getNetworkIP(Global.isLocalHost());
-        BASE_URI = UriBuilder.fromUri(String.format("http://%s/service/", host)).port(9000).build();
+        BASE_URI = UriBuilder.fromUri(String.format("http://%s/service", host)).port(9000).build();
         Map<String, String> initParams = new HashMap<String, String>();
 
         initParams.put(PackagesResourceConfig.PROPERTY_PACKAGES, "com.jaysan1292.groupproject");

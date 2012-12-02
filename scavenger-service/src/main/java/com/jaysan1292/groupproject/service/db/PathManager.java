@@ -71,10 +71,4 @@ public class PathManager extends AbstractManager<Path> {
                       item.getCheckpointString(),
                       item.getId());
     }
-
-    protected void doDelete(Path item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
 }

@@ -82,7 +82,9 @@ public class ScavengerClientTest {
                     .setFirstName("JD")
                     .build();
 
-            Player actual = client.updatePlayer(expected);
+            client.updatePlayer(expected);
+
+            Player actual = client.getPlayer(0);
 
             assertNotSame(original, actual);
             assertEquals(expected, actual);

@@ -46,10 +46,4 @@ public class ChallengeManager extends AbstractManager<Challenge> {
                       item.getChallengeText(),
                       item.getId());
     }
-
-    protected void doDelete(Challenge item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
 }

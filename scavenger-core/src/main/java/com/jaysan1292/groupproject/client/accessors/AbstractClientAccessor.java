@@ -52,8 +52,12 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
             throw new GeneralServiceException("Failed: HTTP code 201 expected, got " +
                                               status + " instead.");
         }
+        if (response.getLocation() == null) {
+            throw new GeneralServiceException("Failed: Server did not return the " +
+                                              "location of the created resource.");
+        }
 
-        String json = response.getEntity(String.class);
+        String json = client.resource(response.getLocation()).get(String.class);
         try {
             return _cls.newInstance().readJSON(json);
         } catch (IOException e) {
@@ -63,7 +67,7 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
         }
     }
 
-    public T update(T item) throws GeneralServiceException {
+    public void update(T item) throws GeneralServiceException {
         ClientResponse response = _res.path(String.valueOf(item.getId()))
                                       .entity(item.writeJSON())
                                       .type(MediaType.APPLICATION_JSON_TYPE)
@@ -71,19 +75,10 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
 
         int status = response.getStatus();
 
-        // HTTP status 200: OK
-        if (status != 200) {
-            throw new GeneralServiceException("Failed: HTTP code 200 expected, got " +
+        // HTTP status 204: NO CONTENT
+        if (status != 204) {
+            throw new GeneralServiceException("Failed: HTTP code 204 expected, got " +
                                               status + " instead.");
-        }
-
-        String json = response.getEntity(String.class);
-        try {
-            return _cls.newInstance().readJSON(json);
-        } catch (IOException e) {
-            throw new GeneralServiceException("Failed: Malformed JSON object returned: " + json);
-        } catch (ReflectiveOperationException e) {
-            throw new GeneralServiceException("Failed: Unknown error occurred:", e);
         }
     }
 
@@ -93,9 +88,9 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
 
         int status = response.getStatus();
 
-        // HTTP status 200: OK
-        if (status != 200) {
-            throw new GeneralServiceException("Failed: HTTP code 200 expected, got " +
+        // HTTP status 202: ACCEPTED
+        if (status != 202) {
+            throw new GeneralServiceException("Failed: HTTP code 202 expected, got " +
                                               status + " instead.");
         }
     }

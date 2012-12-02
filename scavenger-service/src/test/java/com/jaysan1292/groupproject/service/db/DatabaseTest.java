@@ -15,6 +15,7 @@ import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
@@ -363,10 +364,9 @@ public class DatabaseTest {
             log.info("Test: Get path from database");
             Path expected = new PathBuilder()
                     .setPathId(0)
-                    .setCheckpoints(new ArrayList<Checkpoint>(2) {{
-                        add(checkpoints.get(0));
-                        add(checkpoints.get(1));
-                    }})
+                    .setCheckpoints(Lists.newArrayList(
+                            checkpoints.get(0),
+                            checkpoints.get(1)))
                     .build();
 
             Path actual = manager.get(0);
@@ -377,15 +377,16 @@ public class DatabaseTest {
         @Test
         public void testUpdate() throws Exception {
             log.info("Test: Update a path");
-            final Path original = manager.get(0);
+            Path original = manager.get(0);
+
+            List<Checkpoint> cps = Lists.newArrayList();
+            for (Checkpoint checkpoint : original.getCheckpoints()) {
+                cps.add(checkpoint);
+            }
+            cps.add(cps.get(1));
 
             Path expected = new PathBuilder(original)
-                    .setCheckpoints(new ArrayList<Checkpoint>() {{
-                        for (Checkpoint checkpoint : original.getCheckpoints()) {
-                            add(checkpoint);
-                        }
-                        add(checkpoints.get(2));
-                    }})
+                    .setCheckpoints(cps)
                     .build();
 
             manager.update(expected);
@@ -404,10 +405,9 @@ public class DatabaseTest {
             log.info("Test: Create new path");
 
             Path expected = new PathBuilder()
-                    .setCheckpoints(new ArrayList<Checkpoint>() {{
-                        add(checkpoints.get(1));
-                        add(checkpoints.get(2));
-                    }})
+                    .setCheckpoints(Lists.newArrayList(
+                            checkpoints.get(1),
+                            checkpoints.get(2)))
                     .build();
 
             long id = manager.insert(expected);
@@ -425,11 +425,10 @@ public class DatabaseTest {
 
             // Create a new item for use in this test
             Path toDelete = new PathBuilder()
-                    .setCheckpoints(new ArrayList<Checkpoint>(2) {{
-                        add(checkpoints.get(0));
-                        add(checkpoints.get(1));
-                        add(checkpoints.get(2));
-                    }})
+                    .setCheckpoints(Lists.newArrayList(
+                            checkpoints.get(0),
+                            checkpoints.get(1),
+                            checkpoints.get(2)))
                     .build();
             long id = manager.insert(toDelete);
 

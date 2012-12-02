@@ -71,10 +71,13 @@ INSERT INTO
         (43.676130, -79.410492, 1),
         (43.6754555, -79.410492, 2);
 
-INSERT INTO path_t (checkpoints) VALUES ('0,1');
+INSERT INTO path_t (checkpoints) VALUES ('0,1'), ('0,2');
 
 INSERT INTO
     scavengerhunt_t (path,team,start_time,finish_time)
     VALUES (0, 0,
         TIMESTAMP('2012-11-27 10:00:00'),
-        TIMESTAMP('2012-11-27 16:00:00'));
+        TIMESTAMP('2012-11-27 16:00:00')),
+        (1, 1,
+            TIMESTAMP('2012-11-27 10:00:00'),
+            TIMESTAMP('2012-11-27 16:00:00'));

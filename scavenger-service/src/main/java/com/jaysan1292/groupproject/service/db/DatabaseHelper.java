@@ -32,6 +32,7 @@ public final class DatabaseHelper {
         // Clear database directory if exists
         removeDatabaseDirectory();
 
+        Global.log.debug("Creating database...");
         _dataSource = new EmbeddedDataSource();
         _dataSource.setDatabaseName(DB_NAME);
         _dataSource.setShutdownDatabase(null);

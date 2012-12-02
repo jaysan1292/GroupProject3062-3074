@@ -86,12 +86,6 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
                       item.getId());
     }
 
-    protected void doDelete(ScavengerHunt item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
-
     private static void validate(ScavengerHunt s) {
         // Ensure that team and path are valid; i.e., make sure they exist in the database
         checkArgument(s.getTeam().getId() != -1);

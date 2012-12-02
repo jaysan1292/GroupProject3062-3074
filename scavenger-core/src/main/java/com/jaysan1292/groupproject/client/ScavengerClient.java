@@ -35,8 +35,8 @@ public class ScavengerClient {
         return getPlayerAccessor().get(id);
     }
 
-    public Player updatePlayer(Player player) throws GeneralServiceException {
-        return getPlayerAccessor().update(player);
+    public void updatePlayer(Player player) throws GeneralServiceException {
+        getPlayerAccessor().update(player);
     }
 
     public Player createPlayer(Player player) throws GeneralServiceException {

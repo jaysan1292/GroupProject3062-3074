@@ -70,10 +70,4 @@ public class TeamManager extends AbstractManager<Team> {
                       item.getTeamPlayerString(),
                       item.getId());
     }
-
-    protected void doDelete(Team item) throws SQLException {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + "=?";
-        runner.update(query,
-                      item.getId());
-    }
 }

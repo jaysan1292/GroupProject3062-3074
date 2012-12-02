@@ -2,6 +2,7 @@ package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,7 +28,7 @@ public class Team extends BaseEntity {
 
     public Team(long teamId, Map<Long, Player> teamMembers) {
         this.teamId = teamId;
-        this.teamMembers = new HashMap<Long, Player>(teamMembers);
+        this.teamMembers = Maps.newHashMap(teamMembers);
     }
 
     public Team(Team other) {
