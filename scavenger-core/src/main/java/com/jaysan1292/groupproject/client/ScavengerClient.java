@@ -16,6 +16,8 @@ public class ScavengerClient {
     private final Client client;
     private final WebResource root;
 
+    private boolean administrator;
+
     public ScavengerClient() {
         this(null);
     }
@@ -36,6 +38,12 @@ public class ScavengerClient {
         }
         setHost(client, host);
         root = client.resource(host);
+
+        onCreate();
+    }
+
+    private void onCreate() {
+        //TODO: Check if admin
     }
 
     //region /players

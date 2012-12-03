@@ -17,6 +17,8 @@ To change this template use File | Settings | File Templates.
     <input type="text" id="username" name="username"/>
     <label for="password">Password</label>
     <input type="password" id="password" name="password"/>
+    <button type="submit">Submit</button>
+    <button type="reset">Clear</button>
 </form>
 </body>
 </html>
