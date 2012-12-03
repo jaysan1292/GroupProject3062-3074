@@ -332,6 +332,36 @@ public class DatabaseTest {
 
             manager.insert(team);
         }
+
+        @Test
+        public void testGetTeamForPlayer() throws Exception {
+            log.info("Test: Get team that contains a specific player");
+            final Player player = new PlayerBuilder()
+                    .setPlayerId(0)
+                    .setFirstName("Jason")
+                    .setLastName("Recillo")
+                    .setStudentId("100123123")
+                    .setPasswordUnencrypted("123456")
+                    .build();
+
+            Team expected = new TeamBuilder()
+                    .setTeamId(1)
+                    .setTeamMembers(new HashMap<Long, Player>() {{
+                        put(0L, player);
+                        put(3L, new PlayerBuilder()
+                                .setPlayerId(3)
+                                .setFirstName("Lincoln")
+                                .setLastName("Earlls")
+                                .setStudentId("100158465")
+                                .setPasswordUnencrypted("123456")
+                                .build());
+                    }})
+                    .build();
+
+            Team actual = manager.getTeam(player);
+
+            assertEquals(expected, actual);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
