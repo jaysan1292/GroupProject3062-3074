@@ -58,9 +58,6 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
      * <li>Administrators may access everything</li>
      * </ul>
      *
-     * @param level
-     * @param params
-     *
      * @throws AuthorizationException
      */
     protected void authorize(AuthorizationLevel level, Object... params) throws AuthorizationException {
