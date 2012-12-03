@@ -5,8 +5,10 @@ import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.data.JSONSerializable;
 import com.jaysan1292.groupproject.data.Player;
+import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.db.AbstractManager;
+import com.jaysan1292.groupproject.service.db.TeamManager;
 import com.jaysan1292.groupproject.service.security.AuthorizationException;
 import com.jaysan1292.groupproject.service.security.AuthorizationLevel;
 import com.jaysan1292.groupproject.service.security.EncryptionUtils;
@@ -70,10 +72,10 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         String credentials[] = AUTH_SPLIT.split(Base64.base64Decode(authHeader));
         try {
             // Check if username is correct
-            Player player = PlayerAccessor.manager.getPlayer(credentials[0]);
+            Player subject = PlayerAccessor.manager.getPlayer(credentials[0]);
 
             // Check if password is correct
-            if (!EncryptionUtils.checkPassword(credentials[1], player.getPassword())) {
+            if (!EncryptionUtils.checkPassword(credentials[1], subject.getPassword())) {
                 throw new AuthorizationException("Student ID or password incorrect");
             }
 
@@ -89,16 +91,32 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                     }
                 }
                 if (parMap.get("Class").equals(Player.class)) {
-                    if (parMap.get("ID").equals(player.getId())) {
+                    if (parMap.get("ID").equals(subject.getId())) {
                         // Players are allowed to look at their own information,
                         // so here authorization is successful
                         return;
+                    }
+                } else if (parMap.get("Class").equals(Team.class)) {
+                    try {
+                        Team subjectTeam = new TeamManager().getTeam(subject);
+                        if (parMap.get("ID").equals(subjectTeam.getId())) {
+                            // Players can look at their own team's information,
+                            // so here authorization is successful
+                            return;
+                        }
+                    } catch (GeneralServiceException e) {
+                        // The subject is not on any team and is therefore not authorized to
+                        // view any team information; however if the user is an administrator,
+                        // they are allowed to continue
+                        if (!subject.isAdmin()) {
+                            throw new AuthorizationException(e.getMessage(), e);
+                        }
                     }
                 }
             }
 
             // User's credentials check out, so now let's check their authorization level
-            if (!player.isAdmin() && (level == AuthorizationLevel.ADMINISTRATOR)) {
+            if (!subject.isAdmin() && (level == AuthorizationLevel.ADMINISTRATOR)) {
                 throw new AuthorizationException("User not authorized");
             }
         } catch (SQLException e) {
@@ -129,8 +147,14 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         try {
             if (_cls == Player.class) {
                 authorize(AuthorizationLevel.ADMINISTRATOR, Player.class, id);
+            } else if (_cls == Team.class) {
+                authorize(AuthorizationLevel.ADMINISTRATOR, Team.class, id);
+            } else {
+                authorize(AuthorizationLevel.ADMINISTRATOR);
             }
+
             T item = getManager().get(id);
+
             return Response
                     .ok(item.toString(), MediaType.APPLICATION_JSON_TYPE)
                     .build();

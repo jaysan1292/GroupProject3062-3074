@@ -109,7 +109,9 @@ public class TeamManager extends AbstractManager<Team> {
             throw new GeneralServiceException("The given player is not on any team: " +
                                               player.getId());
         } catch (SQLException e) {
-            throw new GeneralServiceException(e);
+            // Throw this all the way up to the accessor that started the original call;
+            // This will log the error and send the client a 500 Internal Server Error status
+            throw new RuntimeException(e);
         }
     }
 }
