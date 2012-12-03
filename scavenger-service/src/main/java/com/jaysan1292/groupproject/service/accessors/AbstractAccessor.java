@@ -74,7 +74,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
             Player subject = PlayerAccessor.manager.getPlayer(credentials[0]);
 
             // Check if password is correct
-            if (!EncryptionUtils.checkPassword(credentials[1], subject.getPassword())) {
+            if ((subject == null) || !EncryptionUtils.checkPassword(credentials[1], subject.getPassword())) {
                 throw new AuthorizationException("Student ID or password incorrect");
             }
 
@@ -89,11 +89,11 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                 Map<String, Object> parMap = Maps.newHashMap();
                 // Collect all params first
                 for (Object param : params) {
-                    if (param.getClass() == Class.class) {
+                    if (param instanceof Class) {
                         parMap.put("Class", param);
-                    } else if (param.getClass() == Long.class) {
+                    } else if (param instanceof Long) {
                         parMap.put("ID", param);
-                    } else if (param.getClass() == AuthorizationLevel.class) {
+                    } else if (param instanceof AuthorizationLevel) {
                         parMap.put("AuthLevel", param);
                     }
                 }
@@ -157,6 +157,11 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
         try {
             authorize(AuthorizationLevel.ADMINISTRATOR);
             List<T> items = Arrays.asList(getManager().getAll());
+
+            for (T item : items) {
+                cleanPassword(item);
+            }
+
             return Response
                     .ok(JSONSerializable.writeJSONArray(items), MediaType.APPLICATION_JSON_TYPE)
                     .build();
@@ -175,6 +180,8 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
             authorize(_cls, id);
 
             T item = getManager().get(id);
+
+            cleanPassword(item);
 
             return Response
                     .ok(item.toString(), MediaType.APPLICATION_JSON_TYPE)
@@ -297,6 +304,20 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     }
 
     protected abstract void doUpdate(T item, MultivaluedMap<String, String> newValues) throws GeneralServiceException;
+
+    private void cleanPassword(T item) {
+        if (item instanceof Player) {
+            ((Player) item).setPassword(null);
+        } else if (item instanceof Team) {
+            for (Player player : ((Team) item).getTeamMembers().values()) {
+                player.setPassword(null);
+            }
+        } else if (item instanceof ScavengerHunt) {
+            for (Player player : ((ScavengerHunt) item).getTeam().getTeamMembers().values()) {
+                player.setPassword(null);
+            }
+        }
+    }
 
     private static MultivaluedMap<String, String> multivaluedMapFromMap(Map<String, String> values) {
         MultivaluedMap<String, String> output = new MultivaluedMapImpl();

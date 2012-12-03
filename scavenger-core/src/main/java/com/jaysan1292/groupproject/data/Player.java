@@ -70,6 +70,7 @@ public class Player extends BaseEntity {
         return password;
     }
 
+    @JsonIgnore
     public boolean isAdmin() {
         return admin;
     }
@@ -94,6 +95,7 @@ public class Player extends BaseEntity {
         this.password = password;
     }
 
+    @JsonIgnore
     public void setAdmin(boolean admin) {
         this.admin = admin;
     }
