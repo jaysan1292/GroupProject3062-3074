@@ -144,6 +144,8 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                     parMap.get("AuthLevel").equals(AuthorizationLevel.MOBILE_USER)) {
                     return;
                 }
+            }
+            if (!subject.isAdmin()) {
                 throw new AuthorizationException("User not authorized.");
             }
         } catch (SQLException e) {
