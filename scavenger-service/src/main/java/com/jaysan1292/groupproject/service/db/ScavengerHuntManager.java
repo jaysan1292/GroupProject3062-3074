@@ -1,9 +1,12 @@
 package com.jaysan1292.groupproject.service.db;
 
+import com.google.common.collect.Maps;
 import com.jaysan1292.groupproject.Global;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.jaysan1292.groupproject.data.ScavengerHuntBuilder;
+import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.joda.time.DateTime;
 
@@ -11,6 +14,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -92,5 +96,38 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         checkArgument(s.getPath().getId() != -1);
         checkArgument(s.getStartTime().isBefore(s.getFinishTime()),
                       "Start time of scavenger hunt must be before the finish time.");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ScavengerHunt getScavengerHunt(Team team) throws GeneralServiceException {
+        String query = "SELECT " + ID_COLUMN + ", " + TEAM_COLUMN + " FROM " + TABLE_NAME;
+
+        // Get raw results from the database
+        try {
+            Map<Long, Long> results =
+                    runner.query(query, new ResultSetHandler<Map<Long, Long>>() {
+                        public Map<Long, Long> handle(ResultSet rs) throws SQLException {
+                            if (!rs.next()) return null;
+                            Map<Long, Long> m = Maps.newHashMap();
+                            do {
+                                m.put(rs.getLong(ID_COLUMN), rs.getLong(TEAM_COLUMN));
+                            } while (rs.next());
+                            return m;
+                        }
+                    });
+
+            for (Map.Entry<Long, Long> result : results.entrySet()) {
+                long teamId = result.getValue();
+                if (team.getId() == teamId) {
+                    return this.get(teamId);
+                }
+            }
+
+            throw new GeneralServiceException("The given team is not currently participating in " +
+                                              "a scavenger hunt: " + team.getId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
