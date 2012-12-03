@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
 User: Kazedayz
@@ -11,6 +12,11 @@ To change this template use File | Settings | File Templates.
     <title></title>
 </head>
 <body>
-
+<form method="post" action="<c:url value="/login"/>">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username"/>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password"/>
+</form>
 </body>
 </html>
