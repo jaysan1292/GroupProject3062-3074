@@ -155,7 +155,8 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
         try {
-            authorize(AuthorizationLevel.ADMINISTRATOR);
+            authorize();
+
             List<T> items = Arrays.asList(getManager().getAll());
 
             for (T item : items) {
@@ -188,7 +189,9 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                     .build();
         } catch (GeneralServiceException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity(errorResponse(e).getEntity())
+                           .entity(Response.status(Response.Status.BAD_REQUEST)
+                                           .entity(encodeErrorMessage(e))
+                                           .build().getEntity())
                            .build();
         } catch (AuthorizationException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -202,6 +205,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     public Response create(String json) {
         try {
             authorize();
+
             T item = _cls.newInstance().readJSON(json);
             String newid = String.valueOf(getManager().insert(item));
 
@@ -211,9 +215,13 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                                     .build())
                     .build();
         } catch (GeneralServiceException e) {
-            return errorResponse(e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(encodeErrorMessage(e))
+                           .build();
         } catch (IOException e) {
-            return errorResponse(e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(encodeErrorMessage(e))
+                           .build();
         } catch (AuthorizationException e) {
             return unauthorizedResponse(e);
         } catch (Exception e) {
@@ -227,6 +235,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     public Response update(@PathParam("id") long id, String json) {
         try {
             authorize();
+
             T item = getManager().get(id);
             if (item.equals(_cls.newInstance().readJSON(json))) {
                 return Response.notModified().build();
@@ -235,10 +244,12 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
             doUpdate(item, values);
             return Response.noContent().build();
         } catch (GeneralServiceException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                           .build();
         } catch (IOException e) {
             Global.log.error(e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .build();
         } catch (AuthorizationException e) {
             return unauthorizedResponse(e);
         } catch (Exception e) {
@@ -250,14 +261,16 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     @Path("/{id: [0-9]*}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response update(@PathParam("id") long id, MultivaluedMap<String, String> values) {
-        if (values.isEmpty()) return Response.notModified().build();
         try {
             authorize();
+
+            if (values.isEmpty()) return Response.notModified().build();
             T item = getManager().get(id);
             doUpdate(item, values);
             return Response.noContent().build();
         } catch (GeneralServiceException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                           .build();
         } catch (AuthorizationException e) {
             return unauthorizedResponse(e);
         } catch (Exception e) {
@@ -273,7 +286,9 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
             getManager().delete(id);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (GeneralServiceException e) {
-            return errorResponse(e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(encodeErrorMessage(e))
+                           .build();
         } catch (AuthorizationException e) {
             return unauthorizedResponse(e);
         } catch (Exception e) {
@@ -288,12 +303,6 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
     protected static Response logErrorAndReturnGenericErrorResponse(Throwable t) {
         Global.log.error(t.getMessage(), t);
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                       .build();
-    }
-
-    protected static Response errorResponse(Throwable t) {
-        return Response.status(Response.Status.BAD_REQUEST)
-                       .entity(encodeErrorMessage(t))
                        .build();
     }
 
