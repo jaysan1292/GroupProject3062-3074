@@ -116,7 +116,6 @@ public class Player extends BaseEntity {
                (studentNumber.equals(other.studentNumber)) &&
                (firstName.equals(other.firstName)) &&
                (lastName.equals(other.lastName)) &&
-               (password.equals(other.password)) &&
                (admin == other.admin);
     }
 
@@ -127,7 +126,6 @@ public class Player extends BaseEntity {
                 .append(studentNumber)
                 .append(firstName)
                 .append(lastName)
-                .append(password)
                 .append(admin)
                 .toHashCode();
     }
