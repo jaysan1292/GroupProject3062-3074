@@ -1,5 +1,6 @@
 package com.jaysan1292.groupproject.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
@@ -23,10 +24,10 @@ public final class ScavengerHunt extends BaseEntity {
     private Path path;
 
     /** The time that this team started the Scavenger Hunt. */
-    private DateTime startTime;
+    private long startTime;
 
     /** The time that this team finished the Scavenger Hunt. */
-    private DateTime finishTime;
+    private long finishTime;
 
     public ScavengerHunt() {
         this(INVALID);
@@ -36,12 +37,12 @@ public final class ScavengerHunt extends BaseEntity {
         this.scavengerHuntId = scavengerHuntId;
         this.team = team;
         this.path = path;
-        this.startTime = startTime;
-        this.finishTime = finishTime;
+        this.startTime = startTime.getMillis();
+        this.finishTime = finishTime.getMillis();
     }
 
     public ScavengerHunt(ScavengerHunt other) {
-        this(other.scavengerHuntId, other.team, other.path, other.startTime, other.finishTime);
+        this(other.scavengerHuntId, other.team, other.path, other.getStartTime(), other.getFinishTime());
     }
 
     //region JavaBean
@@ -62,12 +63,14 @@ public final class ScavengerHunt extends BaseEntity {
         return path;
     }
 
+    @JsonIgnore
     public DateTime getStartTime() {
-        return startTime;
+        return new DateTime(startTime);
     }
 
+    @JsonIgnore
     public DateTime getFinishTime() {
-        return finishTime;
+        return new DateTime(finishTime);
     }
 
     public void setScavengerHuntId(long scavengerHuntId) {
@@ -82,15 +85,37 @@ public final class ScavengerHunt extends BaseEntity {
         this.path = path;
     }
 
+    @JsonIgnore
     public void setStartTime(DateTime startTime) {
-        this.startTime = startTime;
+        this.startTime = startTime.getMillis();
     }
 
+    @JsonIgnore
     public void setFinishTime(DateTime finishTime) {
-        this.finishTime = finishTime;
+        this.finishTime = finishTime.getMillis();
     }
 
     //endregion JavaBean
+
+    /** This is only meant for proper JSON serialization. Use getStartTime() instead. */
+    public long getStartTimeMillis() {
+        return startTime;
+    }
+
+    /** This is only meant for proper JSON serialization. Use getFinishTime() instead. */
+    public long getFinishTimeMillis() {
+        return finishTime;
+    }
+
+    /** This is only meant for proper JSON serialization. Use setStartTime(DateTime) instead. */
+    public void setStartTimeMillis(long startTime) {
+        this.startTime = startTime;
+    }
+
+    /** This is only mean for proper JSON serialization. Use setFinishTime(DateTime) instead. */
+    public void setFinishTimeMillis(long finishTime) {
+        this.finishTime = finishTime;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -100,8 +125,8 @@ public final class ScavengerHunt extends BaseEntity {
         return (scavengerHuntId == other.scavengerHuntId) &&
                team.equals(other.team) &&
                path.equals(other.path) &&
-               startTime.equals(other.startTime) &&
-               finishTime.equals(other.finishTime);
+               (startTime == other.startTime) &&
+               (finishTime == other.finishTime);
     }
 
     @Override
