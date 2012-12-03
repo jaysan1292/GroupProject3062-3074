@@ -26,14 +26,16 @@ public class Accessors {
     private static ScavengerHuntClientAccessor scavengerHunts;
     private static TeamClientAccessor teams;
 
-    private static boolean _hostSet;
+    private static boolean _ready;
     private static URI _hostUri;
+    private static Client _client;
 
     private Accessors() {}
 
-    public static void setHost(URI host) {
+    public static void setHost(Client client, URI host) {
+        _client = client;
         _hostUri = host;
-        _hostSet = true;
+        _ready = true;
     }
 
     public static URI getHost() {
@@ -41,38 +43,39 @@ public class Accessors {
     }
 
     public static ChallengeClientAccessor getChallengeAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (challenges == null) challenges = new ChallengeClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (challenges == null) challenges = new ChallengeClientAccessor(_hostUri, _client);
         return challenges;
     }
 
     public static CheckpointClientAccessor getCheckpointAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (checkpoints == null) checkpoints = new CheckpointClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (checkpoints == null) checkpoints = new CheckpointClientAccessor(_hostUri, _client);
         return checkpoints;
     }
 
     public static PathClientAccessor getPathAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (paths == null) paths = new PathClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (paths == null) paths = new PathClientAccessor(_hostUri, _client);
         return paths;
     }
 
     public static PlayerClientAccessor getPlayerAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (players == null) players = new PlayerClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (players == null) players = new PlayerClientAccessor(_hostUri, _client);
         return players;
     }
 
     public static ScavengerHuntClientAccessor getScavengerHuntAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (scavengerHunts == null) scavengerHunts = new ScavengerHuntClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (scavengerHunts == null)
+            scavengerHunts = new ScavengerHuntClientAccessor(_hostUri, _client);
         return scavengerHunts;
     }
 
     public static TeamClientAccessor getTeamAccessor() {
-        checkState(_hostSet, "Service host was not set!");
-        if (teams == null) teams = new TeamClientAccessor(_hostUri);
+        checkState(_ready, "Service host was not set!");
+        if (teams == null) teams = new TeamClientAccessor(_hostUri, _client);
         return teams;
     }
 

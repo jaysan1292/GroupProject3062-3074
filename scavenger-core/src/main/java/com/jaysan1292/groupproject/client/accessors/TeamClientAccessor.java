@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.jaysan1292.groupproject.data.Team;
+import com.sun.jersey.api.client.Client;
 
 import java.net.URI;
 
@@ -12,11 +13,11 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class TeamClientAccessor extends AbstractClientAccessor<Team> {
-    protected TeamClientAccessor() {
-        super(Team.class, client.resource(Accessors.getDefaultHost()).path("teams"));
+    protected TeamClientAccessor(Client client) {
+        super(Team.class, client, client.resource(Accessors.getDefaultHost(client)).path("teams"));
     }
 
-    protected TeamClientAccessor(URI host) {
-        super(Team.class, client.resource(host).path("teams"));
+    protected TeamClientAccessor(URI host, Client client) {
+        super(Team.class, client, client.resource(host).path("teams"));
     }
 }

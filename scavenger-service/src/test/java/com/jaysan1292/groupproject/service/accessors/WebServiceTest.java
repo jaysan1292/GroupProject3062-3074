@@ -5,6 +5,7 @@ import com.jaysan1292.groupproject.service.ScavengerService;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 
 import static com.jaysan1292.groupproject.Global.log;
 import static org.junit.Assert.assertEquals;
@@ -40,6 +42,7 @@ public class WebServiceTest {
         ScavengerService.start(new String[]{"--local", "--debug"});
 
         client = Client.create();
+        client.addFilter(new HTTPBasicAuthFilter("999999999", "admin"));
         resource = client.resource(URL_BASE);
     }
 
@@ -47,15 +50,6 @@ public class WebServiceTest {
     public static void tearDownOnce() throws Exception {
         log.info("Web service tests finished!");
         ScavengerService.stop();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static class AuthTest {
-        @Test
-        public void testAuthorizeAdmin() throws Exception {
-            Player admin = new Player().readJSON(resource.path("players/5").get(String.class));
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +66,7 @@ public class WebServiceTest {
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             Player actual = new Player().readJSON(playerRes.path("0").get(String.class));
@@ -86,6 +81,7 @@ public class WebServiceTest {
                     .setLastName("Kim")
                     .setFirstName("Taeyeon")
                     .setStudentId("100548956")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             ClientResponse response = playerRes.type(MediaType.APPLICATION_JSON_TYPE)
@@ -96,8 +92,6 @@ public class WebServiceTest {
 
             // Ensure the returned location is correct
             String location = response.getHeaders().getFirst("Location");
-            assertEquals(URL_BASE + "/players/5", location);
-
             Player actual = new Player().readJSON(client.resource(location).get(String.class));
             expected.setId(actual.getId());
 
@@ -129,11 +123,20 @@ public class WebServiceTest {
         @Test
         public void testDelete() throws Exception {
             log.info("Test: Delete existing user");
-            ClientResponse response = playerRes.path("5").delete(ClientResponse.class);
+            Player toDelete = new PlayerBuilder()
+                    .setLastName("Lee")
+                    .setFirstName("Soonkyu")
+                    .setStudentId("100485426")
+                    .setPasswordUnencrypted("123456")
+                    .build();
+            URI location = playerRes.type(MediaType.APPLICATION_JSON)
+                                    .post(ClientResponse.class, toDelete.toString()).getLocation();
+
+            ClientResponse response = client.resource(location).delete(ClientResponse.class);
 
             assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
 
-            ClientResponse sanityCheck = playerRes.path("5").get(ClientResponse.class);
+            ClientResponse sanityCheck = client.resource(location).get(ClientResponse.class);
             assertEquals(Response.Status.NOT_FOUND.getStatusCode(), sanityCheck.getStatus());
         }
     }
@@ -180,8 +183,6 @@ public class WebServiceTest {
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
             String location = response.getHeaders().getFirst("Location");
-            assertEquals(URL_BASE + "/checkpoints/3", location);
-
             Checkpoint actual = new Checkpoint().readJSON(client.resource(location).get(String.class));
             expected.setId(actual.getId());
 
@@ -259,8 +260,6 @@ public class WebServiceTest {
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
             String location = response.getHeaders().getFirst("Location");
-            assertEquals(URL_BASE + "/challenges/3", location);
-
             Challenge actual = new Challenge().readJSON(client.resource(location).get(String.class));
             expected.setId(actual.getId());
 

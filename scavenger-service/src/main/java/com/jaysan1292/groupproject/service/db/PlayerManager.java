@@ -92,7 +92,7 @@ public class PlayerManager extends AbstractManager<Player> {
                       "Student number must be 9 numerical digits only, got %s instead.",
                       p.getStudentNumber());
         checkArgument(p.getPassword().length() == 32, "Passwords going into the database must be " +
-                                                      "MD5 hashed into a 32 charater string.");
+                                                      "MD5 hashed into a 32 character string.");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

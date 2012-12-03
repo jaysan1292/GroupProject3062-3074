@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.jaysan1292.groupproject.data.Challenge;
+import com.sun.jersey.api.client.Client;
 
 import java.net.URI;
 
@@ -12,11 +13,11 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class ChallengeClientAccessor extends AbstractClientAccessor<Challenge> {
-    protected ChallengeClientAccessor() {
-        super(Challenge.class, client.resource(Accessors.getDefaultHost()).path("challenges"));
+    protected ChallengeClientAccessor(Client client) {
+        super(Challenge.class, client, client.resource(Accessors.getDefaultHost(client)).path("challenges"));
     }
 
-    protected ChallengeClientAccessor(URI host) {
-        super(Challenge.class, client.resource(host).path("challenges"));
+    protected ChallengeClientAccessor(URI host, Client client) {
+        super(Challenge.class, client, client.resource(host).path("challenges"));
     }
 }

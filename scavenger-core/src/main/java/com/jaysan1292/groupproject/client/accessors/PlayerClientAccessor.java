@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.jaysan1292.groupproject.data.Player;
+import com.sun.jersey.api.client.Client;
 
 import java.net.URI;
 
@@ -12,11 +13,11 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
-    protected PlayerClientAccessor() {
-        super(Player.class, client.resource(Accessors.getDefaultHost()).path("players"));
+    protected PlayerClientAccessor(Client client) {
+        super(Player.class, client, client.resource(Accessors.getDefaultHost(client)).path("players"));
     }
 
-    protected PlayerClientAccessor(URI host) {
-        super(Player.class, client.resource(host).path("players"));
+    protected PlayerClientAccessor(URI host, Client client) {
+        super(Player.class, client, client.resource(host).path("players"));
     }
 }

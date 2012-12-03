@@ -10,8 +10,6 @@ import java.net.URI;
 
 import static com.jaysan1292.groupproject.client.accessors.Accessors.*;
 
-//TODO: Authentication
-
 /** @author Jason Recillo */
 @SuppressWarnings("MethodMayBeStatic")
 public class ScavengerClient {
@@ -33,10 +31,10 @@ public class ScavengerClient {
     public ScavengerClient(URI host, String username, String password) {
         client = Client.create();
         if (host == null) host = getDefaultHost(client);
-        setHost(host);
         if ((username != null) && (password != null)) {
             client.addFilter(new HTTPBasicAuthFilter(username, password));
         }
+        setHost(client, host);
         root = client.resource(host);
     }
 

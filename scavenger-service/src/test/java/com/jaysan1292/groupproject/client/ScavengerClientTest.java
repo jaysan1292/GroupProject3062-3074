@@ -49,6 +49,7 @@ public class ScavengerClientTest {
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             Player actual = client.getPlayer(0);
@@ -63,6 +64,7 @@ public class ScavengerClientTest {
                     .setLastName("Choi")
                     .setFirstName("Sooyoung")
                     .setStudentId("100145665")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             Player actual = client.createPlayer(expected);
@@ -99,6 +101,7 @@ public class ScavengerClientTest {
                     .setLastName("Seo")
                     .setFirstName("Joohyun")
                     .setStudentId("100489456")
+                    .setPasswordUnencrypted("123456")
                     .build();
             long id = client.createPlayer(toDelete).getId();
 

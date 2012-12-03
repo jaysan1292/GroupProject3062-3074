@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.jaysan1292.groupproject.data.Checkpoint;
+import com.sun.jersey.api.client.Client;
 
 import java.net.URI;
 
@@ -12,11 +13,11 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class CheckpointClientAccessor extends AbstractClientAccessor<Checkpoint> {
-    protected CheckpointClientAccessor() {
-        super(Checkpoint.class, client.resource(Accessors.getDefaultHost()).path("checkpoints"));
+    protected CheckpointClientAccessor(Client client) {
+        super(Checkpoint.class, client, client.resource(Accessors.getDefaultHost(client)).path("checkpoints"));
     }
 
-    protected CheckpointClientAccessor(URI host) {
-        super(Checkpoint.class, client.resource(host).path("checkpoints"));
+    protected CheckpointClientAccessor(URI host, Client client) {
+        super(Checkpoint.class, client, client.resource(host).path("checkpoints"));
     }
 }

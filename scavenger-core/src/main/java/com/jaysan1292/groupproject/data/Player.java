@@ -66,12 +66,10 @@ public class Player extends BaseEntity {
         return lastName;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
-    @JsonIgnore
     public boolean isAdmin() {
         return admin;
     }

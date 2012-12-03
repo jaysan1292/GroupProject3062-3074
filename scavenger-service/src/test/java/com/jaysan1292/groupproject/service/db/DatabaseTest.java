@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.jaysan1292.groupproject.Global.log;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,6 +68,7 @@ public class DatabaseTest {
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             Player actual = manager.get(0);
@@ -104,6 +105,7 @@ public class DatabaseTest {
                     .setLastName("Jung")
                     .setFirstName("Sooyeon")
                     .setStudentId("123456789")
+                    .setPasswordUnencrypted("123456")
                     .build();
 
             long id = manager.insert(expected);
@@ -127,6 +129,7 @@ public class DatabaseTest {
                     .setFirstName("Soonkyu")
                     .setLastName("Lee")
                     .setStudentId("100457985")
+                    .setPasswordUnencrypted("123456")
                     .build();
             long id = manager.insert(toDelete);
 
@@ -189,12 +192,14 @@ public class DatabaseTest {
                                 .setFirstName("Peter")
                                 .setLastName("Le")
                                 .setStudentId("100145965")
+                                .setPasswordUnencrypted("123456")
                                 .build());
                         put(2L, new PlayerBuilder()
                                 .setPlayerId(2)
                                 .setFirstName("Mellicent")
                                 .setLastName("Dres")
                                 .setStudentId("100793317")
+                                .setPasswordUnencrypted("123456")
                                 .build());
                     }})
                     .build();
@@ -217,6 +222,7 @@ public class DatabaseTest {
                                 .setFirstName("Jason")
                                 .setLastName("Recillo")
                                 .setStudentId("100123123")
+                                .setPasswordUnencrypted("123456")
                                 .build());
                     }})
                     .build();
@@ -243,12 +249,14 @@ public class DatabaseTest {
                             .setFirstName("Taeyeon")
                             .setLastName("Kim")
                             .setStudentId("100156789")
+                            .setPasswordUnencrypted("123456")
                             .build());
             final long player2 = p.insert(
                     new PlayerBuilder()
                             .setFirstName("Tiffany")
                             .setLastName("Hwang")
                             .setStudentId("100456785")
+                            .setPasswordUnencrypted("123456")
                             .build());
 
             Team expected = new TeamBuilder()
