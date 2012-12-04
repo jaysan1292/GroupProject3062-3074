@@ -24,7 +24,7 @@
                         <li><a href="#">Paths</a></li>
                     </ul>
                 </div>
-                <div class="span6 dev-border">
+                <div class="span3 dev-border">
                     <div class="container-fluid well well-small">
                         <h4>Header</h4>
                     </div>
@@ -36,7 +36,7 @@
                         </c:forEach>
                     </ul>
                 </div>
-                <div class="span4 dev-border">
+                <div class="span7 dev-border">
                     item detail
                 </div>
             </div>
