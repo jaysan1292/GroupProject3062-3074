@@ -8,9 +8,14 @@
         <artifactId>scavenger-hunt</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modules>
-    </modules>
     <name>Core</name>
     <artifactId>scavenger-core</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.9</version>
+        </dependency>
+    </dependencies>
 </project>

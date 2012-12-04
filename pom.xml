@@ -12,21 +12,32 @@
         GBC scavenger hunt game for Android, with backing RESTful Web Service.
     </description>
     <packaging>pom</packaging>
-    <!---->
     <modules>
         <module>scavenger-core</module>
         <module>scavenger-service</module>
         <module>scavenger-web</module>
         <module>scavenger-mobile</module>
     </modules>
-    <!---->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.submission.archiveprefix>COMP3062-3074-GroupProject-
         </project.submission.archiveprefix>
         <maven.test.skip>true</maven.test.skip>
     </properties>
-    <!---->
+    <repositories>
+        <repository>
+            <id>local-repo</id>
+            <url>${project.baseUri}local-packages</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.jasypt</groupId>
@@ -42,11 +53,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.9</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -75,7 +81,6 @@
             <version>13.0.1</version>
         </dependency>
     </dependencies>
-    <!---->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -85,7 +90,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <!---->
     <build>
         <finalName>COMP3062-3074-GroupProject (Jason Recillo, Peter Le, Mellicent Dres)</finalName>
         <!--<pluginManagement>-->
@@ -114,7 +118,6 @@
         <!--</plugin>-->
         <!--</plugins>-->
         <!--</pluginManagement>-->
-        <!---->
         <plugins>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -160,7 +163,6 @@
             </plugin>
         </plugins>
     </build>
-    <!---->
     <reporting>
         <plugins>
             <plugin>
@@ -178,7 +180,6 @@
             </plugin>
         </plugins>
     </reporting>
-    <!---->
     <scm>
         <connection>
             scm:git:http://github.com/jaysan1292/GroupProject3062-3074
@@ -187,7 +188,6 @@
             scm:git:ssh://github.com/jaysan1292/GroupProject3062-3074
         </developerConnection>
     </scm>
-    <!---->
     <developers>
         <developer>
             <id>jaysan1292</id>
