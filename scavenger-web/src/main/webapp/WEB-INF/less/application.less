@@ -1,0 +1,44 @@
+@import "../bootstrap-less/variables.less";
+@import "../bootstrap-less/mixins.less";
+
+// temporary; meant to see metrics of various elements
+.dev-border {
+    .box-shadow(0px 0px 0px 1px red inset);
+}
+
+body {
+    padding-top: 54px;
+}
+
+/***************************************************************************************************
+ * GLOBAL
+ */
+#footer {
+    text-align: center;
+    .navbar-inner .container .nav {
+        width: 100%;
+        li {
+            width: 100%;
+            a {
+                cursor:          default;
+                display:         block; //from navbar.less: ".navbar .nav > li > a"
+                float:           none;
+                padding:         ((@navbarHeight - @baseLineHeight) / 2) 15px ((@navbarHeight - @baseLineHeight) / 2);
+                text-decoration: none;
+                text-shadow:     0 1px 0 @navbarBackgroundHighlight;
+            }
+        }
+    }
+}
+
+/***************************************************************************************************
+ * home.jsp
+ */
+#home-sidebar {
+    border-right: 1px solid darken(white, 15%);
+    margin-right: -1px;
+}
+
+#home-itemlist {
+    list-style: none;
+}

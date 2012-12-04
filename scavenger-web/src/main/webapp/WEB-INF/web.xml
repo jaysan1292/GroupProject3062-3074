@@ -4,31 +4,36 @@
 <web-app>
     <servlet>
         <servlet-name>login</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.LoginServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>challenges</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.ChallengeServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.ChallengeServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>checkpoints</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.CheckpointServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.CheckpointServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>paths</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.PathServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.PathServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>scavengerhunts</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.ScavengerHuntServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.ScavengerHuntServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>players</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.PlayerServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.PlayerServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>teams</servlet-name>
-        <servlet-class>com.jaysan1292.groupproject.servlets.TeamServlet</servlet-class>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.TeamServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>css</servlet-name>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.CssServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -57,5 +62,9 @@
     <servlet-mapping>
         <servlet-name>teams</servlet-name>
         <url-pattern>/teams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>css</servlet-name>
+        <url-pattern>/css/application.css</url-pattern>
     </servlet-mapping>
 </web-app>
