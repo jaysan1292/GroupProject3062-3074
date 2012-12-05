@@ -10,4 +10,6 @@ public class WebAppCommon {
     public static final String JSP_LOGIN = "/WEB-INF/jsp/login.jsp";
     public static final String SRV_LOGIN = "/login";
     public static final String ATTR_LOGIN = "login";
+
+    private WebAppCommon() {}
 }

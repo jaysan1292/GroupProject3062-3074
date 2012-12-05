@@ -1,19 +1,33 @@
 @import "../bootstrap-less/variables.less";
 @import "../bootstrap-less/mixins.less";
 
-// temporary; meant to see metrics of various elements
-.dev-border {
-    .box-shadow(0px 0px 0px 1px red inset);
-}
-
+/***************************************************************************************************
+* GLOBAL
+*/
 body {
-    padding-top: 54px;
+    padding-top: 41px;
     font-family: "Droid Sans", Helvetica, sans-serif;
 }
 
-/***************************************************************************************************
- * GLOBAL
- */
+// Custom scrollbars - WebKit-based browsers only (Chrome, Safari, etc.)
+::-webkit-scrollbar {
+    width:  10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #DEDEDE;
+    &:hover {
+        background: darken(#DEDEDE, 5%);
+    }
+}
+
+::-webkit-scrollbar-track {
+    border-top:  1px solid rgba(0, 0, 0, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+    background:  rgba(0, 0, 0, 0.03);
+}
+
 #footer {
     text-align: center;
     .navbar-inner .container .nav {
@@ -35,11 +49,71 @@ body {
 /***************************************************************************************************
  * home.jsp
  */
-#home-sidebar {
+.light-border-right {
     border-right: 1px solid darken(white, 15%);
     margin-right: -1px;
 }
 
+.light-border-left {
+    border-left: 1px solid darken(white, 15%);
+    margin-left: -1px;
+}
+
+.light-border-top {
+    border-top: 1px solid darken(white, 15%);
+    margin-top: -1px;
+}
+
+.light-border-bottom {
+    border-bottom: 1px solid darken(white, 15%);
+    margin-bottom: -1px;
+}
+
+#home-main-container .row {
+    .light-border-right;
+}
+
+#home-sidebar {
+    padding-bottom: 100px;
+}
+
 #home-itemlist {
     list-style: none;
+    margin:     0px;
+    height:     519px;
+    overflow-y: scroll;
+    li {
+        padding:       16px;
+        border-bottom: 1px solid darken(white, 10%);
+        &:hover {
+            background: darken(white, 5%);
+        }
+        &.active {
+            background: @blue;
+            color:      white;
+            &:hover {
+                background: darken(@blue, 5%);
+            }
+        }
+    }
+}
+
+#home-itemlist-container {
+    .light-border-left;
+    .light-border-right;
+    margin-left: 0px;
+}
+
+#home-itemlist-header { //    #gradient > .vertical(darken(white, 1%), darken(white, 5%));
+    .box-shadow(0 1px 10px rgba(0, 0, 0, 0.1));
+    height:        52px;
+    background:    #EBEBEB;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    h4 {
+        margin: 16px 0;
+    }
+}
+
+#home-item-detail {
+
 }
