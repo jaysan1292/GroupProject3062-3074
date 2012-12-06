@@ -36,7 +36,7 @@ public class AjaxServlet extends HttpServlet {
                      "<%@ taglib prefix=\"t\" tagdir=\"/WEB-INF/tags\" %>";
 
         String beanTemplate = "<jsp:useBean id=\"item\" scope=\"request\" type=\"%s\"/>";
-        String tagTemplate = "<t:%s item=${item}/>";
+        String tagTemplate = "<t:%s item=\"${item}\"/>";
 
         //TODO: Finish web service client
         BaseEntity item = null;
