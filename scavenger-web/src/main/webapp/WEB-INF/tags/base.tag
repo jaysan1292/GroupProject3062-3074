@@ -9,12 +9,12 @@
 <html lang="en">
 <head>
     <title><c:out value="${page_title}"/></title>
-    <link href="<c:url value="/bootstrap/css/bootstrap.min.css"/>" rel="stylesheet"/>
-    <link href="<c:url value="/css/application.css"/>" rel="stylesheet"/>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Sans+Mono'
           rel='stylesheet'
           type='text/css'>
+    <link href="<c:url value="/bootstrap/css/bootstrap.css"/>" rel="stylesheet"/>
+    <link href="<c:url value="/css/application.css"/>" rel="stylesheet"/>
     <script src="http://code.jquery.com/jquery-1.8.2.js" type="text/javascript"></script>
     <jsp:invoke fragment="optional_header"/>
 </head>

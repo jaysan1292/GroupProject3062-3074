@@ -1,18 +1,32 @@
 @import "../bootstrap-less/variables.less";
 @import "../bootstrap-less/mixins.less";
+@import "bootstrap-custom.less";
+@import "custom-mixins.less";
 
-/***************************************************************************************************
-* GLOBAL
-*/
+// -------------------------------------
+// VARIABLES
+// -------------------------------------
+@defaultHeight: 519px;
+//@itemHighlightColor: #08C;
+@mainFont: ~"'Droid Sans', sans-serif";
+@scrollbarWidth: 10px;
+
+// -------------------------------------
+// GLOBAL
+// -------------------------------------
+html {
+    .user-select(none);
+}
+
 body {
+    font-family: @mainFont;
     padding-top: 41px;
-    font-family: "Droid Sans", Helvetica, sans-serif;
 }
 
 // Custom scrollbars - WebKit-based browsers only (Chrome, Safari, etc.)
 ::-webkit-scrollbar {
-    width:  10px;
-    height: 10px;
+    width:  @scrollbarWidth;
+    height: @scrollbarWidth;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -46,74 +60,75 @@ body {
     }
 }
 
-/***************************************************************************************************
- * home.jsp
- */
-.light-border-right {
-    border-right: 1px solid darken(white, 15%);
-    margin-right: -1px;
-}
-
-.light-border-left {
-    border-left: 1px solid darken(white, 15%);
-    margin-left: -1px;
-}
-
-.light-border-top {
-    border-top: 1px solid darken(white, 15%);
-    margin-top: -1px;
-}
-
-.light-border-bottom {
-    border-bottom: 1px solid darken(white, 15%);
-    margin-bottom: -1px;
-}
+// -------------------------------------
+// home.jsp
+// -------------------------------------
 
 #home-main-container .row {
     .light-border-right;
 }
 
 #home-sidebar {
-    padding-bottom: 100px;
 }
 
-#home-itemlist {
+#home-sidebar-header {
+    .light-border-bottom;
+}
+
+#home-item-list {
+    height:     @defaultHeight;
     list-style: none;
     margin:     0px;
-    height:     519px;
     overflow-y: scroll;
     li {
+        cursor:        default;
         padding:       16px;
         border-bottom: 1px solid darken(white, 10%);
         &:hover {
-            background: darken(white, 5%);
+            background: darken(white, 3%);
         }
         &.active {
-            background: @blue;
+            background: @linkColor;
             color:      white;
             &:hover {
-                background: darken(@blue, 5%);
+                background: darken(@linkColor, 3%);
             }
         }
     }
 }
 
-#home-itemlist-container {
+#home-item-list-container {
     .light-border-left;
     .light-border-right;
     margin-left: 0px;
 }
 
-#home-itemlist-header { //    #gradient > .vertical(darken(white, 1%), darken(white, 5%));
+#home-item-list-header {
     .box-shadow(0 1px 10px rgba(0, 0, 0, 0.1));
     height:        52px;
-    background:    #EBEBEB;
+    background:    rgb(240, 240, 240);
     border-bottom: 1px solid rgba(0, 0, 0, 0.04);
     h4 {
-        margin: 16px 0;
+        margin: 16px -5px;
+    }
+}
+
+#home-item-list-footer {
+    color:         rgb(208, 208, 208);
+    line-height:   48px;
+    text-align:    center;
+    border-bottom: initial !important;
+    &:hover {
+        background: initial !important;
     }
 }
 
 #home-item-detail {
+    height:     @defaultHeight + 53px;
+    overflow-y: scroll;
+}
 
+#home-item-detail-container {
+    margin-right: -1px;
+    width:        480px;
 }

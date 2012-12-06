@@ -7,6 +7,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import java.net.URI;
+import java.util.List;
 
 import static com.jaysan1292.groupproject.client.accessors.Accessors.*;
 
@@ -50,6 +51,10 @@ public class ScavengerClient {
 
     public Player getPlayer(long id) throws GeneralServiceException {
         return getPlayerAccessor().get(id);
+    }
+
+    public List<Player> getAllPlayers() throws GeneralServiceException {
+        return getPlayerAccessor().getAll();
     }
 
     public void updatePlayer(Player player) throws GeneralServiceException {
