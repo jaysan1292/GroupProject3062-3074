@@ -33,7 +33,7 @@ public class AjaxServlet extends HttpServlet {
         String filename = UUID.randomUUID() + "_item.jsp";
 
         String jsp = "<%@ page pageEncoding=\"UTF-8\" %>" +
-                "<%@ taglib prefix=\"t\" tagdir=\"/WEB-INF/tags\" %>";
+                     "<%@ taglib prefix=\"t\" tagdir=\"/WEB-INF/tags\" %>";
 
         String beanTemplate = "<jsp:useBean id=\"item\" scope=\"request\" type=\"%s\"/>";
         String tagTemplate = "<t:%s item=${item}/>";
@@ -42,24 +42,28 @@ public class AjaxServlet extends HttpServlet {
         BaseEntity item = null;
         if (type.equals("scavengerhunts")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.ScavengerHunt");
-            jsp += String.format(tagTemplate, "item_scavengerhunts_form");
+            jsp += String.format(tagTemplate, "item_scavengerhunt_form");
             // item =  GET FROM WEB SERVICE
         } else if (type.equals("challenges")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.Challenge");
-            jsp += String.format(tagTemplate, "item_challenges_form");
+            // item =  GET FROM WEB SERVICE
+            jsp += String.format(tagTemplate, "item_challenge_form");
         } else if (type.equals("checkpoints")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.Checkpoint");
-            jsp += String.format(tagTemplate, "item_checkpoints_form");
+            jsp += String.format(tagTemplate, "item_checkpoint_form");
+            // item =  GET FROM WEB SERVICE
         } else if (type.equals("paths")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.Path");
-            jsp += String.format(tagTemplate, "item_paths_form");
+            jsp += String.format(tagTemplate, "item_path_form");
+            // item =  GET FROM WEB SERVICE
         } else if (type.equals("players")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.Player");
-            jsp += String.format(tagTemplate, "item_players_form");
+            jsp += String.format(tagTemplate, "item_player_form");
+            // item =  GET FROM WEB SERVICE
         } else if (type.equals("teams")) {
             jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.Team");
-            jsp += String.format(tagTemplate, "item_teams_form");
-
+            jsp += String.format(tagTemplate, "item_team_form");
+            // item =  GET FROM WEB SERVICE
         } else {
             throw new ServletException("Invalid type: " + type);
         }
@@ -70,7 +74,6 @@ public class AjaxServlet extends HttpServlet {
         request.setAttribute("item", item);
         request.getRequestDispatcher('/' + filename).forward(request, response);
         itemJsp.delete();
-
     }
 
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
