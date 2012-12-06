@@ -59,6 +59,11 @@ public class Path extends BaseEntity {
         pathId = id;
     }
 
+    public String getDescription() {
+        return String.format("Path #%d",
+                             pathId);
+    }
+
     public List<Checkpoint> getCheckpoints() {
         return checkpoints;
     }

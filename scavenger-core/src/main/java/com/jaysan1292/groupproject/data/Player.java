@@ -54,6 +54,12 @@ public class Player extends BaseEntity {
         playerId = id;
     }
 
+    public String getDescription() {
+        return String.format("Player #%d: %s",
+                             playerId,
+                             getFullName());
+    }
+
     public String getStudentNumber() {
         return studentNumber;
     }

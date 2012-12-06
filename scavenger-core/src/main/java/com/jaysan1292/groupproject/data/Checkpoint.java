@@ -81,6 +81,13 @@ public class Checkpoint extends BaseEntity {
         this.checkpointId = checkpointId;
     }
 
+    public String getDescription() {
+        return String.format("Checkpoint #%d: %.6f lat, %.6f lon",
+                             checkpointId,
+                             latitude,
+                             longitude);
+    }
+
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }

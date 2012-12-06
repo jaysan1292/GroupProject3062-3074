@@ -55,6 +55,13 @@ public final class ScavengerHunt extends BaseEntity {
         scavengerHuntId = id;
     }
 
+    public String getDescription() {
+        return String.format("Scavenger Hunt #%d: (%s) (%s)",
+                             scavengerHuntId,
+                             team.getDescription(),
+                             path.getDescription());
+    }
+
     public Team getTeam() {
         return team;
     }

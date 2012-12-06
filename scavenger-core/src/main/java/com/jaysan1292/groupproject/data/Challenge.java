@@ -1,5 +1,6 @@
 package com.jaysan1292.groupproject.data;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -35,7 +36,13 @@ public class Challenge extends BaseEntity {
     }
 
     public void setId(long id) {
-        setChallengeId(id);
+        challengeId = id;
+    }
+
+    public String getDescription() {
+        return String.format("Challenge #%d: %s",
+                             challengeId,
+                             StringUtils.abbreviate(challengeText, 50));
     }
 
     public String getChallengeText() {

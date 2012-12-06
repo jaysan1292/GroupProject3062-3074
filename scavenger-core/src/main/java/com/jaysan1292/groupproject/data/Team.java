@@ -54,6 +54,12 @@ public class Team extends BaseEntity {
         teamId = id;
     }
 
+    public String getDescription() {
+        return String.format("Team #%d: %d members",
+                             teamId,
+                             teamMembers.size());
+    }
+
     public Map<Long, Player> getTeamMembers() {
         return teamMembers;
     }

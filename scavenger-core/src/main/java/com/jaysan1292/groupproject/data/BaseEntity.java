@@ -6,6 +6,8 @@ public abstract class BaseEntity extends JSONSerializable {
 
     public abstract void setId(long id);
 
+    public abstract String getDescription();
+
     @Override
     public abstract boolean equals(Object obj);
 
