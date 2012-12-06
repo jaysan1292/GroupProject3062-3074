@@ -1,13 +1,17 @@
 package com.jaysan1292.groupproject.web.servlets;
 
 import com.jaysan1292.groupproject.WebAppCommon;
+import com.jaysan1292.groupproject.data.BaseEntity;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +22,49 @@ import java.util.Map;
 public class AjaxServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> queryParams = WebAppCommon.queryStringToMap(request);
+        String type = queryParams.get("type");
+        String id = queryParams.get("id");
 
+        if (StringUtils.isBlank(type) || StringUtils.isBlank(id)) {
+            throw new ServletException("Error its null");
+        }
+
+        File root = new File(getServletContext().getRealPath("/"));
+        String filename = UUID.randomUUID() + "_item.jsp";
+
+        String jsp = "<%@ page pageEncoding=\"UTF-8\" %>" +
+                "<%@ taglib prefix=\"t\" tagdir=\"/WEB-INF/tags\" %>";
+
+        String beanTemplate = "<jsp:useBean id=\"item\" scope=\"request\" type=\"%s\"/>";
+        String tagTemplate = "<t:%s item=${item}/>";
+
+        //TODO: Finish web service client
+        BaseEntity item;
+        if (type.equals("scavengerhunts")) {
+            jsp += String.format(beanTemplate, "com.jaysan1292.groupproject.data.ScavengerHunt");
+            jsp += String.format(tagTemplate, "item_scavengerhunt_form");
+            // item =  GET FROM WEB SERVICE
+        }
+
+        File itemJsp = new File(root, filename);
+        write(jsp, itemJsp);
+
+        request.setAttribute("item", item);
+        request.getRequestDispatcher('/' + filename).forward(request, response);
+        itemJsp.delete();
+
+    }
+
+    @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
+    private static void write(String content, File file) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+            writer.write(content);
+        } catch (IOException e) {
+            WebAppCommon.log.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 }
