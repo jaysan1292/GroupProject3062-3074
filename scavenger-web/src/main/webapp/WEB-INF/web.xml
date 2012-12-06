@@ -31,6 +31,10 @@
         <servlet-class>com.jaysan1292.groupproject.web.servlets.TeamServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ajax</servlet-name>
+        <servlet-class>com.jaysan1292.groupproject.web.servlets.AjaxServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>css</servlet-name>
         <servlet-class>com.jaysan1292.groupproject.web.servlets.CssServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
@@ -62,6 +66,10 @@
     <servlet-mapping>
         <servlet-name>teams</servlet-name>
         <url-pattern>/teams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ajax</servlet-name>
+        <url-pattern>/ajax</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>css</servlet-name>
