@@ -1,12 +1,15 @@
 package com.jaysan1292.groupproject.web.servlets;
 
+import com.jaysan1292.groupproject.WebAppCommon;
 import com.jaysan1292.groupproject.client.ScavengerClient;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 import static com.jaysan1292.groupproject.WebAppCommon.ATTR_LOGIN;
 import static com.jaysan1292.groupproject.WebAppCommon.JSP_LOGIN;
@@ -20,7 +23,11 @@ import static com.jaysan1292.groupproject.WebAppCommon.JSP_LOGIN;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // return login page
+        Map<String, String> queryParams = WebAppCommon.queryStringToMap(request);
+
+        if (queryParams.get("logout") != null) {
+            request.getSession().invalidate();
+        }
         request.getRequestDispatcher(JSP_LOGIN).include(request, response);
     }
 
@@ -33,6 +40,9 @@ public class LoginServlet extends HttpServlet {
         ScavengerClient client = new ScavengerClient(user, pass);
 
         request.getSession().setAttribute(ATTR_LOGIN, client);
+
+        RequestDispatcher disp = request.getRequestDispatcher("home.jsp");
+        disp.forward(request, response);
 
         //send to welcome page
     }
