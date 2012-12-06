@@ -1,6 +1,6 @@
 package com.jaysan1292.groupproject.web.servlets;
 
-import com.jaysan1292.groupproject.client.Global;
+import com.jaysan1292.groupproject.WebAppCommon;
 import org.apache.commons.lang3.time.StopWatch;
 import org.lesscss.LessCompiler;
 import org.lesscss.LessException;
@@ -33,12 +33,12 @@ public class CssServlet extends HttpServlet {
 
                 try {
                     StopWatch watch = new StopWatch(); watch.start();
-                    Global.log.info("Building CSS.");
+                    WebAppCommon.log.info("Building CSS.");
                     css = compiler.compile(new LessSource(source));
                     watch.stop();
-                    Global.log.info(String.format("Building CSS complete! Took %s.", watch.toString()));
+                    WebAppCommon.log.info(String.format("Building CSS complete! Took %s.", watch.toString()));
                 } catch (LessException ex) {
-                    Global.log.error(ex.getMessage(), ex);
+                    WebAppCommon.log.error(ex.getMessage(), ex);
                 }
             } catch (IOException e) {
                 throw new ServletException("Failed to load CSS.", e);
