@@ -1,6 +1,8 @@
 package com.jaysan1292.groupproject.data;
 
-/** @author Jason Recillo */
+/**
+ * @author Jason Recillo
+ */
 public class ChallengeBuilder extends AbstractBuilder<Challenge> {
     private Challenge challenge;
 
