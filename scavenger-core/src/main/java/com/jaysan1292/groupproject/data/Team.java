@@ -6,20 +6,24 @@ import com.google.common.collect.Maps;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/** @author Jason Recillo */
+/**
+ * @author Jason Recillo
+ */
 public class Team extends BaseEntity {
-    private static final Logger log = Logger.getLogger(Team.class);
     public static final Team INVALID = new Team(-1, new HashMap<Long, Player>());
 
-    /** The team ID. Corresponds with the ID for this entry in the database. */
+    /**
+     * The team ID. Corresponds with the ID for this entry in the database.
+     */
     private long teamId;
 
-    /** A {@link java.util.Map} containing each member on the team. The key is each member's player ID. */
+    /**
+     * A {@link java.util.Map} containing each member on the team. The key is each member's player ID.
+     */
     private Map<Long, Player> teamMembers;
 
     public Team() {
@@ -56,8 +60,8 @@ public class Team extends BaseEntity {
 
     public String getDescription() {
         return String.format("Team #%d: %d members",
-                             teamId,
-                             teamMembers.size());
+                teamId,
+                teamMembers.size());
     }
 
     public Map<Long, Player> getTeamMembers() {
@@ -80,7 +84,6 @@ public class Team extends BaseEntity {
 
     public Team addMember(Player member) {
         teamMembers.put(member.getId(), member);
-        log.info(String.format("Added Player #%d (%s) to Team #%d.", member.getId(), member.getFullName(), teamId));
         return this;
     }
 
@@ -108,7 +111,7 @@ public class Team extends BaseEntity {
         if (!(obj instanceof Team)) return false;
         Team other = (Team) obj;
         return (teamId == other.teamId) &&
-               (teamMembers.equals(other.teamMembers));
+                (teamMembers.equals(other.teamMembers));
     }
 
     @Override
