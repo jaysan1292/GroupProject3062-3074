@@ -10,20 +10,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Jason Recillo
- */
+/** @author Jason Recillo */
 public class Team extends BaseEntity {
     public static final Team INVALID = new Team(-1, new HashMap<Long, Player>());
 
-    /**
-     * The team ID. Corresponds with the ID for this entry in the database.
-     */
+    /** The team ID. Corresponds with the ID for this entry in the database. */
     private long teamId;
 
-    /**
-     * A {@link java.util.Map} containing each member on the team. The key is each member's player ID.
-     */
+    /** A {@link java.util.Map} containing each member on the team. The key is each member's player ID. */
     private Map<Long, Player> teamMembers;
 
     public Team() {
@@ -58,12 +52,6 @@ public class Team extends BaseEntity {
         teamId = id;
     }
 
-    public String getDescription() {
-        return String.format("Team #%d: %d members",
-                teamId,
-                teamMembers.size());
-    }
-
     public Map<Long, Player> getTeamMembers() {
         return teamMembers;
     }
@@ -94,6 +82,12 @@ public class Team extends BaseEntity {
         return this;
     }
 
+    public String description() {
+        return String.format("TEAM%02d: %d members",
+                             teamId,
+                             teamMembers.size());
+    }
+
     @JsonIgnore
     public String getTeamPlayerString() {
         Long[] ids = new Long[teamMembers.size()];
@@ -111,7 +105,7 @@ public class Team extends BaseEntity {
         if (!(obj instanceof Team)) return false;
         Team other = (Team) obj;
         return (teamId == other.teamId) &&
-                (teamMembers.equals(other.teamMembers));
+               (teamMembers.equals(other.teamMembers));
     }
 
     @Override

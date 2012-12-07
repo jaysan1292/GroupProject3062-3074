@@ -55,13 +55,6 @@ public final class ScavengerHunt extends BaseEntity {
         scavengerHuntId = id;
     }
 
-    public String getDescription() {
-        return String.format("Scavenger Hunt #%d: (%s) (%s)",
-                             scavengerHuntId,
-                             team.getDescription(),
-                             path.getDescription());
-    }
-
     public Team getTeam() {
         return team;
     }
@@ -122,6 +115,19 @@ public final class ScavengerHunt extends BaseEntity {
     /** This is only mean for proper JSON serialization. Use setFinishTime(DateTime) instead. */
     public void setFinishTimeMillis(long finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public String description() {
+        return String.format("SCHT%02d: %d members, %s completed",
+                             scavengerHuntId,
+                             team.getTeamMembers().size(),
+                             completionStatus());
+    }
+
+    private String completionStatus() {
+        float checkpoints = path.getCheckpoints().size();
+        //TODO: Completion status; i.e., percent of checkpoints completed
+        return "0%";
     }
 
     @Override
