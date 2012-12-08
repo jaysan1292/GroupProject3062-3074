@@ -40,10 +40,10 @@ public class LoginServlet extends HttpServlet {
         ScavengerClient client = new ScavengerClient(user, pass);
 
         request.getSession().setAttribute(ATTR_LOGIN, client);
-
-        RequestDispatcher disp = request.getRequestDispatcher("home.jsp");
+        //send to welcome page
+        RequestDispatcher disp =request.getRequestDispatcher("home.jsp");
         disp.forward(request, response);
 
-        //send to welcome page
+
     }
 }
