@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.android.activity;
 
 import android.content.SharedPreferences;
+import com.jaysan1292.groupproject.android.MobileAppCommon;
 
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +73,6 @@ public class UserMetaManager {
     }
 
     private static SharedPreferences getSharedPreferences() {
-       // return MobileAppCommon.getContext().getSharedPreferences(PREF_NAME, 0);
+       return MobileAppCommon.getContext().getSharedPreferences(PREF_NAME, 0);
     }
 }

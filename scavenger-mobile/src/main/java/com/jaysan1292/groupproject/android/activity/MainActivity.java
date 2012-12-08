@@ -2,6 +2,7 @@ package com.jaysan1292.groupproject.android.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import com.jaysan1292.groupproject.android.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,5 +13,6 @@ import android.os.Bundle;
 public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
     }
 }
