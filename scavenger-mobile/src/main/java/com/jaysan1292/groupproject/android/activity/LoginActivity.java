@@ -18,8 +18,8 @@ public class LoginActivity extends Activity {
             startActivity(intent);
 //            return;
 //        }
-        setContentView(R.layout.login);
-        HttpClient client = new DefaultHttpClient();
+//        setContentView(R.layout.login);
+//        HttpClient client = new DefaultHttpClient();
 //        TODO: Create http client bridge class
 //        HttpRequest request = new BasicHttpRequest("GET", "http://")
     }
