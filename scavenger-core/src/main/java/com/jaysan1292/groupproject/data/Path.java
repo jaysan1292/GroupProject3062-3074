@@ -59,11 +59,6 @@ public class Path extends BaseEntity {
         pathId = id;
     }
 
-    public String getDescription() {
-        return String.format("Path #%d",
-                             pathId);
-    }
-
     public List<Checkpoint> getCheckpoints() {
         return checkpoints;
     }
@@ -78,6 +73,7 @@ public class Path extends BaseEntity {
 
     //endregion JavaBean
 
+    @JsonIgnore
     public Checkpoint getCheckpoint(int index) {
         return checkpoints.get(index);
     }
@@ -117,6 +113,12 @@ public class Path extends BaseEntity {
     public Path moveCheckpoint(int index, int direction) {
         if ((index < 0) || (index > checkpoints.size())) return this;
         return moveCheckpoint(checkpoints.get(index), direction);
+    }
+
+    public String description() {
+        return String.format("PATH%02d: %d checkpoints",
+                             pathId,
+                             checkpoints.size());
     }
 
     @JsonIgnore

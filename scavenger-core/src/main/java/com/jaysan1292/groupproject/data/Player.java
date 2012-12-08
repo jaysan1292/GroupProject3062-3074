@@ -54,12 +54,6 @@ public class Player extends BaseEntity {
         playerId = id;
     }
 
-    public String getDescription() {
-        return String.format("Player #%d: %s",
-                             playerId,
-                             getFullName());
-    }
-
     public String getStudentNumber() {
         return studentNumber;
     }
@@ -111,6 +105,12 @@ public class Player extends BaseEntity {
     @JsonIgnore
     public String getFullName() {
         return firstName + ' ' + lastName;
+    }
+
+    public String description() {
+        return String.format("PLYR%02d: %s",
+                             playerId,
+                             getFullName());
     }
 
     @Override

@@ -81,13 +81,6 @@ public class Checkpoint extends BaseEntity {
         this.checkpointId = checkpointId;
     }
 
-    public String getDescription() {
-        return String.format("Checkpoint #%d: %.6f lat, %.6f lon",
-                             checkpointId,
-                             latitude,
-                             longitude);
-    }
-
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
@@ -110,6 +103,13 @@ public class Checkpoint extends BaseEntity {
 
     //endregion JavaBean
 
+    public String description() {
+        return String.format("CHPT%02d: %.6f lat, %.6f lon",
+                             checkpointId,
+                             latitude,
+                             longitude);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -117,8 +117,8 @@ public class Checkpoint extends BaseEntity {
 
         Checkpoint other = (Checkpoint) obj;
         return (checkpointId == other.checkpointId) &&
-               (latitude == other.latitude) &&
-               (longitude == other.longitude);
+               (Float.compare(latitude, other.latitude) == 0) &&
+               (Float.compare(longitude, other.longitude) == 0);
     }
 
     @Override

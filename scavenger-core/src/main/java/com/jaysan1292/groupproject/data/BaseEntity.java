@@ -1,6 +1,8 @@
 package com.jaysan1292.groupproject.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+
+import java.beans.Transient;
 
 /** @author Jason Recillo */
 public abstract class BaseEntity extends JSONSerializable {
@@ -8,8 +10,19 @@ public abstract class BaseEntity extends JSONSerializable {
 
     public abstract void setId(long id);
 
-    @JsonIgnore
-    public abstract String getDescription();
+    @Transient
+    public String getDescription() {
+        return StringUtils.abbreviate(description(), 40);
+    }
+
+    /**
+     * This method does nothing. It is here so that the description (a
+     * dynamically-generated string) can be serialized with the object.
+     */
+    public void setDescription(String description) {
+    }
+
+    public abstract String description();
 
     @Override
     public abstract boolean equals(Object obj);

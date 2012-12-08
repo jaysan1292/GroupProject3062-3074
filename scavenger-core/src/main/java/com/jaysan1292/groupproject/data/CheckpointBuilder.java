@@ -1,6 +1,8 @@
 package com.jaysan1292.groupproject.data;
 
-/** User: Jason Recillo */
+/**
+ * User: Jason Recillo
+ */
 public class CheckpointBuilder extends AbstractBuilder<Checkpoint> {
     private Checkpoint checkpoint;
 

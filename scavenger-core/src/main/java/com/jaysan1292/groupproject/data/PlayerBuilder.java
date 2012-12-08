@@ -2,7 +2,9 @@ package com.jaysan1292.groupproject.data;
 
 import com.jaysan1292.groupproject.service.security.EncryptionUtils;
 
-/** @author Jason Recillo */
+/**
+ * @author Jason Recillo
+ */
 public class PlayerBuilder extends AbstractBuilder<Player> {
     private Player player;
 

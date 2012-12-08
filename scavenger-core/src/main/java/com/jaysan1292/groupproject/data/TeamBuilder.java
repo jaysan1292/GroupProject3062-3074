@@ -2,7 +2,9 @@ package com.jaysan1292.groupproject.data;
 
 import java.util.Map;
 
-/** @author Jason Recillo */
+/**
+ * @author Jason Recillo
+ */
 public class TeamBuilder extends AbstractBuilder<Team> {
     private Team team;
 

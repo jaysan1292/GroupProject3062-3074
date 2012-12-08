@@ -1,6 +1,8 @@
 package com.jaysan1292.groupproject.data;
 
-/** @author Jason Recillo */
+/**
+ * @author Jason Recillo
+ */
 public abstract class AbstractBuilder<T> {
 
     protected abstract void init();

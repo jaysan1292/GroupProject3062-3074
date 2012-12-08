@@ -1,0 +1,88 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ tag isELIgnored="false" %>
+<%@ attribute name="item" type="com.jaysan1292.groupproject.data.Player" required="true" %>
+
+<t:base_item_form name="${item.description}">
+    <jsp:attribute name="formJavaScript">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#itemform').validate({
+                    rules:    {
+                        firstName:     'required',
+                        lastName:      'required',
+                        password:      {
+                            minlength: 6
+                        },
+                        passwordcheck: {
+                            equalTo: '#password'
+                        },
+                        studentNumber: {
+                            required:  true,
+                            minlength: 9,
+                            maxlength: 9,
+                            digits:    true
+                        }
+                    },
+                    messages: {
+                        firstName:     'First name is required.',
+                        lastName:      'Last name is required.',
+                        passwordcheck: {
+                            equalTo: 'Both passwords must match.'
+                        },
+                        studentNumber: {
+                            required:  'Student ID is required.',
+                            minlength: 'Student ID must be 9 characters.',
+                            maxlength: 'Student ID must be 9 characters.',
+                            digits:    'Student ID must only contain digits.'
+                        }
+                    }
+                });
+            });
+        </script>
+    </jsp:attribute>
+    <jsp:body>
+        <div class="control-group">
+            <label class="control-label" for="firstName">First Name</label>
+
+            <div class="controls">
+                <input type="text"
+                       id="firstName"
+                       name="firstName"
+                       value="${item.firstName}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="lastName">Last Name</label>
+
+            <div class="controls">
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       value="${item.lastName}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="studentNumber">Student ID</label>
+
+            <div class="controls">
+                <input type="text"
+                       id="studentNumber"
+                       name="studentNumber"
+                       value="${item.studentNumber}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Reset Password</label>
+
+            <div class="controls">
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="Leave blank to save as-is">
+                <input type="password"
+                       id="passwordcheck">
+            </div>
+        </div>
+    </jsp:body>
+</t:base_item_form>
