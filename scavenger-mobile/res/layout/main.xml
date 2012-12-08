@@ -27,7 +27,6 @@
                 android:inputType="text"
                 android:text="@string/camera_label"/>
 
-
     </LinearLayout>
 
 </ScrollView>
