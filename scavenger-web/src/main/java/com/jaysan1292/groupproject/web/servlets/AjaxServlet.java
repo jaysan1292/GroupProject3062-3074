@@ -123,6 +123,12 @@ public class AjaxServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // TODO: Handle form submission
+        // Possibly delegate form processing to separate classes
+    }
+
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
     private static void write(String content, File file) {
         BufferedWriter writer = null;

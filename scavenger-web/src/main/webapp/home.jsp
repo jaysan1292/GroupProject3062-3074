@@ -1,3 +1,7 @@
+<%@ page import="com.google.common.collect.Lists" %>
+<%@ page import="com.jaysan1292.groupproject.data.*" %>
+<%@ page import="org.joda.time.DateTime" %>
+<%@ page import="java.util.HashMap" %>
 <%--
   Created by IntelliJ IDEA.
   User: Jason Recillo
@@ -8,85 +12,80 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 
+<%
+    // Test data
+    application.setAttribute("challenge",
+                             new ChallengeBuilder()
+                                     .setChallengeId(1)
+                                     .setChallengeText("Blahblahblah")
+                                     .build());
+    application.setAttribute("checkpoint",
+                             new CheckpointBuilder()
+                                     .setCheckpointId(2)
+                                     .setLatitude(-43.123456f)
+                                     .setLongitude(75.456123f)
+                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                     .build());
+    application.setAttribute("path",
+                             new PathBuilder()
+                                     .setPathId(3)
+                                     .setCheckpoints(Lists.newArrayList(
+                                             new CheckpointBuilder()
+                                                     .setLatitude(-43.158465f)
+                                                     .setLongitude(75.165463f)
+                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .build(),
+                                             new CheckpointBuilder()
+                                                     .setLatitude(-43.168465f)
+                                                     .setLongitude(75.124986f)
+                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .build(),
+                                             new CheckpointBuilder()
+                                                     .setLatitude(-43.134986f)
+                                                     .setLongitude(75.565465f)
+                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .build()))
+                                     .build());
+    application.setAttribute("player",
+                             new PlayerBuilder()
+                                     .setPlayerId(6)
+                                     .setFirstName("Soonkyu")
+                                     .setLastName("Lee")
+                                     .setStudentId("100123498")
+                                     .build());
+    application.setAttribute("team",
+                             new TeamBuilder()
+                                     .setTeamId(4)
+                                     .setTeamMembers(new HashMap<Long, Player>() {{
+                                         put(1L, new PlayerBuilder()
+                                                 .setFirstName("Jason")
+                                                 .setLastName("Recillo")
+                                                 .setStudentId("100123123")
+                                                 .setPlayerId(1)
+                                                 .build());
+                                         put(2L, new PlayerBuilder()
+                                                 .setFirstName("Peter")
+                                                 .setLastName("Le")
+                                                 .setStudentId("100465246")
+                                                 .setPlayerId(2)
+                                                 .build());
+                                     }})
+                                     .build());
+    application.setAttribute("scavengerhunt",
+                             new ScavengerHuntBuilder()
+                                     .setScavengerHuntId(5)
+                                     .setPath((Path) application.getAttribute("path"))
+                                     .setTeam((Team) application.getAttribute("team"))
+                                     .setStartTime(new DateTime(2012, 12, 3, 10, 0))
+                                     .setFinishTime(new DateTime(2012, 12, 3, 16, 0))
+                                     .build());
+%>
+
 <t:base page_title="Scavenger Hunt Home">
-    <jsp:attribute name="optional_footer">
-        <script type="text/javascript">
-            // Counts the elements in the item list and puts the result at the very bottom
-            function countListItems() {
-                var items = $('#home-item-list').children().not('#home-item-list-footer');
-                $('#home-item-list-footer').html(items.length +
-                                                 items.length != 1 ? ' items' : ' item');
-            }
-            function determineItemType() {
-                var itemtype = $('#home-sidebar ul').children().filter('.active').attr('data-type');
-
-                switch (itemtype) {
-                    case 'scavengerhunt':
-                        console.log('THIS IS A SCAVENGER HUNT');
-                        break;
-                    case 'player':
-                        console.log('THIS IS A PLAYER');
-                        break;
-                    case 'team':
-                        console.log('THIS IS A TEAM');
-                        break;
-                    case 'checkpoint':
-                        console.log('THIS IS A CHECKPOINT');
-                        break;
-                    case 'challenge':
-                        console.log('THIS IS A CHALLENGE');
-                        break;
-                    case 'path':
-                        console.log('THIS IS A PATH');
-                        break;
-                }
-            }
-            $(document).ready(function () {
-                countListItems();
-                determineItemType();
-            });
-        </script>
-        <script type="text/javascript">
-            // Set click listeners for left sidebar
-            $(document).ready(function () {
-                var menuItems = $('#home-sidebar ul').children().not('.nav-header');
-                menuItems.click(function () {
-                    // Don't do anything if the clicked element is already selected
-                    if ($(this).hasClass('active')) return;
-
-                    $(menuItems).removeClass('active');
-                    $(this).addClass('active');
-
-                    $('#home-item-list').children()[0].click();
-                    countListItems();
-                });
-            });
-        </script>
-        <script type="text/javascript">
-            // Set click listeners for item list
-            $(document).ready(function () {
-                var items = $('#home-item-list').children().not('#home-item-list-footer');
-                items.click(function () {
-                    // Don't do anything if the clicked element is already selected
-                    if ($(this).hasClass('active')) return;
-
-                    $(items).removeClass('active');
-                    $(this).addClass('active');
-                    countListItems();
-
-                    getItem($('#home-sidebar ul').children().filter('.active').attr('data-type'),
-                            $(this).attr('data-itemid'));
-                });
-            });
-        </script>
-        <script>
-            // The meat of the web app. Retrieve an item of the given type from the server
-            // and display it in the detail view.
-            function getItem(itemType, itemId) {
-                //TODO
-                console.log('Retrieving ' + itemType + ' ' + itemId);
-            }
-        </script>
+    <jsp:attribute name="optional_header">
+        <script src="<c:url value="/js/homeapp.jsp"/>" type="text/javascript"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js"
+                type="text/javascript"></script>
     </jsp:attribute>
     <jsp:body>
         <div class="container" id="home-main-container">
@@ -94,22 +93,22 @@
                 <div class="span2" id="home-sidebar">
                     <ul class="nav nav-list">
                         <li class="nav-header" id="home-sidebar-header">Items</li>
-                        <li data-type="scavengerhunts" class="active">
+                        <li data-type="scavengerhunt" class="active">
                             <a href="javascript:void(0)">Scavenger Hunts</a>
                         </li>
-                        <li data-type="players">
+                        <li data-type="player">
                             <a href="javascript:void(0)">Players</a>
                         </li>
-                        <li data-type="teams">
+                        <li data-type="team">
                             <a href="javascript:void(0)">Teams</a>
                         </li>
-                        <li data-type="checkpoints">
+                        <li data-type="checkpoint">
                             <a href="javascript:void(0)">Checkpoints</a>
                         </li>
-                        <li data-type="challenges">
+                        <li data-type="challenge">
                             <a href="javascript:void(0)">Challenges</a>
                         </li>
-                        <li data-type="paths">
+                        <li data-type="path">
                             <a href="javascript:void(0)">Paths</a>
                         </li>
                     </ul>
@@ -119,27 +118,12 @@
                         <h4>Header</h4>
                     </div>
                     <ul id="home-item-list">
-                        <c:forEach begin="1" end="25"
-                                   varStatus="status">
-                            <c:choose>
-                                <c:when test="${status.index == 1}">
-                                    <t:home_list_item
-                                            id="${status.index}"
-                                            item="Some item ${status.index}"
-                                            selected="true"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <t:home_list_item
-                                            id="${status.index}"
-                                            item="Some item ${status.index}"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
                         <li id="home-item-list-footer"></li>
                     </ul>
                 </div>
                 <div class="span6" id="home-item-detail-container">
-                    <t:dev_item_detail item="Some item 5 details"/>
+                        <%--<script type="text/javascript">$(document).ready(function(){$('#home-item-detail').fadeIn(500)})</script>--%>
+                        <%--<t:item_scavengerhunt_form item="${applicationScope.scavengerhunt}"/>--%>
                 </div>
             </div>
         </div>
