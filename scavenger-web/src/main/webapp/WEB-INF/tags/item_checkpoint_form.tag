@@ -16,11 +16,56 @@
                     $('#challenge').val(${item.challenge.id});
                 });
                 $('#challenge').val(${item.challenge.id});
+
+                $('#save').click(function () {onSave()});
+                $('#save-form').click(function () {saveCheckpoint()});
+            }
+
+            function onSave() {
+                console.log('onsave');
+                $('#conf-latitude').text('Latitude: {lat}'.f({lat: $('#latitude').val()}));
+                $('#conf-longitude').text('Latitude: {lon}'.f({lon: $('#longitude').val()}));
+                var challenge = $.parseJSON($('#challenge').find('option:selected').val());
+                var challengestr = '{id}: {text}'.format({
+                    id:   challenge.description.substr(0, 6),
+                    text: challenge.challengeText
+                });
+
+                $('#conf-challengetext').text(challengestr).css('text-align', 'center');
+                ;
+            }
+
+            function saveCheckpoint() {
+                var challenge = $.parseJSON($('#challenge').find('option:selected').val());
+                var checkpoint = {
+                    id:        $('#cpconfirm').data('checkpointid'),
+                    latitude:  $('#latitude').val(),
+                    longitude: $('#longitude').val(),
+                    challenge: challenge
+                };
+
+                console.log(checkpoint);
+
+                cleanOutput(checkpoint);
+
+                checkpoint = JSON.stringify(checkpoint);
+
+                console.log(checkpoint);
+
+                //TODO: Send to service
             }
         </script>
     </jsp:attribute>
     <jsp:attribute name="modalconfirmbody">
-
+        <table id="cpconfirm" class="table table-striped table-hover table-bordered" data-checkpointid="${item.id}">
+            <tr>
+                <td id="conf-latitude"></td>
+                <td id="conf-longitude"></td>
+            </tr>
+            <tr>
+                <td colspan="2" id="conf-challengetext"></td>
+            </tr>
+        </table>
     </jsp:attribute>
     <jsp:body>
         <div class="control-group">
@@ -53,7 +98,7 @@
                         name="challenge"
                         data-defaultvalue="${item.challenge.id}">
                     <c:forEach items="${applicationScope.challengeAccessor.all}" var="challenge">
-                        <option value="${challenge.id}">${challenge.description}</option>
+                        <option value='${challenge}'>${challenge.description}</option>
                     </c:forEach>
                 </select>
             </div>
