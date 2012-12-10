@@ -37,6 +37,7 @@ String.prototype.format = String.prototype.f = function (args) {
 function cleanOutput(obj) {
     var func = function (res, key) {
         if (key == 'description' || key == 'password') {
+            console.log('delete {key}:{val}'.f({key: key, val: res[key]}));
             delete res[key];
         }
     };
