@@ -4,6 +4,21 @@
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Checkpoint" required="true" %>
 
 <t:base_item_form name="${item.description}">
+    <jsp:attribute name="formjavascript">
+        <script type="text/javascript">
+            $(document).ready(function () {initCheckpoint()});
+
+            function initCheckpoint() {
+                $('#reset').click(function (e) {
+                    e.preventDefault();
+                    $('#latitude').val(${item.latitude});
+                    $('#longitude').val(${item.longitude});
+                    $('#challenge').val(${item.challenge.id});
+                });
+                $('#challenge').val(${item.challenge.id});
+            }
+        </script>
+    </jsp:attribute>
     <jsp:attribute name="modalconfirmbody">
 
     </jsp:attribute>
@@ -15,6 +30,7 @@
                 <input type="text"
                        id="latitude"
                        name="latitude"
+                       pattern="[0-9.-]*"
                        value="${item.latitude}">
             </div>
         </div>
@@ -25,6 +41,7 @@
                 <input type="text"
                        id="longitude"
                        name="longitude"
+                       pattern="[0-9.-]*"
                        value="${item.longitude}">
             </div>
         </div>
@@ -35,7 +52,9 @@
                 <select id="challenge"
                         name="challenge"
                         data-defaultvalue="${item.challenge.id}">
-                    <option>TODO: DO THIS WHEN WEB SERVICE CLIENT IS DONE</option>
+                    <c:forEach items="${applicationScope.challengeAccessor.all}" var="challenge">
+                        <option value="${challenge.id}">${challenge.description}</option>
+                    </c:forEach>
                 </select>
             </div>
         </div>
