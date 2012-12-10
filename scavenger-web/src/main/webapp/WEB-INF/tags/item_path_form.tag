@@ -3,7 +3,10 @@
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Path" required="true" %>
 
-<t:base_item_form name="Path ${item.id}">
+<t:base_item_form name="${item.description}">
+    <jsp:attribute name="modalconfirmbody">
+        <%--TODO: Path confirm modal body--%>
+    </jsp:attribute>
     <jsp:body>
         <div class="control-group">
             <label class="control-label" for="checkpoints">Checkpoints</label>

@@ -1,4 +1,6 @@
 <%@ page import="com.google.common.collect.Lists" %>
+<%@ page import="com.jaysan1292.groupproject.client.ScavengerClient" %>
+<%@ page import="com.jaysan1292.groupproject.client.accessors.Accessors" %>
 <%@ page import="com.jaysan1292.groupproject.data.*" %>
 <%@ page import="org.joda.time.DateTime" %>
 <%@ page import="java.util.HashMap" %>
@@ -12,38 +14,62 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 
+<%!
+    public void jspInit() {
+        new ScavengerClient("999999999", "admin");
+        ServletContext context = getServletConfig().getServletContext();
+        context.setAttribute("challengeAccessor", Accessors.getChallengeAccessor());
+        context.setAttribute("checkpointAccessor", Accessors.getCheckpointAccessor());
+        context.setAttribute("pathAccessor", Accessors.getPathAccessor());
+        context.setAttribute("playerAccessor", Accessors.getPlayerAccessor());
+        context.setAttribute("scavengerHuntAccessor", Accessors.getScavengerHuntAccessor());
+        context.setAttribute("teamAccessor", Accessors.getTeamAccessor());
+    }
+%>
+
 <%
     // Test data
     application.setAttribute("challenge",
                              new ChallengeBuilder()
-                                     .setChallengeId(1)
-                                     .setChallengeText("Blahblahblah")
+                                     .setChallengeId(0)
+                                     .setChallengeText("First go there and do this thing.")
                                      .build());
     application.setAttribute("checkpoint",
                              new CheckpointBuilder()
-                                     .setCheckpointId(2)
-                                     .setLatitude(-43.123456f)
-                                     .setLongitude(75.456123f)
+                                     .setCheckpointId(0)
+                                     .setLatitude(43.675854f)
+                                     .setLongitude(-79.71069f)
                                      .setChallenge((Challenge) application.getAttribute("challenge"))
                                      .build());
     application.setAttribute("path",
                              new PathBuilder()
-                                     .setPathId(3)
+                                     .setPathId(0)
                                      .setCheckpoints(Lists.newArrayList(
                                              new CheckpointBuilder()
-                                                     .setLatitude(-43.158465f)
-                                                     .setLongitude(75.165463f)
-                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .setCheckpointId(0)
+                                                     .setLatitude(43.675854f)
+                                                     .setLongitude(-79.71069f)
+                                                     .setChallenge(new ChallengeBuilder()
+                                                                           .setChallengeId(0)
+                                                                           .setChallengeText("First go there and do this thing.")
+                                                                           .build())
                                                      .build(),
                                              new CheckpointBuilder()
-                                                     .setLatitude(-43.168465f)
-                                                     .setLongitude(75.124986f)
-                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .setCheckpointId(1)
+                                                     .setLatitude(43.675854f)
+                                                     .setLongitude(-79.71069f)
+                                                     .setChallenge(new ChallengeBuilder()
+                                                                           .setChallengeId(1)
+                                                                           .setChallengeText("Go here and there.")
+                                                                           .build())
                                                      .build(),
                                              new CheckpointBuilder()
-                                                     .setLatitude(-43.134986f)
-                                                     .setLongitude(75.565465f)
-                                                     .setChallenge((Challenge) application.getAttribute("challenge"))
+                                                     .setLatitude(43.676130f)
+                                                     .setLongitude(-79.410492f)
+                                                     .setChallenge(new ChallengeBuilder()
+                                                                           .setChallengeId(2)
+                                                                           .setChallengeText("Do this thing at this place.")
+                                                                           .build())
                                                      .build()))
                                      .build());
     application.setAttribute("player",
@@ -55,37 +81,40 @@
                                      .build());
     application.setAttribute("team",
                              new TeamBuilder()
-                                     .setTeamId(4)
+                                     .setTeamId(2)
                                      .setTeamMembers(new HashMap<Long, Player>() {{
                                          put(1L, new PlayerBuilder()
-                                                 .setFirstName("Jason")
-                                                 .setLastName("Recillo")
-                                                 .setStudentId("100123123")
                                                  .setPlayerId(1)
-                                                 .build());
-                                         put(2L, new PlayerBuilder()
                                                  .setFirstName("Peter")
                                                  .setLastName("Le")
-                                                 .setStudentId("100465246")
+                                                 .setStudentId("100145965")
+                                                 .build());
+                                         put(2L, new PlayerBuilder()
                                                  .setPlayerId(2)
+                                                 .setFirstName("Mellicent")
+                                                 .setLastName("Dres")
+                                                 .setStudentId("100793317")
                                                  .build());
                                      }})
                                      .build());
     application.setAttribute("scavengerhunt",
                              new ScavengerHuntBuilder()
-                                     .setScavengerHuntId(5)
+                                     .setScavengerHuntId(0)
                                      .setPath((Path) application.getAttribute("path"))
                                      .setTeam((Team) application.getAttribute("team"))
-                                     .setStartTime(new DateTime(2012, 12, 3, 10, 0))
-                                     .setFinishTime(new DateTime(2012, 12, 3, 16, 0))
+                                     .setStartTime(new DateTime(2012, 11, 27, 10, 0))
+                                     .setFinishTime(new DateTime(2012, 11, 27, 16, 0))
                                      .build());
 %>
 
 <t:base page_title="Scavenger Hunt Home">
     <jsp:attribute name="optional_header">
+        <link href="<c:url value="/jqui/jquery-ui-1.8.16.custom.css"/>" rel="stylesheet"/>
+    </jsp:attribute>
+    <jsp:attribute name="optional_footer">
         <script src="<c:url value="/js/homeapp.jsp"/>" type="text/javascript"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js"
-                type="text/javascript"></script>
+        <script src="<c:url value="/js/jquery.validate.js"/>" type="text/javascript"></script>
+        <script src="<c:url value="/js/jquery-ui-1.9.2.js"/>" type="text/javascript"></script>
     </jsp:attribute>
     <jsp:body>
         <div class="container" id="home-main-container">
@@ -122,8 +151,8 @@
                     </ul>
                 </div>
                 <div class="span6" id="home-item-detail-container">
-                        <%--<script type="text/javascript">$(document).ready(function(){$('#home-item-detail').fadeIn(500)})</script>--%>
-                        <%--<t:item_scavengerhunt_form item="${applicationScope.scavengerhunt}"/>--%>
+                        <%--<script type="text/javascript">$(document).ready(function () {$('#home-item-detail').fadeIn(500)})</script>--%>
+                        <%--<t:item_team_form item="${applicationScope.team}"/>--%>
                 </div>
             </div>
         </div>

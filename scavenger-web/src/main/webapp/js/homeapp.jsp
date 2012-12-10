@@ -1,7 +1,7 @@
 <%@ page contentType="text/javascript" pageEncoding="UTF-8" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
-        var loadingImage = 'img/spinner.gif';
+        var loadingImage = '<c:url value="/img/fb-loader.gif"/>';
 
         var menuItems;
         var isLoading = false;
@@ -13,31 +13,6 @@
             // Set click listeners for left sidebar
             menuItems = $('#home-sidebar ul').children().not('.nav-header');
             menuItems.click(function () {onSidebarItemClick(this)});
-
-            $.fn.center = function (div) {
-                return this.each(function () {
-                    div = typeof div != 'undefined' ? $(div) : window;
-                    var xoff = 0, yoff = 0;
-                    if (div !== window) {
-                        xoff = div.position().left;
-                        yoff = div.position().top;
-                    }
-
-                    var el = $(this);
-                    var h = el.height();
-                    var w = el.width();
-                    var w_box = $(div).width();
-                    var h_box = $(div).height();
-                    var w_total = ((w_box - w) / 2) + xoff;
-                    var h_total = ((h_box - h) / 2) + yoff;
-                    var css = {
-                        position: 'absolute',
-                        left:     w_total + "px",
-                        top:      h_total + "px"
-                    };
-                    el.css(css)
-                });
-            };
         });
 
     // The meat of the web app. Retrieve an item of the given type from the server
@@ -47,11 +22,10 @@
             console.log('Retrieving ' + itemType + ' ' + itemId);
             var ajaxUrl = '<c:url value="/ajax"/>?mode=one&type=' + itemType + '&id=' + itemId;
             console.log(ajaxUrl);
-            //TODO: Show progress indicator
 
+            showProgress('#home-item-detail-container');
             $('#itemform').fadeOut(500, function () {
                 $(this).remove();
-                showProgress('#home-item-detail-container');
             });
             $.ajax({
                 url:      ajaxUrl,
@@ -59,18 +33,33 @@
                 type:     'GET',
                 success:  function (data, textStatus, jqXHR) {
                     isLoading = false;
-                    hideProgress('#home-item-detail-container', function () {
-                        console.log('progress hidden')
-                    });
                     $('#home-item-detail-container').html(data);
                     $('#home-item-detail').fadeIn(500);
                 },
                 error:    function (jqXHR, textStatus, errorThrown) {
-                    console.log('error loading data');
-                    hideProgress('#home-item-detail-container');
+                    console.log('error loading data: {jq} {text} {error}'.f({
+                        jq:    JSON.stringify(jqXHR),
+                        text:  textStatus,
+                        error: errorThrown
+                    }));
+                    $('#home-item-detail-container').html('<div id="err-modal" class="modal hide fade" role="dialog">' +
+                            '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                            '<h3>Error</h3>' +
+                            '</div>' +
+                            '<div class="modal-body">' +
+                            '<p>Sorry, it looks like the server gremlins broke something. ' +
+                            'We\'ll get right around to fixing it as soon as possible!</p>' +
+                            '<p><b>Error code</b>: {status} ({text})</p>'.f({status: jqXHR.status, text: jqXHR.statusText}) +
+                            '</div>' +
+                            '<div class="modal-footer">' +
+                            '<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button>' +
+                            '</div></div>');
+                    $('#err-modal').modal();
                 },
                 complete: function (jqXHR, textStatus) {
                     console.log('ajax complete');
+                    hideProgress('#home-item-detail-container');
                 }
             });
         }
@@ -78,8 +67,8 @@
     // Counts the elements in the item list and puts the result at the very bottom
         function countListItems() {
             var count = getListItemCount();
-            var str = count != 1 ? ' items' : ' item';
-            $('#home-item-list-footer').html(count + str);
+            var name = count != 1 ? 'items' : 'item';
+            $('#home-item-list-footer').html('{c} {n}'.f({c: count, n: name}));
         }
         function setSelected(element) {
             var items = getListItems();
@@ -87,7 +76,7 @@
             $(element).addClass('active');
         }
         function getAll() {
-            var type = $('#home-sidebar ul').children().filter('.active').attr('data-type');
+            var type = $('#home-sidebar ul').children().filter('.active').data('type');
             var url = '<c:url value="/ajax"/>?mode=all&type=' + type;
 
             showProgress('#home-item-list-container');
@@ -96,16 +85,19 @@
                 $(getListItems()).remove();
                 $.each(data, function (index, value) {
                     console.log(value);
-                    var htmlstr = '<li data-itemid=' + value.id + ' style="display: none;">' +
-                            value.description + '</li>';
+                    var htmlstr = '<li data-itemid="{id}" style="display: none;">{desc}</li>'.f({
+                        id:   value.id,
+                        desc: value.description
+                    });
                     $('#home-item-list-footer').before(htmlstr);
                 });
-                $('#home-item-list').children().removeClass('active');
-                $('#home-item-list').children()[0].click();
-                setSelected($('#home-item-list').children()[0]);
-                initItemList();
                 hideProgress('#home-item-list-container');
                 $('#home-item-list li').fadeIn(500);
+                initItemList();
+                $('#home-item-list').children().removeClass('active');
+                $('#home-item-list').children()[0].click();
+                <%--setSelected(getListItems()[0]);--%>
+                onListItemClick(getListItems()[0], getListItems());
             });
         }
         function initItemList() {
@@ -131,9 +123,9 @@
 
             countListItems();
 
-            var itemId = $(element).attr('data-itemid');
+            var itemId = $(element).data('itemid');
 
-            var type = $('#home-sidebar ul').children().filter('.active').attr('data-type');
+            var type = $('#home-sidebar ul').children().filter('.active').data('type');
 
             var header;
             switch (type) {
@@ -168,8 +160,8 @@
             $(itemList).removeClass('active');
             $(element).addClass('active');
 
-            loadItem($('#home-sidebar ul').children().filter('.active').attr('data-type'),
-                    $(element).attr('data-itemid'));
+            loadItem($('#home-sidebar ul').children().filter('.active').data('type'),
+                    $(element).data('itemid'));
         }
 
         function showProgress(div) {
@@ -181,17 +173,22 @@
 
             var spinner = new Image();
             spinner.onload = function () {
-                var spindiv =
-                        '<div id="spinner" data-parent="' + div + '" style="' +
-                                'display: none; ' +
-                                'background-image: url(' + spinner.src + '); ' +
-                                'width: ' + this.width + 'px; ' +
-                                'height: ' + this.height + 'px; ' +
-                                'z-index: 9001;"></div>';
+                var spindiv = ('<div id="spinner" data-parent="{div}" style="' +
+                        'display: none; ' +
+                        'background-image: url({src}); ' +
+                        'width: {width}px; ' +
+                        'height: {height}px; ' +
+                        'z-index: 900"></div>').f({
+                            div:    div,
+                            src:    spinner.src,
+                            width:  this.width,
+                            height: this.height
+                        });
 
                 $('body').append(spindiv);
-                $('#spinner').center(div);
-                $('#spinner').fadeIn(500);
+                var spin = $('body').find('#spinner[data-parent="{div}"]'.f({div: div}));
+                spin.center(div);
+                spin.fadeIn(500);
             };
 
             spinner.src = loadingImage;
@@ -199,10 +196,11 @@
         function hideProgress(div) {
             div = typeof div !== 'undefined' ? div : 'body';
             console.log('hide spinner in ' + div);
+
+            $('body').find('#spinner[data-parent="{div}"]'.f({div: div})).each(function () {
+                $(this).fadeOut(500, function () {$(this).remove()})
+            });
             isLoading = false;
-            $('body').find('#spinner').filter(function () {
-                return $(this).attr('data-parent') === div
-            }).fadeOut(500, function () {$(this).remove()});
         }
 
     // Simple one-liner methods

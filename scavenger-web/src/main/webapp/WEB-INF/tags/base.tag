@@ -10,12 +10,13 @@
 <head>
     <title><c:out value="${page_title}"/></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Sans+Mono'
           rel='stylesheet'
           type='text/css'>
     <link href="<c:url value="/bootstrap/css/bootstrap.css"/>" rel="stylesheet"/>
     <link href="<c:url value="/css/application.css"/>" rel="stylesheet"/>
-    <script src="http://code.jquery.com/jquery-1.8.2.js" type="text/javascript"></script>
+
     <jsp:invoke fragment="optional_header"/>
 </head>
 <body>
@@ -34,7 +35,10 @@
         </div>
     </div>
 </div>
+<script src="<c:url value="/js/jquery-1.8.3.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/js/global.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/bootstrap/js/bootstrap.min.js"/>" type="text/javascript"></script>
+
 <jsp:invoke fragment="optional_footer"/>
 </body>
 </html>

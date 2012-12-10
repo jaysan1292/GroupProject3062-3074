@@ -3,7 +3,10 @@
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Checkpoint" required="true" %>
 
-<t:base_item_form name="Checkpoint ${item.id}">
+<t:base_item_form name="${item.description}">
+    <jsp:attribute name="modalconfirmbody">
+
+    </jsp:attribute>
     <jsp:body>
         <div class="control-group">
             <label class="control-label" for="latitude">Latitude</label>

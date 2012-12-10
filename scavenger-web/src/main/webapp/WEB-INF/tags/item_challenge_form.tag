@@ -3,13 +3,16 @@
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Challenge" required="true" %>
 
-<t:base_item_form name="Challenge ${item.id}">
-    <jsp:attribute name="formJavaScript">
+<t:base_item_form name="${item.description}">
+    <jsp:attribute name="formjavascript">
         <script type="text/javascript">
             $('#itemform input[type="reset"]').click(function () {
-                $('#challengeText').value($('#challengeText').attr('data-defaultvalue'));
+                $('#challengeText').value($('#challengeText').data('defaultvalue'));
             });
         </script>
+    </jsp:attribute>
+    <jsp:attribute name="modalconfirmbody">
+        <%--TODO: Challenge confirm modal body--%>
     </jsp:attribute>
     <jsp:body>
         <div class="control-group">

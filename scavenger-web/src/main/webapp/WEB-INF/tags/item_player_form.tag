@@ -4,11 +4,11 @@
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Player" required="true" %>
 
 <t:base_item_form name="${item.description}">
-    <jsp:attribute name="formJavaScript">
+    <jsp:attribute name="formjavascript">
         <script type="text/javascript">
             $(document).ready(function () {
                 $('#itemform').validate({
-                    rules:    {
+                    rules:      {
                         firstName:     'required',
                         lastName:      'required',
                         password:      {
@@ -24,7 +24,7 @@
                             digits:    true
                         }
                     },
-                    messages: {
+                    messages:   {
                         firstName:     'First name is required.',
                         lastName:      'Last name is required.',
                         passwordcheck: {
@@ -36,12 +36,48 @@
                             maxlength: 'Student ID must be 9 characters.',
                             digits:    'Student ID must only contain digits.'
                         }
+                    },
+                    showErrors: function (errorMap, errorList) {
+                        if ($('#itemform').validate().numberOfInvalids() != 0) {
+                            $('#save').removeAttr('data-toggle');
+                            $('#save').removeAttr('href');
+                        } else {
+                            $('#save').attr('data-toggle', 'modal');
+                            $('#save').attr('href', '#confirm-modal');
+                        }
+                        this.defaultShowErrors();
                     }
                 });
+
+                $('#save').click(function () {
+                    if ($('#itemform').validate().form()) {
+                        onSave();
+                    } else {
+                        $('#confirm-modal').modal('hide');
+                    }
+                });
+                $('#save-form').click(function () {savePlayer()});
             });
+
+            function onSave() {
+                var player = {
+                    id:            $('#player-id').data('playerid'),
+                    firstName:     $('#firstName').val(),
+                    lastName:      $('#lastName').val(),
+                    studentNumber: $('#studentNumber').val()
+                };
+            }
+
+            function savePlayer() {
+            }
         </script>
     </jsp:attribute>
+    <jsp:attribute name="modalconfirmbody">
+        <%--TODO: Player confirm box body--%>
+    </jsp:attribute>
     <jsp:body>
+        <span class="hide" id="player-id" data-playerid="${item.id}"></span>
+
         <div class="control-group">
             <label class="control-label" for="firstName">First Name</label>
 
@@ -69,6 +105,7 @@
                 <input type="text"
                        id="studentNumber"
                        name="studentNumber"
+                       pattern="[0-9]*"
                        value="${item.studentNumber}">
             </div>
         </div>
