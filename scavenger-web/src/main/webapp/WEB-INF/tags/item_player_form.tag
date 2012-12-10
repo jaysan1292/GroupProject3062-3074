@@ -66,14 +66,42 @@
                     lastName:      $('#lastName').val(),
                     studentNumber: $('#studentNumber').val()
                 };
+
+                $('#player-data').data('pid', player.id);
+                $('#player-first-name').text(player.firstName);
+                $('#player-last-name').text(player.lastName);
+                $('#player-student-number').text(player.studentNumber);
             }
 
             function savePlayer() {
+                var player = {
+                    id:            $('#player-data').data('pid'),
+                    firstName:     $('#player-first-name').text(),
+                    lastName:      $('#player-last-name').text(),
+                    studentNumber: $('#player-student-number').text()
+                };
+                player = JSON.stringify(player);
+
+                console.log(player);
+                //TODO: Send to service
             }
         </script>
     </jsp:attribute>
     <jsp:attribute name="modalconfirmbody">
-        <%--TODO: Player confirm box body--%>
+        <table class="table table-striped table-hover table-bordered" id="player-data">
+            <tr>
+                <td style="width:150px;">First Name</td>
+                <td id="player-first-name"></td>
+            </tr>
+            <tr>
+                <td style="width:150px;">Last Name</td>
+                <td id="player-last-name"></td>
+            </tr>
+            <tr>
+                <td style="width:150px;">Student ID</td>
+                <td id="player-student-number"></td>
+            </tr>
+        </table>
     </jsp:attribute>
     <jsp:body>
         <span class="hide" id="player-id" data-playerid="${item.id}"></span>
@@ -109,17 +137,17 @@
                        value="${item.studentNumber}">
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="password">Reset Password</label>
+        <%--<div class="control-group">--%>
+        <%--<label class="control-label" for="password">Reset Password</label>--%>
 
-            <div class="controls">
-                <input type="password"
-                       id="password"
-                       name="password"
-                       placeholder="Leave blank to save as-is">
-                <input type="password"
-                       id="passwordcheck">
-            </div>
-        </div>
+        <%--<div class="controls">--%>
+        <%--<input type="password"--%>
+        <%--id="password"--%>
+        <%--name="password"--%>
+        <%--placeholder="Leave blank to save as-is">--%>
+        <%--<input type="password"--%>
+        <%--id="passwordcheck">--%>
+        <%--</div>--%>
+        <%--</div>--%>
     </jsp:body>
 </t:base_item_form>
