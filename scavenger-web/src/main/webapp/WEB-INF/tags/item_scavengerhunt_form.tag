@@ -95,8 +95,8 @@
             var path = $('#path').find('option:selected').data('pathjson');
 
             var headings = $('#confirm-modal h4');
-            $(headings[0]).text(team.description.substr(0, 6));
-            $(headings[1]).text(path.description.substr(0, 6));
+            $(headings[0]).text('Team: ' + team.description.substr(0, 6));
+            $(headings[1]).text('Path: ' + path.description.substr(0, 6));
 
             console.log(team);
             $('#confirm-modal tr').not('.thead').remove();
