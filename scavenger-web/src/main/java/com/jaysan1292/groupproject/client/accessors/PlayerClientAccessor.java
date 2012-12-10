@@ -1,9 +1,13 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.jaysan1292.groupproject.data.Player;
+import com.jaysan1292.groupproject.data.Team;
+import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.sun.jersey.api.client.Client;
 
 import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,5 +23,21 @@ public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
 
     protected PlayerClientAccessor(URI host, Client client) {
         super(Player.class, client, client.resource(host).path("players"));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public List<Player> getPlayersWithoutTeam() throws GeneralServiceException {
+        List<Team> allTeams = Accessors.getTeamAccessor().getAll();
+        List<Player> players = getAll();
+
+        for (Team team : allTeams) {
+            for (Iterator<Player> it = players.iterator(); it.hasNext(); ) {
+                Player player = it.next();
+                if (team.getTeamMembers().containsValue(player)) it.remove();
+            }
+        }
+
+        return players;
     }
 }

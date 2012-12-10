@@ -3,8 +3,6 @@
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Team" required="true" %>
 
-<%--TODO: If a player is already on a team, do not show them in the dropdown box--%>
-
 <t:base_item_form name="${item.description}">
     <jsp:attribute name="formjavascript">
         <script type="text/javascript">
@@ -178,7 +176,7 @@
                     <tr id="all-players-row">
                         <td>
                             <select id="all-players" style="width:100%;">
-                                <c:forEach items="${applicationScope.playerAccessor.all}" var="player">
+                                <c:forEach items="${applicationScope.playerAccessor.playersWithoutTeam}" var="player">
                                     <option value='${player}'>${player.description}</option>
                                 </c:forEach>
                             </select>
