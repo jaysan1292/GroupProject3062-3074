@@ -34,7 +34,6 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="modalconfirmbody">
-        <%--TODO: Challenge confirm modal body--%>
         <h4>Challenge text:</h4><p class="well"></p>
     </jsp:attribute>
     <jsp:body>
