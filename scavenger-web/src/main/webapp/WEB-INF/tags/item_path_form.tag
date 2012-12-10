@@ -95,6 +95,7 @@
                     $('#add-btn').removeAttr('disabled');
                     $('#all-checkpoints').removeAttr('disabled');
                 }
+                setButtonClickHandlers();
             }
 
             function onSave() {
