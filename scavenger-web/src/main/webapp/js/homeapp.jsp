@@ -248,9 +248,7 @@
             div = typeof div !== 'undefined' ? div : 'body';
             console.log('hide spinner in ' + div);
 
-            $('body').find('#spinner[data-parent="{div}"]'.f({div: div})).each(function () {
-                $(this).fadeOut(500, function () {$(this).remove()})
-            });
+            $('body').find('#spinner[data-parent="{div}"]'.f({div: div})).each(function () {$(this).remove()});
             isLoading = false;
         }
 

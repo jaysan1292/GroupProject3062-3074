@@ -5,11 +5,14 @@
 <t:base page_title="Home">
     <jsp:attribute name="optional_footer">
         <script type="text/javascript">
-            $(document).ready(function () {
+            $(document).ready(function () {setLoginWindowLocation()});
+            $(window).resize(function () {setLoginWindowLocation()});
+
+            function setLoginWindowLocation() {
                 $('#signin-form')
                         .center()
                         .css('top', 100)
-            });
+            }
         </script>
     </jsp:attribute>
     <jsp:body>
