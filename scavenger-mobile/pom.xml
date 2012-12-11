@@ -55,7 +55,12 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>android-client</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
     <build>
