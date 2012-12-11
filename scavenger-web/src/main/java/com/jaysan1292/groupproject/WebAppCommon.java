@@ -14,12 +14,13 @@ import java.util.regex.Pattern;
  * Time: 11:37 AM
  */
 public class WebAppCommon {
-    public static final String JSP_LOGIN = "/WEB-INF/jsp/login.jsp";
     public static final String SRV_LOGIN = "/login";
-    public static final String ATTR_LOGIN = "login";
+    public static final String ATTR_CLIENT = "client";
+    public static final String ATTR_LOGIN = "loggedIn";
     public static final Logger log = Logger.getLogger(WebAppCommon.class);
 
     private WebAppCommon() {}
+
     private static final Pattern QUERY_STRING_AMP = Pattern.compile("&");
     private static final Pattern QUERY_STRING_VALUE = Pattern.compile("=");
 

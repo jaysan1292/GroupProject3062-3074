@@ -116,9 +116,10 @@ public class Path extends BaseEntity {
     }
 
     public String description() {
-        return String.format("PATH%02d: %d checkpoints",
+        return String.format("PATH%02d: %d %s",
                              pathId,
-                             checkpoints.size());
+                             checkpoints.size(),
+                             (checkpoints.size() != 1) ? "checkpoints" : "checkpoint");
     }
 
     @JsonIgnore

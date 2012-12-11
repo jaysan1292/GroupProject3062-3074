@@ -148,7 +148,7 @@
                 teamJson += '}}';
                 console.log(teamJson);
 
-                //TODO: Send to service
+                update('team', teamJson);
             }
         </script>
     </jsp:attribute>
@@ -176,7 +176,7 @@
                     <tr id="all-players-row">
                         <td>
                             <select id="all-players" style="width:100%;">
-                                <c:forEach items="${applicationScope.playerAccessor.playersWithoutTeam}" var="player">
+                                <c:forEach items="${sessionScope.client.playersWithoutTeam}" var="player">
                                     <option value='${player}'>${player.description}</option>
                                 </c:forEach>
                             </select>

@@ -29,7 +29,7 @@
 
                 console.log(challenge);
 
-                //TODO: Send to service
+                update('challenge', challenge);
             }
         </script>
     </jsp:attribute>

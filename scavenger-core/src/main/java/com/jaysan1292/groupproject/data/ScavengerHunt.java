@@ -118,9 +118,10 @@ public final class ScavengerHunt extends BaseEntity {
     }
 
     public String description() {
-        return String.format("SCHT%02d: %d members, %s completed",
+        return String.format("SCHT%02d: %d %s, %s completed",
                              scavengerHuntId,
                              team.getTeamMembers().size(),
+                             (team.getTeamMembers().size() != 1) ? "members" : "member",
                              completionStatus());
     }
 

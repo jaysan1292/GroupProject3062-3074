@@ -172,14 +172,13 @@
 
                 console.log(path);
 
-                console.log('before clean');
                 cleanOutput(path);
-                console.log('after clean');
 
                 path = JSON.stringify(path);
 
                 console.log(path);
-                //TODO: Send to service
+
+                update('path', path);
             }
         </script>
     </jsp:attribute>
@@ -213,7 +212,7 @@
                 <tr id="all-checkpoints-row">
                     <td>
                         <select id="all-checkpoints" style="width:100%;">
-                            <c:forEach items="${applicationScope.checkpointAccessor.all}" var="checkpoint">
+                            <c:forEach items="${sessionScope.client.allCheckpoints}" var="checkpoint">
                                 <option value='${checkpoint}'>${checkpoint.description}</option>
                             </c:forEach>
                         </select>

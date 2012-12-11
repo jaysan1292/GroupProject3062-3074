@@ -1,7 +1,9 @@
 package com.jaysan1292.groupproject.web.servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jaysan1292.groupproject.WebAppCommon;
 import com.jaysan1292.groupproject.client.ScavengerClient;
+import com.jaysan1292.groupproject.client.accessors.Accessors;
 import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.util.SerializationUtils;
@@ -29,6 +31,9 @@ import static javax.ws.rs.core.Response.Status;
  */
 public class AjaxServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // imaginary network lag, just because ;p
+        try {Thread.sleep(500);} catch (InterruptedException ignored) {}
+
         Map<String, String> queryParams = WebAppCommon.queryStringToMap(request);
         String type = queryParams.get("type");
         String mode = queryParams.get("mode");
@@ -41,8 +46,15 @@ public class AjaxServlet extends HttpServlet {
             sendBadRequestResponse(response, "Mode not specified.");
             return;
         }
-        ScavengerClient client = new ScavengerClient("999999999", "admin");
-//        ScavengerClient client = (ScavengerClient) request.getSession().getAttribute("client");
+
+        // Shouldn't be null because you need to be logged in to have this session attribute
+        ScavengerClient client = (ScavengerClient) request.getSession().getAttribute(WebAppCommon.ATTR_CLIENT);
+
+        // ..but let's check for sanity anyway
+        if (client == null) {
+            // in the case that this does happen, redirect to /
+            response.sendRedirect(request.getServletContext().getContextPath());
+        }
 
         if (mode.equals("one")) {
             //region Get single item
@@ -93,9 +105,8 @@ public class AjaxServlet extends HttpServlet {
             //endregion
         } else if (mode.equals("all")) {
             //region Get all items
-            List item;
+            List<? extends BaseEntity> item;
             try {
-                item = null;
                 if (type.equals("scavengerhunt")) {
                     item = client.getAllScavengerHunts();
                 } else if (type.equals("challenge")) {
@@ -127,6 +138,30 @@ public class AjaxServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO: Handle form submission
         // Possibly delegate form processing to separate classes
+        String type = request.getParameter("type");
+        String obj = request.getParameter("obj");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            if (type.equals("challenge")) {
+                Accessors.getChallengeAccessor().update(mapper.readValue(obj, Challenge.class));
+            } else if (type.equals("checkpoint")) {
+                Accessors.getCheckpointAccessor().update(mapper.readValue(obj, Checkpoint.class));
+            } else if (type.equals("path")) {
+                Accessors.getPathAccessor().update(mapper.readValue(obj, Path.class));
+            } else if (type.equals("player")) {
+                Accessors.getPlayerAccessor().update(mapper.readValue(obj, Player.class));
+            } else if (type.equals("scavengerhunt")) {
+                Accessors.getScavengerHuntAccessor().update(mapper.readValue(obj, ScavengerHunt.class));
+            } else if (type.equals("team")) {
+                Accessors.getTeamAccessor().update(mapper.readValue(obj, Team.class));
+            } else {
+                throw new ServletException("Invalid type: " + type);
+            }
+        } catch (GeneralServiceException e) {
+            WebAppCommon.log.error(e.getMessage(), e);
+            throw new ServletException(e);
+        }
+        response.setStatus(Status.NO_CONTENT.getStatusCode());
     }
 
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")

@@ -183,7 +183,7 @@
 
             console.log(shjson);
 
-            //TODO: Send to service
+            update('scavengerhunt', shjson);
         }
     </script>
 </jsp:attribute>
@@ -197,7 +197,7 @@
             <select id="team"
                     name="team"
                     data-defaultvalue="${item.team.id}">
-                <c:forEach items="${applicationScope.teamAccessor.all}" var="team">
+                <c:forEach items="${sessionScope.client.allTeams}" var="team">
                     <option data-teamjson='${team}' value="${team.id}">${team.description}</option>
                 </c:forEach>
             </select>
@@ -209,7 +209,7 @@
         <div class="controls">
             <select id="path"
                     name="path">
-                <c:forEach items="${applicationScope.pathAccessor.all}" var="path">
+                <c:forEach items="${sessionScope.client.allPaths}" var="path">
                     <option data-pathjson='${path}' value="${path.id}">${path.description}</option>
                 </c:forEach>
             </select>

@@ -7,13 +7,16 @@
         var isLoading = false;
 
     // Initialize
-        $(document).ready(function () {
+        $(document).ready(function () {initAll()});
+
+        function initAll() {
+            getListItems().remove();
             getAll();
 
             // Set click listeners for left sidebar
             menuItems = $('#home-sidebar ul').children().not('.nav-header');
             menuItems.click(function () {onSidebarItemClick(this)});
-        });
+        }
 
     // The meat of the web app. Retrieve an item of the given type from the server
     // and display it in the detail view.
@@ -162,6 +165,54 @@
 
             loadItem($('#home-sidebar ul').children().filter('.active').data('type'),
                     $(element).data('itemid'));
+        }
+
+        const updateTypes = 'challenge,checkpoint,path,player,scavengerhunt,team'.split(',');
+    // Update the given item
+        function update(type, json) {
+            if (typeof type !== 'string' || typeof json !== 'string') {
+                throw new TypeError('Both arguments must be strings');
+            }
+            if ($.inArray(type, updateTypes) == -1) {
+                throw new Error('Incorrect type: ' + type);
+            }
+            var obj = $.parseJSON(json);
+            var host = '<c:url value="/ajax"/>';
+
+            console.log(host);
+
+            var sendobj = {
+                type: type,
+                obj:  json
+            };
+
+            $.ajax({
+                url:      host,
+                type:     'POST',
+                data:     sendobj,
+                success:  function (data, textStatus, jqXHR) {
+                    var alert = '<div class="alert alert-success"><strong>Success!</strong> Item successfully updated.</div>';
+                    $('body').append(alert);
+                    $('.alert').width(300)
+                            .center()
+                            .css('top', -10)
+                            .animate({top: 40}, 500)
+                            .animate({top: '+=0'}, 2500)
+                            .animate({top: -10}, 500, function () {$('.alert').alert('close')});
+                    initAll();
+                },
+                error:    function (jqXHR, textStatus, errorThrown) {
+                    var alert = '<div class="alert alert-error"><strong>Error!</strong> Item did not update successfully.</div>';
+                    $('body').append(alert);
+                    $('.alert').width(300).center().css('top', -10)
+                            .animate({top: 40}, 500)
+                            .animate({top: '+=0'}, 2500)
+                            .animate({top: -10}, 500, function () {$('.alert').alert('close')});
+                },
+                complete: function (jqXHR, textStatus) {
+                    $('#confirm-modal').modal('hide');
+                }
+            });
         }
 
         function showProgress(div) {

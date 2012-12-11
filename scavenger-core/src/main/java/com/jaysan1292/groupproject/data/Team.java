@@ -83,9 +83,10 @@ public class Team extends BaseEntity {
     }
 
     public String description() {
-        return String.format("TEAM%02d: %d members",
+        return String.format("TEAM%02d: %d %s",
                              teamId,
-                             teamMembers.size());
+                             teamMembers.size(),
+                             (teamMembers.size() != 1) ? "members" : "member");
     }
 
     @JsonIgnore

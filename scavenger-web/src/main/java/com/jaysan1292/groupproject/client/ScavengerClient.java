@@ -2,7 +2,9 @@ package com.jaysan1292.groupproject.client;
 
 import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import com.jaysan1292.groupproject.service.security.AuthorizationException;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
@@ -17,25 +19,26 @@ public class ScavengerClient {
     private final Client client;
     private final WebResource root;
 
-    private boolean administrator;
+    private boolean credentialsSet;
 
-    public ScavengerClient() {
+    public ScavengerClient() throws AuthorizationException {
         this(null);
     }
 
-    public ScavengerClient(URI host) {
+    public ScavengerClient(URI host) throws AuthorizationException {
         this(host, null, null);
     }
 
-    public ScavengerClient(String username, String password) {
+    public ScavengerClient(String username, String password) throws AuthorizationException {
         this(null, username, password);
     }
 
-    public ScavengerClient(URI host, String username, String password) {
+    public ScavengerClient(URI host, String username, String password) throws AuthorizationException {
         client = Client.create();
         if (host == null) host = getDefaultHost(client);
         if ((username != null) && (password != null)) {
             client.addFilter(new HTTPBasicAuthFilter(username, password));
+            credentialsSet = true;
         }
         setHost(client, host);
         root = client.resource(host);
@@ -43,8 +46,16 @@ public class ScavengerClient {
         onCreate();
     }
 
-    private void onCreate() {
-        //TODO: Check if admin
+    private void onCreate() throws AuthorizationException {
+        // check authentication;
+        // service returns 200 OK if credentials are valid
+        // service returns 400 Bad Request if credentials are invalid
+        if (credentialsSet) {
+            ClientResponse response = root.path("auth").get(ClientResponse.class);
+            if (response.getStatus() != 200) {
+                throw new AuthorizationException("Invalid credentials!");
+            }
+        }
     }
 
     //region /players
@@ -55,6 +66,10 @@ public class ScavengerClient {
 
     public List<Player> getAllPlayers() throws GeneralServiceException {
         return getPlayerAccessor().getAll();
+    }
+
+    public List<Player> getPlayersWithoutTeam() throws GeneralServiceException {
+        return getPlayerAccessor().getPlayersWithoutTeam();
     }
 
     public void updatePlayer(Player player) throws GeneralServiceException {

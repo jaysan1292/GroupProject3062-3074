@@ -34,7 +34,8 @@ public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
         for (Team team : allTeams) {
             for (Iterator<Player> it = players.iterator(); it.hasNext(); ) {
                 Player player = it.next();
-                if (team.getTeamMembers().containsValue(player)) it.remove();
+                // Remove players from output list if they are already on a team or the "player" is an administrator
+                if (player.isAdmin() || team.getTeamMembers().containsValue(player)) it.remove();
             }
         }
 

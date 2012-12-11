@@ -2,24 +2,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:base>
-    <jsp:attribute name="page_title">Home</jsp:attribute>
+<t:base page_title="Home">
+    <jsp:attribute name="optional_footer">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#signin-form')
+                        .center()
+                        .css('top', 100)
+            });
+        </script>
+    </jsp:attribute>
     <jsp:body>
-        <div class="container">
-            <div class="row">
-                <div class="span12">
-                    <div class="hero-unit">
-                        <h1>Hello, world!</h1>
-
-                        <p>Seen for the very first time!</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span6 offset3">
-                    <t:login/>
-                </div>
-            </div>
-        </div>
+        <t:login/>
     </jsp:body>
 </t:base>

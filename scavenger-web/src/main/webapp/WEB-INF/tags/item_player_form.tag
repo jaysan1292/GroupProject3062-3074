@@ -83,7 +83,8 @@
                 player = JSON.stringify(player);
 
                 console.log(player);
-                //TODO: Send to service
+
+                update('player', player);
             }
         </script>
     </jsp:attribute>

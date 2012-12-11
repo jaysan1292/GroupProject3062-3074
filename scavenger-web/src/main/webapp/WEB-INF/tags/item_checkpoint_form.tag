@@ -52,7 +52,7 @@
 
                 console.log(checkpoint);
 
-                //TODO: Send to service
+                update('checkpoint', checkpoint);
             }
         </script>
     </jsp:attribute>
@@ -97,7 +97,7 @@
                 <select id="challenge"
                         name="challenge"
                         data-defaultvalue="${item.challenge.id}">
-                    <c:forEach items="${applicationScope.challengeAccessor.all}" var="challenge">
+                    <c:forEach items="${sessionScope.client.allChallenges}" var="challenge">
                         <option value='${challenge}'>${challenge.description}</option>
                     </c:forEach>
                 </select>
