@@ -158,6 +158,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
             getManager().delete(id);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (GeneralServiceException e) {
+            Global.log.error(e.getMessage(), e);
             return Response.status(Response.Status.BAD_REQUEST)
                            .entity(encodeErrorMessage(e))
                            .build();
@@ -184,7 +185,7 @@ public abstract class AbstractAccessor<T extends BaseEntity> {
                        .build();
     }
 
-    private void cleanPassword(T item) {
+    protected void cleanPassword(T item) {
         if (item instanceof Player) {
             ((Player) item).setPassword(null);
         } else if (item instanceof Team) {

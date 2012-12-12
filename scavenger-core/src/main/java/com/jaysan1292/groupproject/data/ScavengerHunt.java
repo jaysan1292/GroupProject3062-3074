@@ -4,9 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** @author Jason Recillo */
 public final class ScavengerHunt extends BaseEntity {
-    public static final ScavengerHunt INVALID = new ScavengerHunt(-1, new Team(), new Path(), new DateTime(0), new DateTime(0));
+    public static final ScavengerHunt INVALID = new ScavengerHunt(-1, new Team(), new Path(),
+                                                                  new ArrayList<Checkpoint>(),
+                                                                  new DateTime(0), new DateTime(0));
     /**
      * The ID for this particular instance of the scavenger hunt.
      * Corresponds with the ID for this entry in the database.
@@ -23,6 +28,9 @@ public final class ScavengerHunt extends BaseEntity {
      */
     private Path path;
 
+    /** Keeps track of completed checkpoints. */
+    private List<Checkpoint> completedCheckpoints;
+
     /** The time that this team started the Scavenger Hunt. */
     private long startTime;
 
@@ -33,16 +41,18 @@ public final class ScavengerHunt extends BaseEntity {
         this(INVALID);
     }
 
-    public ScavengerHunt(long scavengerHuntId, Team team, Path path, DateTime startTime, DateTime finishTime) {
+    public ScavengerHunt(long scavengerHuntId, Team team, Path path, List<Checkpoint> completedCheckpoints,
+                         DateTime startTime, DateTime finishTime) {
         this.scavengerHuntId = scavengerHuntId;
         this.team = team;
         this.path = path;
+        this.completedCheckpoints = completedCheckpoints;
         this.startTime = startTime.getMillis();
         this.finishTime = finishTime.getMillis();
     }
 
     public ScavengerHunt(ScavengerHunt other) {
-        this(other.scavengerHuntId, other.team, other.path, other.getStartTime(), other.getFinishTime());
+        this(other.scavengerHuntId, other.team, other.path, other.completedCheckpoints, other.getStartTime(), other.getFinishTime());
     }
 
     //region JavaBean
@@ -61,6 +71,10 @@ public final class ScavengerHunt extends BaseEntity {
 
     public Path getPath() {
         return path;
+    }
+
+    public List<Checkpoint> getCompletedCheckpoints() {
+        return completedCheckpoints;
     }
 
     @JsonIgnore
@@ -83,6 +97,10 @@ public final class ScavengerHunt extends BaseEntity {
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    public void setCompletedCheckpoints(List<Checkpoint> completedCheckpoints) {
+        this.completedCheckpoints = completedCheckpoints;
     }
 
     @JsonIgnore
@@ -112,7 +130,7 @@ public final class ScavengerHunt extends BaseEntity {
         this.startTime = startTime;
     }
 
-    /** This is only mean for proper JSON serialization. Use setFinishTime(DateTime) instead. */
+    /** This is only meant for proper JSON serialization. Use setFinishTime(DateTime) instead. */
     public void setFinishTimeMillis(long finishTime) {
         this.finishTime = finishTime;
     }
@@ -126,9 +144,11 @@ public final class ScavengerHunt extends BaseEntity {
     }
 
     private String completionStatus() {
-        float checkpoints = path.getCheckpoints().size();
-        //TODO: Completion status; i.e., percent of checkpoints completed
-        return "0%";
+        int totalCheckpoints = path.getCheckpoints().size();
+        int completed = completedCheckpoints.size();
+
+        int percent = (int) Math.floor((completed * 100.0) / totalCheckpoints);
+        return String.format("%d%%", percent);
     }
 
     @Override

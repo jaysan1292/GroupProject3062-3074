@@ -1,19 +1,24 @@
 package com.jaysan1292.groupproject.service.db;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jaysan1292.groupproject.Global;
+import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.jaysan1292.groupproject.data.ScavengerHuntBuilder;
 import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,11 +28,13 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
     public static final String TABLE_NAME = "scavengerhunt_t";
     public static final String ID_COLUMN = "scavenger_hunt_id";
     public static final String PATH_COLUMN = "path";
+    public static final String COMPLETED_CHECKPOINTS_COLUMN = "completed_checkpoints";
     public static final String TEAM_COLUMN = "team";
     public static final String START_TIME_COLUMN = "start_time";
     public static final String FINISH_TIME_COLUMN = "finish_time";
     private static final PathManager pathManager = new PathManager();
     private static final TeamManager teamManager = new TeamManager();
+    private static final CheckpointManager checkpointManager = new CheckpointManager();
 
     public ScavengerHuntManager() {
         super(ScavengerHunt.class);
@@ -49,6 +56,15 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
                 .setFinishTime(new DateTime(rs.getTimestamp(FINISH_TIME_COLUMN, cal)));
 
         try {
+            List<Checkpoint> completedCheckpoints = Lists.newArrayList();
+            String completed = StringUtils.defaultString(rs.getString(COMPLETED_CHECKPOINTS_COLUMN));
+            if (!completed.isEmpty()) {
+                String[] checkpointIds = completed.split(",");
+                for (String checkpointId : checkpointIds) {
+                    completedCheckpoints.add(checkpointManager.get(NumberUtils.toLong(checkpointId)));
+                }
+                builder.setCompletedCheckpoints(completedCheckpoints);
+            }
             builder.setPath(pathManager.get(rs.getLong(PATH_COLUMN)));
             builder.setTeam(teamManager.get(rs.getLong(TEAM_COLUMN)));
         } catch (GeneralServiceException e) {

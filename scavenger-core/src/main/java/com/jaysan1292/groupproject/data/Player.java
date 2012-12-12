@@ -1,6 +1,7 @@
 package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jaysan1292.groupproject.service.security.EncryptionUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /** @author Jason Recillo */
@@ -93,6 +94,10 @@ public class Player extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setPlainPassword(String password) {
+        this.password = EncryptionUtils.encryptPassword(password);
     }
 
     @JsonIgnore

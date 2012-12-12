@@ -33,6 +33,10 @@
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
+        <url-pattern>/index.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
         <url-pattern>/home.jsp</url-pattern>
     </filter-mapping>
 </web-app>

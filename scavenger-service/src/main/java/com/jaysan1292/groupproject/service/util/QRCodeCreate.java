@@ -15,6 +15,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Hashtable;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -52,7 +53,7 @@ public class QRCodeCreate {
             }
 
             //gets the image
-            String filePath = "C:/Users/Kazedayz/Dropbox/Shared - COMP 3074-3062 Group Project/QR code - 'Hello, world!'.png";
+            String filePath = UUID.randomUUID() + "_qr.png";
             File file = new File(filePath);
             try {
                 MatrixToImageWriter.writeToFile(matrix, "PNG", file);

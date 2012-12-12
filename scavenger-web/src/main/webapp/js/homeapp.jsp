@@ -16,6 +16,7 @@
             // Set click listeners for left sidebar
             menuItems = $('#home-sidebar ul').children().not('.nav-header');
             menuItems.click(function () {onSidebarItemClick(this)});
+            $('#create-new').click(function () {createNew()});
         }
 
     // The meat of the web app. Retrieve an item of the given type from the server
@@ -182,8 +183,9 @@
             console.log(host);
 
             var sendobj = {
-                type: type,
-                obj:  json
+                type:  type,
+                obj:   json,
+                isnew: $('#home-item-detail').data('isnew')
             };
 
             $.ajax({
@@ -213,6 +215,20 @@
                     $('#confirm-modal').modal('hide');
                 }
             });
+        }
+
+        function createNew() {
+            $.ajax({
+                url:      '<c:url value="/ajax"/>?mode=create&type={type}'.f({
+                    type: $('#home-sidebar ul li.active').data('type')
+                }),
+                dataType: 'html',
+                type:     'GET',
+                success:  function (data, textStatus, jqXHR) {
+                    $('#home-item-detail-container').html(data);
+                    $('#home-item-detail').fadeIn(500);
+                }
+            })
         }
 
         function showProgress(div) {

@@ -45,7 +45,20 @@
                 </div>
                 <div class="span4" id="home-item-list-container">
                     <div class="container-fluid" id="home-item-list-header">
-                        <h4>Scavenger Hunts</h4>
+                        <table style="width:100%">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <h4>Scavenger Hunts</h4>
+                                </td>
+                                <td>
+                                    <a id="create-new"
+                                       class="icon-plus pull-right"
+                                       href="javascript:void(0)"></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <ul id="home-item-list">
                         <li id="home-item-list-footer"></li>

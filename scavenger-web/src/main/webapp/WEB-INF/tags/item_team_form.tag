@@ -2,8 +2,10 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Team" required="true" %>
+<%@ attribute name="isnew" type="java.lang.Boolean" required="true" %>
+<%@ attribute name="type" type="java.lang.String" required="true" %>
 
-<t:base_item_form name="${item.description}">
+<t:base_item_form name="${item.description}" isnew="${isnew}" type="${type}">
     <jsp:attribute name="formjavascript">
         <script type="text/javascript">
             $(document).ready(initTeam);

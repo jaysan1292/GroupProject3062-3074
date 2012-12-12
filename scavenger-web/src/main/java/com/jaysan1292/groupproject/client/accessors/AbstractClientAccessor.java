@@ -21,7 +21,7 @@ import java.util.List;
  */
 public abstract class AbstractClientAccessor<T extends BaseEntity> {
     private final Class<T> _cls;
-    private final WebResource _res;
+    protected final WebResource _res;
     protected final Client client;
 
     public AbstractClientAccessor(Class<T> cls, Client client, WebResource res) {
@@ -102,7 +102,8 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
         // HTTP status 202: ACCEPTED
         if (status != 202) {
             throw new GeneralServiceException("Failed: HTTP code 202 expected, got " +
-                                              status + " instead.");
+                                              status + " instead. (Service returned: " +
+                                              response.getEntity(String.class) + ')');
         }
     }
 }

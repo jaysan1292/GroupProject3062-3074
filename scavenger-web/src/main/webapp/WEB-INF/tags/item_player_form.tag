@@ -2,8 +2,10 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ tag isELIgnored="false" %>
 <%@ attribute name="item" type="com.jaysan1292.groupproject.data.Player" required="true" %>
+<%@ attribute name="isnew" type="java.lang.Boolean" required="true" %>
+<%@ attribute name="type" type="java.lang.String" required="true" %>
 
-<t:base_item_form name="${item.description}">
+<t:base_item_form name="${item.description}" isnew="${isnew}" type="${type}">
     <jsp:attribute name="formjavascript">
         <script type="text/javascript">
             $(document).ready(function () {
@@ -12,10 +14,13 @@
                         firstName:     'required',
                         lastName:      'required',
                         password:      {
+                            required:  ${isnew},
                             minlength: 6
                         },
                         passwordcheck: {
-                            equalTo: '#password'
+                            required:  ${isnew},
+                            minlength: 6,
+                            equalTo:   '#password'
                         },
                         studentNumber: {
                             required:  true,
@@ -27,8 +32,13 @@
                     messages:   {
                         firstName:     'First name is required.',
                         lastName:      'Last name is required.',
+                        password:      {
+                            equalTo:  'Both passwords must match.',
+                            required: 'Password is required.'
+                        },
                         passwordcheck: {
-                            equalTo: 'Both passwords must match.'
+                            equalTo:  'Both passwords must match.',
+                            required: 'Password is required.'
                         },
                         studentNumber: {
                             required:  'Student ID is required.',
@@ -65,12 +75,19 @@
                     firstName:     $('#firstName').val(),
                     lastName:      $('#lastName').val(),
                     studentNumber: $('#studentNumber').val()
+                    <c:if test="${isnew}">,
+                    plainPassword: $('#password').val()
+                    </c:if>
                 };
 
                 $('#player-data').data('pid', player.id);
                 $('#player-first-name').text(player.firstName);
                 $('#player-last-name').text(player.lastName);
                 $('#player-student-number').text(player.studentNumber);
+            <c:if test="${isnew}">
+                $('#player-password').text(player.plainPassword);
+            </c:if>
+
             }
 
             function savePlayer() {
@@ -79,6 +96,9 @@
                     firstName:     $('#player-first-name').text(),
                     lastName:      $('#player-last-name').text(),
                     studentNumber: $('#player-student-number').text()
+                    <c:if test="${isnew}">,
+                    plainPassword: $('#player-password').text()
+                    </c:if>
                 };
                 player = JSON.stringify(player);
 
@@ -102,6 +122,12 @@
                 <td style="width:150px;">Student ID</td>
                 <td id="player-student-number"></td>
             </tr>
+            <c:if test="${isnew}">
+                <tr>
+                    <td style="width:150px;">Password</td>
+                    <td id="player-password"></td>
+                </tr>
+            </c:if>
         </table>
     </jsp:attribute>
     <jsp:body>
@@ -138,17 +164,22 @@
                        value="${item.studentNumber}">
             </div>
         </div>
-        <%--<div class="control-group">--%>
-        <%--<label class="control-label" for="password">Reset Password</label>--%>
+        <c:if test="${isnew}">
+            <div class="control-group">
+                <label id="password-label" class="control-label" for="password"></label>
+                <label for="passwordcheck" style="display: none;"></label>
 
-        <%--<div class="controls">--%>
-        <%--<input type="password"--%>
-        <%--id="password"--%>
-        <%--name="password"--%>
-        <%--placeholder="Leave blank to save as-is">--%>
-        <%--<input type="password"--%>
-        <%--id="passwordcheck">--%>
-        <%--</div>--%>
-        <%--</div>--%>
+                <div class="controls">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Password">
+                    <input type="password"
+                           id="passwordcheck"
+                           name="passwordcheck"
+                           placeholder="Confirm Password">
+                </div>
+            </div>
+        </c:if>
     </jsp:body>
 </t:base_item_form>

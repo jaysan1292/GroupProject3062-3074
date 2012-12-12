@@ -21,12 +21,23 @@ public class LoginFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        if (((HttpServletRequest) req).getSession().getAttribute(WebAppCommon.ATTR_CLIENT) == null) {
-            ((HttpServletResponse) resp).sendRedirect(req.getServletContext().getContextPath());
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
+
+        Object client = request.getSession().getAttribute(WebAppCommon.ATTR_CLIENT);
+
+        if (request.getRequestURI().equals(request.getContextPath() + "/home.jsp")) {
+            if (client == null) {
+                response.sendRedirect(request.getServletContext().getContextPath());
+            }
+        } else if (request.getRequestURI().equals(request.getContextPath() + '/')) {
+            if (client != null) {
+                response.sendRedirect(request.getServletContext().getContextPath() + "/home.jsp");
+            }
         }
-        chain.doFilter(req, resp);
+
+        chain.doFilter(request, response);
     }
 
-    public void init(FilterConfig config) throws ServletException {
-    }
+    public void init(FilterConfig config) throws ServletException {}
 }

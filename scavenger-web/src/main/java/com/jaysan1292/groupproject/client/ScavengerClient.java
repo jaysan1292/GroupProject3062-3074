@@ -1,5 +1,6 @@
 package com.jaysan1292.groupproject.client;
 
+import com.jaysan1292.groupproject.WebAppCommon;
 import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.security.AuthorizationException;
@@ -41,6 +42,7 @@ public class ScavengerClient {
             credentialsSet = true;
         }
         setHost(client, host);
+        WebAppCommon.log.info("Using service located at " + host.toString());
         root = client.resource(host);
 
         onCreate();
@@ -80,6 +82,10 @@ public class ScavengerClient {
         return getPlayerAccessor().create(player);
     }
 
+    public void deletePlayer(long id) throws GeneralServiceException {
+        deletePlayer(getPlayer(id));
+    }
+
     public void deletePlayer(Player player) throws GeneralServiceException {
         getPlayerAccessor().delete(player);
     }
@@ -102,6 +108,10 @@ public class ScavengerClient {
 
     public ScavengerHunt createScavengerHunt(ScavengerHunt scavengerHunt) throws GeneralServiceException {
         return getScavengerHuntAccessor().create(scavengerHunt);
+    }
+
+    public void deleteScavengerHunt(long id) throws GeneralServiceException {
+        deleteScavengerHunt(getScavengerHunt(id));
     }
 
     public void deleteScavengerHunt(ScavengerHunt scavengerHunt) throws GeneralServiceException {
@@ -128,6 +138,10 @@ public class ScavengerClient {
         return getChallengeAccessor().create(challenge);
     }
 
+    public void deleteChallenge(long id) throws GeneralServiceException {
+        deleteChallenge(getChallenge(id));
+    }
+
     public void deleteChallenge(Challenge challenge) throws GeneralServiceException {
         getChallengeAccessor().delete(challenge);
     }
@@ -150,6 +164,10 @@ public class ScavengerClient {
 
     public Checkpoint createCheckpoint(Checkpoint checkpoint) throws GeneralServiceException {
         return getCheckpointAccessor().create(checkpoint);
+    }
+
+    public void deleteCheckpoint(long id) throws GeneralServiceException {
+        deleteCheckpoint(getCheckpoint(id));
     }
 
     public void deleteCheckpoint(Checkpoint checkpoint) throws GeneralServiceException {
@@ -176,6 +194,10 @@ public class ScavengerClient {
         return getPathAccessor().create(path);
     }
 
+    public void deletePath(long id) throws GeneralServiceException {
+        deletePath(getPath(id));
+    }
+
     public void deletePath(Path path) throws GeneralServiceException {
         getPathAccessor().delete(path);
     }
@@ -198,6 +220,10 @@ public class ScavengerClient {
 
     public Team createTeam(Team team) throws GeneralServiceException {
         return getTeamAccessor().create(team);
+    }
+
+    public void deleteTeam(long id) throws GeneralServiceException {
+        deleteTeam(getTeam(id));
     }
 
     public void deleteTeam(Team team) throws GeneralServiceException {

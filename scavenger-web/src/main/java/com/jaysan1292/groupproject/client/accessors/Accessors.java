@@ -1,7 +1,6 @@
 package com.jaysan1292.groupproject.client.accessors;
 
 import com.google.common.collect.Lists;
-import com.jaysan1292.groupproject.WebAppCommon;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +91,6 @@ public class Accessors {
                 wadl = cli.resource(host).path("application.wadl").get(String.class);
             } catch (ClientHandlerException ignored) {}
             if (!StringUtils.isBlank(wadl)) {
-                WebAppCommon.log.info("Using service located at " + host.toString());
                 return host;
             }
         }

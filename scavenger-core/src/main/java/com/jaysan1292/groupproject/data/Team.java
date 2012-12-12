@@ -2,11 +2,13 @@ package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jaysan1292.groupproject.exceptions.ItemNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,10 +85,16 @@ public class Team extends BaseEntity {
     }
 
     public String description() {
-        return String.format("TEAM%02d: %d %s",
+        ArrayList<String> names = Lists.newArrayList();
+        for (Player player : teamMembers.values()) {
+            names.add(player.getFirstName());
+        }
+
+        return String.format("TEAM%02d: (%d %s) %s",
                              teamId,
                              teamMembers.size(),
-                             (teamMembers.size() != 1) ? "members" : "member");
+                             (teamMembers.size() != 1) ? "players" : "player",
+                             StringUtils.join(names, ", "));
     }
 
     @JsonIgnore

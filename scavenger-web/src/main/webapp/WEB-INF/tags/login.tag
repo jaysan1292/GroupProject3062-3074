@@ -10,6 +10,12 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password">
 
+            <div class="control-group" id="login-dev-section">
+                <h4>Developer:</h4>
+                <label for="host">Service URL
+                </label>
+                <input type="text" id="host" name="host">
+            </div>
             <c:if test="${not empty requestScope.errorMessage}">
                 <div class="control-group error">
                     <label class="control-label">${requestScope.errorMessage}</label>

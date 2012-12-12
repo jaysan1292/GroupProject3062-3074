@@ -2,6 +2,8 @@ package com.jaysan1292.groupproject.data;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 public class ScavengerHuntBuilder extends AbstractBuilder<ScavengerHunt> {
     private ScavengerHunt scavengerHunt;
 
@@ -33,6 +35,11 @@ public class ScavengerHuntBuilder extends AbstractBuilder<ScavengerHunt> {
 
     public ScavengerHuntBuilder setPath(Path path) {
         scavengerHunt.setPath(path);
+        return this;
+    }
+
+    public ScavengerHuntBuilder setCompletedCheckpoints(List<Checkpoint> completedCheckpoints) {
+        scavengerHunt.setCompletedCheckpoints(completedCheckpoints);
         return this;
     }
 
