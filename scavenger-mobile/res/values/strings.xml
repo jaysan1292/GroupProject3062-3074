@@ -5,4 +5,5 @@
     <string name="login_password_hint">Password</string>
     <string name="login_signin_label">Sign in</string>
     <string name="camera_label">Scan</string>
+    <string name="scannertitle">QR Code Scanner</string>
 </resources>
