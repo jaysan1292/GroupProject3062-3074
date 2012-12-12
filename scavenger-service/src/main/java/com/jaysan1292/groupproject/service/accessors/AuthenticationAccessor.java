@@ -147,7 +147,7 @@ public class AuthenticationAccessor {
     @GET
     public Response checkAuthorization() {
         try {
-            authorize(headers);
+            authorize(headers, AuthorizationLevel.MOBILE_USER);
             return Response.ok().build();
         } catch (AuthorizationException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
