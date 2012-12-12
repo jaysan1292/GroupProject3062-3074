@@ -1,8 +1,10 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
+import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
 import com.sun.jersey.api.client.Client;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -19,5 +21,13 @@ public class ScavengerHuntClientAccessor extends AbstractClientAccessor<Scavenge
 
     protected ScavengerHuntClientAccessor(URI host, Client client) {
         super(ScavengerHunt.class, client, client.resource(host).path("scavengerhunts"));
+    }
+
+    public ScavengerHunt getScavengerHunt(Player player) {
+        try {
+            return new ScavengerHunt().readJSON(_res.path("players/" + player.getId()).get(String.class));
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

@@ -47,6 +47,7 @@ public class ScavengerClient {
             credentialsSet = true;
         }
         setHost(client, host);
+
         MobileAppCommon.log.info("Using service located at " + host.toString());
         root = client.resource(host);
 
@@ -69,8 +70,16 @@ public class ScavengerClient {
         return getPlayerAccessor().get(id);
     }
 
+    public Player getPlayer(String studentId) throws GeneralServiceException {
+        return getPlayerAccessor().getPlayer(studentId);
+    }
+
     public ScavengerHunt getScavengerHunt(long id) throws GeneralServiceException {
         return getScavengerHuntAccessor().get(id);
+    }
+
+    public ScavengerHunt getScavengerHunt(Player player) throws GeneralServiceException {
+        return getScavengerHuntAccessor().getScavengerHunt(player);
     }
 
     public Challenge getChallenge(long id) throws GeneralServiceException {

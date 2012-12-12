@@ -1,8 +1,11 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
+import com.jaysan1292.groupproject.android.MobileAppCommon;
 import com.jaysan1292.groupproject.data.Player;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -19,5 +22,15 @@ public class PlayerClientAccessor extends AbstractClientAccessor<Player> {
 
     protected PlayerClientAccessor(URI host, Client client) {
         super(Player.class, client, client.resource(host).path("players"));
+    }
+
+    public Player getPlayer(String studentId) {
+        try {
+            ClientResponse response = _res.path("studentnumbers/" + studentId).get(ClientResponse.class);
+            return new Player().readJSON(response.getEntity(String.class));
+        } catch (IOException e) {
+            MobileAppCommon.log.error(e.getMessage(), e);
+            return null;
+        }
     }
 }
