@@ -8,8 +8,11 @@ import com.jaysan1292.groupproject.service.security.AuthorizationException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +30,26 @@ public class PlayerAccessor extends AbstractAccessor<Player> {
 
     protected PlayerManager getManager() {
         return manager;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("studentnumbers/{studentId: [0-9]*}")
+    public Response getPlayer(@PathParam("studentId") String studentId) {
+        try {
+            AuthenticationAccessor.authorize(headers, Player.class, studentId);
+            Player player = manager.getPlayer(studentId);
+
+            cleanPassword(player);
+
+            return Response
+                    .ok(player.toString(), MediaType.APPLICATION_JSON_TYPE)
+                    .build();
+        } catch (AuthorizationException e) {
+            return unauthorizedResponse(e);
+        } catch (SQLException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @GET

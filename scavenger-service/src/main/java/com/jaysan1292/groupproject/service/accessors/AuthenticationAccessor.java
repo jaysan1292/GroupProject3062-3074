@@ -86,13 +86,24 @@ public class AuthenticationAccessor {
                         parMap.put("ID", param);
                     } else if (param instanceof AuthorizationLevel) {
                         parMap.put("AuthLevel", param);
+                    } else if (param instanceof String) {
+                        if (((String) param).length() == 9) {
+                            parMap.put("StudentNumber", param);
+                        }
                     }
                 }
+                // Initialize all uninitialized parameters to prevent NPE
+                if (parMap.get("Class") == null) parMap.put("Class", Object.class);
+                if (parMap.get("ID") == null) parMap.put("ID", -1);
+                if (parMap.get("AuthLevel") == null) parMap.put("AuthLevel", AuthorizationLevel.ADMINISTRATOR);
+                if (parMap.get("StudentNumber") == null) parMap.put("StudentNumber", "");
+
                 // Now process them
                 Class cls = (Class) parMap.get("Class");
                 if (cls != null) {
                     if (cls.equals(Player.class)) {
-                        if (parMap.get("ID").equals(subject.getId())) {
+                        if (parMap.get("ID").equals(subject.getId()) ||
+                            parMap.get("StudentNumber").equals(subject.getStudentNumber())) {
                             // Players are allowed to look at their own information,
                             // so here authorization is successful
                             return;
