@@ -2,15 +2,13 @@ package com.jaysan1292.groupproject.data;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.beans.Transient;
-
 /** @author Jason Recillo */
 public abstract class BaseEntity extends JSONSerializable {
     public abstract long getId();
 
     public abstract void setId(long id);
 
-    @Transient
+    //    @Transient
     public String getDescription() {
         return StringUtils.abbreviate(description(), 40);
     }

@@ -1,7 +1,7 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
 import com.jaysan1292.groupproject.data.Team;
-import com.sun.jersey.api.client.Client;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.net.URI;
 
@@ -13,11 +13,17 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class TeamClientAccessor extends AbstractClientAccessor<Team> {
-    protected TeamClientAccessor(Client client) {
-        super(Team.class, client, client.resource(Accessors.getDefaultHost(client)).path("teams"));
+    protected TeamClientAccessor(DefaultHttpClient client) {
+        super(Team.class,
+              client,
+              URI.create(Accessors.getDefaultHost(client) + "/teams"),
+              Accessors.getAuthHeader());
     }
 
-    protected TeamClientAccessor(URI host, Client client) {
-        super(Team.class, client, client.resource(host).path("teams"));
+    protected TeamClientAccessor(URI host, DefaultHttpClient client) {
+        super(Team.class,
+              client,
+              URI.create(host.toString() + "/teams"),
+              Accessors.getAuthHeader());
     }
 }

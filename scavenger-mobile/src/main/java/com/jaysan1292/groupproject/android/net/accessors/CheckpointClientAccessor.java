@@ -1,7 +1,7 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
 import com.jaysan1292.groupproject.data.Checkpoint;
-import com.sun.jersey.api.client.Client;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.net.URI;
 
@@ -13,11 +13,17 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class CheckpointClientAccessor extends AbstractClientAccessor<Checkpoint> {
-    protected CheckpointClientAccessor(Client client) {
-        super(Checkpoint.class, client, client.resource(Accessors.getDefaultHost(client)).path("checkpoints"));
+    protected CheckpointClientAccessor(DefaultHttpClient client) {
+        super(Checkpoint.class,
+              client,
+              URI.create(Accessors.getDefaultHost(client) + "/checkpoints"),
+              Accessors.getAuthHeader());
     }
 
-    protected CheckpointClientAccessor(URI host, Client client) {
-        super(Checkpoint.class, client, client.resource(host).path("checkpoints"));
+    protected CheckpointClientAccessor(URI host, DefaultHttpClient client) {
+        super(Checkpoint.class,
+              client,
+              URI.create(host.toString() + "/checkpoints"),
+              Accessors.getAuthHeader());
     }
 }

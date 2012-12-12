@@ -1,7 +1,7 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
 import com.jaysan1292.groupproject.data.Path;
-import com.sun.jersey.api.client.Client;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.net.URI;
 
@@ -13,11 +13,17 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class PathClientAccessor extends AbstractClientAccessor<Path> {
-    protected PathClientAccessor(Client client) {
-        super(Path.class, client, client.resource(Accessors.getDefaultHost(client)).path("paths"));
+    protected PathClientAccessor(DefaultHttpClient client) {
+        super(Path.class,
+              client,
+              URI.create(Accessors.getDefaultHost(client) + "/paths"),
+              Accessors.getAuthHeader());
     }
 
-    protected PathClientAccessor(URI host, Client client) {
-        super(Path.class, client, client.resource(host).path("paths"));
+    protected PathClientAccessor(URI host, DefaultHttpClient client) {
+        super(Path.class,
+              client,
+              URI.create(host.toString() + "/checkpoints"),
+              Accessors.getAuthHeader());
     }
 }

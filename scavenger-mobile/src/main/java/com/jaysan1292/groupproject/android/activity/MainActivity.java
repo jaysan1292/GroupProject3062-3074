@@ -45,12 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void onLogoutClicked(MenuItem item) {
-        UserMetaManager.removeMetaValue(UserMetaManager.USER_AUTH);
-        UserMetaManager.removeMetaValue(UserMetaManager.SERVICE_URI);
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
+        MobileAppCommon.logout(this);
     }
 
     @Override

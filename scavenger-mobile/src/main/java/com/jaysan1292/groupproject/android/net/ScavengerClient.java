@@ -1,14 +1,16 @@
 package com.jaysan1292.groupproject.android.net;
 
 import com.jaysan1292.groupproject.android.MobileAppCommon;
+import com.jaysan1292.groupproject.android.util.HttpClientUtils;
 import com.jaysan1292.groupproject.data.*;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.security.AuthorizationException;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static com.jaysan1292.groupproject.android.net.accessors.Accessors.*;
@@ -22,8 +24,11 @@ import static com.jaysan1292.groupproject.android.net.accessors.Accessors.*;
  */
 @SuppressWarnings("MethodMayBeStatic")
 public class ScavengerClient {
-    private final Client client;
-    private final WebResource root;
+    private final DefaultHttpClient client;
+    private final URI root;
+    private Header authorizationHeader;
+//    private final Client client;
+//    private final WebResource root;
 
     private boolean credentialsSet;
 
@@ -40,16 +45,20 @@ public class ScavengerClient {
     }
 
     public ScavengerClient(URI host, String username, String password) throws AuthorizationException {
-        client = Client.create();
+        client = new DefaultHttpClient();
         if (host == null) host = getDefaultHost(client);
         if ((username != null) && (password != null)) {
-            client.addFilter(new HTTPBasicAuthFilter(username, password));
+            authorizationHeader = HttpClientUtils.createAuthHeader(username, password);
+//            CredentialsProvider provider = new BasicCredentialsProvider();
+//            provider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+//                                    new UsernamePasswordCredentials(username, password));
+//            client.setCredentialsProvider(provider);
             credentialsSet = true;
         }
-        setHost(client, host);
+        setHost(client, host, authorizationHeader);
 
         MobileAppCommon.log.info("Using service located at " + host.toString());
-        root = client.resource(host);
+        root = host;
 
         onCreate();
     }
@@ -59,10 +68,21 @@ public class ScavengerClient {
         // service returns 200 OK if credentials are valid
         // service returns 400 Bad Request if credentials are invalid
         if (credentialsSet) {
-            ClientResponse response = root.path("auth").get(ClientResponse.class);
-            if (response.getStatus() != 200) {
-                throw new AuthorizationException("Invalid credentials!");
+//            ClientResponse response = root.path("auth").get(ClientResponse.class);
+            URI authUri = URI.create(root.toString() + "/auth");
+            HttpGet request = HttpClientUtils.createGetRequest(authUri, authorizationHeader);
+            HttpResponse response;
+            try {
+                response = client.execute(request);
+
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new AuthorizationException("Invalid credentials!");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+
+            MobileAppCommon.setClient(this);
         }
     }
 

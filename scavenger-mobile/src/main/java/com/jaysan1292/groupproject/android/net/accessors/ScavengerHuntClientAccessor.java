@@ -1,8 +1,12 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
+import com.google.common.base.Preconditions;
+import com.jaysan1292.groupproject.android.util.HttpClientUtils;
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
-import com.sun.jersey.api.client.Client;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,17 +19,29 @@ import java.net.URI;
  * @author Jason Recillo
  */
 public class ScavengerHuntClientAccessor extends AbstractClientAccessor<ScavengerHunt> {
-    protected ScavengerHuntClientAccessor(Client client) {
-        super(ScavengerHunt.class, client, client.resource(Accessors.getDefaultHost(client)).path("scavengerhunts"));
+    protected ScavengerHuntClientAccessor(DefaultHttpClient client) {
+        super(ScavengerHunt.class,
+              client,
+              URI.create(Accessors.getDefaultHost(client) + "/scavengerhunts"),
+              Accessors.getAuthHeader());
     }
 
-    protected ScavengerHuntClientAccessor(URI host, Client client) {
-        super(ScavengerHunt.class, client, client.resource(host).path("scavengerhunts"));
+    protected ScavengerHuntClientAccessor(URI host, DefaultHttpClient client) {
+        super(ScavengerHunt.class,
+              client,
+              URI.create(host.toString() + "/scavengerhunts"),
+              Accessors.getAuthHeader());
     }
 
     public ScavengerHunt getScavengerHunt(Player player) {
         try {
-            return new ScavengerHunt().readJSON(_res.path("players/" + player.getId()).get(String.class));
+            HttpGet request = HttpClientUtils.createGetRequest(URI.create(_res.toString() + "/players/" + player.getId()),
+                                                               authHeader);
+            HttpResponse response = client.execute(request);
+            Preconditions.checkState(response.getStatusLine().getStatusCode() == 200,
+                                     "Expected HTTP 200, got %s instead.",
+                                     response.getStatusLine().getStatusCode());
+            return new ScavengerHunt().readJSON(HttpClientUtils.getStringEntity(response));
         } catch (IOException e) {
             return null;
         }

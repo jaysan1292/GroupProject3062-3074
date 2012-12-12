@@ -1,10 +1,16 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
 import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
+import com.jaysan1292.groupproject.android.util.HttpClientUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -27,18 +33,37 @@ public class Accessors {
 
     private static boolean _ready;
     private static URI _hostUri;
-    private static Client _client;
+    private static DefaultHttpClient _client;
+    private static Header _authHeader;
 
     private Accessors() {}
 
-    public static void setHost(Client client, URI host) {
+    public static void setHost(DefaultHttpClient client, URI host, Header authHeader) {
         _client = client;
         _hostUri = host;
+        _authHeader = authHeader;
         _ready = true;
+    }
+
+    public static void logout() {
+        _client = null;
+        _hostUri = null;
+        _authHeader = null;
+        challenges = null;
+        checkpoints = null;
+        paths = null;
+        players = null;
+        scavengerHunts = null;
+        teams = null;
+        _ready = false;
     }
 
     public static URI getHost() {
         return _hostUri;
+    }
+
+    public static Header getAuthHeader() {
+        return _authHeader;
     }
 
     public static ChallengeClientAccessor getChallengeAccessor() {
@@ -84,14 +109,19 @@ public class Accessors {
             URI.create("http://jaysan1292.com:9000/service"),
             URI.create("http://localhost:9000/service"));
 
-    public static URI getDefaultHost(Client cli) {
+    @SuppressWarnings("ObjectAllocationInLoop")
+    public static URI getDefaultHost(HttpClient cli) {
         String wadl = "";
         for (URI host : hosts) {
             try {
-                wadl = cli.resource(host).path("application.wadl").get(String.class);
-            } catch (ClientHandlerException ignored) {}
-            if (!StringUtils.isBlank(wadl)) {
-                return host;
+                HttpGet request = HttpClientUtils.createGetRequest(host, _authHeader);
+                HttpResponse response = cli.execute(request);
+                wadl = HttpClientUtils.getStringEntity(response);
+//                wadl = cli.resource(host).path("application.wadl").get(String.class);
+            } catch (ClientProtocolException ignored) {} catch (IOException ignored) {
+                if (!StringUtils.isBlank(wadl)) {
+                    return host;
+                }
             }
         }
         throw new RuntimeException("The web service appears to be inaccessible.");

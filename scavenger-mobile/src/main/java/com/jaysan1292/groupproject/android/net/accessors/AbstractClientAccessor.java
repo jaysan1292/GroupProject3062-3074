@@ -1,14 +1,25 @@
 package com.jaysan1292.groupproject.android.net.accessors;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
+import com.jaysan1292.groupproject.android.MobileAppCommon;
+import com.jaysan1292.groupproject.android.util.HttpClientUtils;
 import com.jaysan1292.groupproject.data.BaseEntity;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,20 +30,27 @@ import java.io.IOException;
  */
 public abstract class AbstractClientAccessor<T extends BaseEntity> {
     private final Class<T> _cls;
-    protected final WebResource _res;
-    protected final Client client;
+    protected URI _res;
+    protected DefaultHttpClient client;
+    protected Header authHeader;
 
-    public AbstractClientAccessor(Class<T> cls, Client client, WebResource res) {
+    public AbstractClientAccessor(Class<T> cls, DefaultHttpClient client, URI res, Header authHeader) {
         this._cls = cls;
         this._res = res;
         this.client = client;
+        this.authHeader = authHeader;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public T get(long id) throws GeneralServiceException {
         try {
-            return _cls.newInstance().readJSON(_res.path(String.valueOf(id)).get(String.class));
+            HttpGet request = HttpClientUtils.createGetRequest(URI.create(_res.toString() + '/' + id), authHeader);
+            HttpResponse response = client.execute(request);
+            Preconditions.checkState(response.getStatusLine().getStatusCode() == 200,
+                                     "Expected HTTP 200, got %s instead.",
+                                     response.getStatusLine().getStatusCode());
+            return _cls.newInstance().readJSON(HttpClientUtils.getStringEntity(response));
         } catch (UniformInterfaceException e) {
             throw new GeneralServiceException(e);
         } catch (IOException e) {
@@ -43,17 +61,30 @@ public abstract class AbstractClientAccessor<T extends BaseEntity> {
     }
 
     public void update(T item) throws GeneralServiceException {
-        ClientResponse response = _res.path(String.valueOf(item.getId()))
-                                      .entity(item.writeJSON())
-                                      .type(MediaType.APPLICATION_JSON_TYPE)
-                                      .put(ClientResponse.class);
+        try {
+            HttpPut request = HttpClientUtils.createPutRequest(URI.create(_res.toString() + item.getId()), authHeader);
+            request.setEntity(new StringEntity(item.writeJSON(), Charsets.UTF_8.toString()));
+            request.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
 
-        int status = response.getStatus();
+            HttpResponse response = client.execute(request);
 
-        // HTTP status 204: NO CONTENT
-        if (status != 204) {
-            throw new GeneralServiceException("Failed: HTTP code 204 expected, got " +
-                                              status + " instead.");
+//        ClientResponse response = _res.path(String.valueOf(item.getId()))
+//                                      .entity(item.writeJSON())
+//                                      .type(MediaType.APPLICATION_JSON_TYPE)
+//                                      .put(ClientResponse.class);
+
+            int status = response.getStatusLine().getStatusCode();
+
+            // HTTP status 204: NO CONTENT
+            if (status != 204) {
+                throw new GeneralServiceException("Failed: HTTP code 204 expected, got " +
+                                                  status + " instead.");
+            }
+        } catch (UnsupportedEncodingException ignored) {
+        } catch (ClientProtocolException e) {
+            MobileAppCommon.log.error(e.getMessage(), e);
+        } catch (IOException e) {
+            MobileAppCommon.log.error(e.getMessage(), e);
         }
     }
 }

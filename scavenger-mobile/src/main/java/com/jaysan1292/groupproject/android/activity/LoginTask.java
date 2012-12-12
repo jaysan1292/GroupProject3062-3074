@@ -48,7 +48,6 @@ public class LoginTask extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         dialog.dismiss();
         if (success) {
-            MobileAppCommon.setClient(client);
             MobileAppCommon.sendToMain(context);
         } else {
             String errorMessage = "";
