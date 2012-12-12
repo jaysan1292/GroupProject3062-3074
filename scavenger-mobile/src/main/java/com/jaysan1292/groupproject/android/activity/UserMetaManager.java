@@ -14,6 +14,9 @@ import java.util.Set;
  */
 public class UserMetaManager {
     private static final String PREF_NAME = "user_meta";
+    public static final String USER_AUTH = "user_auth";
+    public static final String SERVICE_URI = "service_uri";
+
     private UserMetaManager() {}
 
     public static Map<String, ?> getUserMeta() {
@@ -22,6 +25,14 @@ public class UserMetaManager {
 
     public static String getMetaValue(String key) {
         return String.valueOf(getUserMeta().get(key));
+    }
+
+    public static void removeMetaValue(String key) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        {
+            editor.remove(key);
+        }
+        editor.commit();
     }
 
     public static void setMetaValue(String key, boolean value) {
@@ -73,6 +84,10 @@ public class UserMetaManager {
     }
 
     private static SharedPreferences getSharedPreferences() {
-       return MobileAppCommon.getContext().getSharedPreferences(PREF_NAME, 0);
+        return MobileAppCommon.getContext().getSharedPreferences(PREF_NAME, 0);
+    }
+
+    public static boolean checkLoginStatus() {
+        return !getMetaValue(USER_AUTH).equals("null");
     }
 }

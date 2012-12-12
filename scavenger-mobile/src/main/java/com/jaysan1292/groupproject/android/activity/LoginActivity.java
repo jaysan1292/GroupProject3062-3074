@@ -1,26 +1,32 @@
 package com.jaysan1292.groupproject.android.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import com.jaysan1292.groupproject.android.MobileAppCommon;
+import com.jaysan1292.groupproject.android.R;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements View.OnClickListener {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        MobileAppCommon.log.info("Checking user login status...");
-//        if (!UserMetaManager.getLoggedInUser().equals(User.NOT_LOGGED_IN)) {
-        MobileAppCommon.log.info("User is logged in; sending to main activity.");
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-//            return;
-//        }
-//        setContentView(R.layout.login);
-//        HttpClient client = new DefaultHttpClient();
-//        TODO: Create http client bridge class
-//        HttpRequest request = new BasicHttpRequest("GET", "http://")
+        setContentView(R.layout.login);
+        findViewById(R.id.login_signin_button).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        TextView usernameView = (TextView) findViewById(R.id.login_username);
+        TextView passwordView = (TextView) findViewById(R.id.login_password);
+        TextView hostView = (TextView) findViewById(R.id.login_dev_host);
+
+        String username = usernameView.getText().toString();
+        String password = passwordView.getText().toString();
+        String host = hostView.getText().toString();
+
+        MobileAppCommon.log.trace(username + ':' + password + '@' + host);
+        new LoginTask(this).execute(host, username, password);
     }
 }

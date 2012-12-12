@@ -4,6 +4,26 @@
     <string name="login_username_hint">Student ID</string>
     <string name="login_password_hint">Password</string>
     <string name="login_signin_label">Sign in</string>
-    <string name="camera_label">Scan</string>
+    <string name="camera_label">Check in!</string>
     <string name="scannertitle">QR Code Scanner</string>
+    <string name="dev_lipsum">Lorem ipsum dolor sit amet, erant vitae vivendo sea ei, ne vix probo mutat commune. Nam at
+        iusto gubergren. An iusto appareat sed, cu ullum salutatus nec. Eum te eius iisque, in ius minimum
+        necessitatibus. Vim causae sanctus accumsan te, his no velit mazim. Vocent aliquid veritus no eos, ei his
+        singulis sententiae assueverit.
+
+        Ut usu consul adipisci qualisque, id natum tantas nec, saperet urbanitas an usu. Nisl prodesset abhorreant an
+        duo. Qui mollis maluisset no. At vis iuvaret omittantur, nec ceteros efficiendi no.
+
+        Cu eirmod noluisse eam. Quot aperiri nec ad. Purto mandamus nam ex. Vix ex ullum docendi, harum quodsi recusabo
+        qui ei. Tantas appellantur vix ei. At laudem albucius delicata duo, modo porro munere no ius, propriae appareat
+        cu eos.
+
+        Eam augue harum integre ne, salutandi adversarium signiferumque mei te, vis et purto invidunt efficiantur. Id
+        nam nisl contentiones. Nec ea justo argumentum. Viris oportere vim ne, eum nullam perfecto eleifend ad, habeo
+        mucius periculis te per.
+
+        Brute consul omnesque ei sit, te liber iriure epicurei nec, cum latine elaboraret ad. Sit justo ullamcorper ne,
+        inermis apeirian intellegam ius eu. Ei congue homero inciderint sit, an eruditi dolorum euripidis mel. Dico
+        periculis in duo. Mutat reque menandri et pri, mei albucius senserit an, has ad ferri fierent efficiendi.
+    </string>
 </resources>

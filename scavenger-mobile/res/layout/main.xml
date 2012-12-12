@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--suppress AndroidLintHardcodedText -->
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="100"
+        android:orientation="vertical"
+        android:padding="16dip"
+        android:fillViewport="true">
+    <TextView
+            android:id="@+id/main_challengetitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true">
-    <LinearLayout
-            android:id="@+id/challengedisplay"
+            android:layout_weight="5"
+            android:text="Current Challenge"
+            android:textSize="24sp"
+            />
+    <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dip">
-
+            android:layout_height="0dip"
+            android:layout_weight="65"
+            android:orientation="vertical">
         <TextView
-                android:id="@+id/timeEdittxt"
+                android:id="@+id/main_challengetext"
                 android:layout_width="wrap_content"
                 android:layout_height="150dip"
-                android:hint="Challenge - blahblah blahblah blahblah bla
-                hblah blahblah blahblahblahblahblah blah"
+                android:text="@string/dev_lipsum"
                 android:ellipsize="none">
         </TextView>
-
-        <Button
-                android:id="@+id/scan_button"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:inputType="text"
-                android:text="@string/camera_label"/>
-
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
+    <Button
+            android:id="@+id/main_checkin_button"
+            android:layout_gravity="bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="30"
+            android:layout_marginTop="16dp"
+            android:text="@string/camera_label"/>
+</LinearLayout>

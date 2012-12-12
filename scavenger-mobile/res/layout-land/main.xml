@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidLintHardcodedText -->
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="16dip"
+        android:orientation="horizontal"
+        android:fillViewport="true">
+    <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="75"
+            android:paddingRight="8dip">
+        <TextView
+                android:id="@+id/main_challengetitle"
+                android:paddingBottom="8dip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Current Challenge"
+                android:textSize="24sp"/>
+        <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+            <TextView
+                    android:id="@+id/main_challengetext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dev_lipsum"
+                    android:ellipsize="none">
+            </TextView>
+        </ScrollView>
+    </LinearLayout>
+    <Button
+            android:id="@+id/main_checkin_button"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:text="@string/camera_label"/>
+</LinearLayout>
