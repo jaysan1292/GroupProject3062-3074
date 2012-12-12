@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.jaysan1292.groupproject.android.MobileAppCommon;
 import com.jaysan1292.groupproject.android.R;
 
 /**
@@ -42,9 +44,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_checkin_button:
-                //TODO: Start QR code reader activity
-                Toast.makeText(this, "That's not done yet, but it's coming very soon.", Toast.LENGTH_LONG).show();
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.initiateScan();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            MobileAppCommon.log.info(result.toString());
         }
     }
 }
