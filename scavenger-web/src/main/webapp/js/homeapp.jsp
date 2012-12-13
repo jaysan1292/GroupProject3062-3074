@@ -17,6 +17,7 @@
             menuItems = $('#home-sidebar ul').children().not('.nav-header');
             menuItems.click(function () {onSidebarItemClick(this)});
             $('#create-new').click(function () {createNew()});
+            $('#refresh').click(function () {initAll()});
         }
 
     // The meat of the web app. Retrieve an item of the given type from the server

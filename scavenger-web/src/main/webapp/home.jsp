@@ -55,6 +55,10 @@
                                     <a id="create-new"
                                        class="icon-plus pull-right"
                                        href="javascript:void(0)"></a>
+                                    <a id="refresh"
+                                       style="margin-right: 20px;"
+                                       class="icon-refresh pull-right"
+                                       href="javascript:void(0)"></a>
                                 </td>
                             </tr>
                             </tbody>
