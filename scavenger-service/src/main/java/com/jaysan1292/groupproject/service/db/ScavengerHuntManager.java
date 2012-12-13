@@ -78,6 +78,7 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         validate(item);
         String query = "INSERT INTO " + TABLE_NAME + " (" +
                        PATH_COLUMN + ", " +
+                       COMPLETED_CHECKPOINTS_COLUMN + ", " +
                        TEAM_COLUMN + ", " +
                        START_TIME_COLUMN + ", " +
                        FINISH_TIME_COLUMN + ") VALUES (?, ?, ?, ?)";
@@ -85,6 +86,7 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         return runner.insert(query,
                              new ScalarHandler<BigDecimal>(1),
                              item.getPath().getId(),
+                             item.getCompletedCheckpointsAsString(),
                              item.getTeam().getId(),
                              item.getStartTime().toDate(),
                              item.getFinishTime().toDate()).longValue();
@@ -94,12 +96,14 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
         validate(item);
         String query = "UPDATE " + TABLE_NAME + " SET " +
                        PATH_COLUMN + "=?, " +
+                       COMPLETED_CHECKPOINTS_COLUMN + "=?, " +
                        TEAM_COLUMN + "=?, " +
                        START_TIME_COLUMN + "=?, " +
                        FINISH_TIME_COLUMN + "=? " +
                        "WHERE " + ID_COLUMN + "=?";
         runner.update(query,
                       item.getPath().getId(),
+                      item.getCompletedCheckpointsAsString(),
                       item.getTeam().getId(),
                       item.getStartTime().toDate(),
                       item.getFinishTime().toDate(),

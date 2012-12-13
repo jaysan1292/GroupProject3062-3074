@@ -1,6 +1,10 @@
 package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
@@ -78,6 +82,16 @@ public final class ScavengerHunt extends BaseEntity {
     }
 
     @JsonIgnore
+    public String getCompletedCheckpointsAsString() {
+        List<Long> cids = Lists.newArrayList();
+        for (Checkpoint checkpoint : completedCheckpoints) {
+            cids.add(checkpoint.getId());
+        }
+
+        return StringUtils.join(cids, ',');
+    }
+
+    @JsonIgnore
     public DateTime getStartTime() {
         return new DateTime(startTime);
     }
@@ -149,6 +163,14 @@ public final class ScavengerHunt extends BaseEntity {
 
         int percent = (int) Math.floor((completed * 100.0) / totalCheckpoints);
         return String.format("%d%%", percent);
+    }
+
+    public void checkIn(Checkpoint checkpoint) throws GeneralServiceException {
+        Preconditions.checkArgument(path.getCheckpoints().contains(checkpoint));
+        if (completedCheckpoints.contains(checkpoint)) {
+            throw new GeneralServiceException("You've already visited this checkpoint!");
+        }
+        completedCheckpoints.add(checkpoint);
     }
 
     @Override
