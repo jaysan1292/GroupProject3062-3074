@@ -14,8 +14,20 @@ import java.util.Set;
  */
 public class UserMetaManager {
     private static final String PREF_NAME = "user_meta";
+
+    /** The authentication header that is sent with every request to the web service. */
     public static final String USER_AUTH = "user_auth";
-    public static final String SERVICE_URI = "service_uri";
+
+    /**
+     * Development version only: The web service's URL. Because in development, the URL
+     * changes often, it's helpful to store this too. In a production environment, every
+     * usage of this value would instead be replaced with the permanent URL of the actual
+     * web service.
+     */
+    public static final String SERVICE_URL = "service_url";
+
+    /** Contains the ID of the current checkpoint. */
+    public static final String CURRENT_CHECKPOINT_ID = "checkpoint_id";
 
     private UserMetaManager() {}
 
@@ -24,7 +36,12 @@ public class UserMetaManager {
     }
 
     public static String getMetaValue(String key) {
-        return String.valueOf(getUserMeta().get(key));
+        Object value = getUserMeta().get(key);
+        if (value == null) {
+            return null;
+        } else {
+            return String.valueOf(value);
+        }
     }
 
     public static void removeMetaValue(String key) {
@@ -88,6 +105,6 @@ public class UserMetaManager {
     }
 
     public static boolean checkLoginStatus() {
-        return !getMetaValue(USER_AUTH).equals("null");
+        return getMetaValue(USER_AUTH) != null;
     }
 }

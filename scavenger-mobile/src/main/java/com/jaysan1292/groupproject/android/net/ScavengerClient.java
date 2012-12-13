@@ -49,10 +49,6 @@ public class ScavengerClient {
         if (host == null) host = getDefaultHost(client);
         if ((username != null) && (password != null)) {
             authorizationHeader = HttpClientUtils.createAuthHeader(username, password);
-//            CredentialsProvider provider = new BasicCredentialsProvider();
-//            provider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-//                                    new UsernamePasswordCredentials(username, password));
-//            client.setCredentialsProvider(provider);
             credentialsSet = true;
         }
         setHost(client, host, authorizationHeader);
@@ -68,7 +64,6 @@ public class ScavengerClient {
         // service returns 200 OK if credentials are valid
         // service returns 400 Bad Request if credentials are invalid
         if (credentialsSet) {
-//            ClientResponse response = root.path("auth").get(ClientResponse.class);
             URI authUri = URI.create(root.toString() + "/auth");
             HttpGet request = HttpClientUtils.createGetRequest(authUri, authorizationHeader);
             HttpResponse response;
@@ -84,6 +79,10 @@ public class ScavengerClient {
 
             MobileAppCommon.setClient(this);
         }
+    }
+
+    public void checkIn(ScavengerHunt scavengerHunt, Checkpoint checkpoint) throws GeneralServiceException {
+        getScavengerHuntAccessor().checkIn(scavengerHunt, checkpoint);
     }
 
     public Player getPlayer(long id) throws GeneralServiceException {

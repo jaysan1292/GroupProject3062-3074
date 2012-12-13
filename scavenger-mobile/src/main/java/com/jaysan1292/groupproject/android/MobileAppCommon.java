@@ -25,11 +25,14 @@ public class MobileAppCommon extends Application {
 
     public static void logout(Activity activity) {
         UserMetaManager.removeMetaValue(UserMetaManager.USER_AUTH);
-        UserMetaManager.removeMetaValue(UserMetaManager.SERVICE_URI);
+        UserMetaManager.removeMetaValue(UserMetaManager.SERVICE_URL);
         Intent intent = new Intent(activity, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivity(intent);
-        activity.finish();
+        if (!(activity instanceof LoginActivity)) {
+            // only finish() if the activity is *not* a LoginActivity
+            activity.finish();
+        }
 
         client = null;
         Accessors.logout();

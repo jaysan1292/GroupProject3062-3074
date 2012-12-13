@@ -23,12 +23,12 @@
         <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:background="#66EFEFEF"
                 android:orientation="vertical">
             <TextView
                     android:id="@+id/main_challengetext"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dev_lipsum"
                     android:ellipsize="none">
             </TextView>
         </ScrollView>

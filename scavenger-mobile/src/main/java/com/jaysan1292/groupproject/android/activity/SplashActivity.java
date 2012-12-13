@@ -21,7 +21,7 @@ public class SplashActivity extends Activity {
         MobileAppCommon.log.info("Checking login status.");
         if (checkLoginStatus()) {
             MobileAppCommon.log.info("User is logged in; send to main.");
-            new LoginTask(this).execute(getMetaValue(SERVICE_URI), getMetaValue(USER_AUTH));
+            new LoginTask(this).execute(getMetaValue(SERVICE_URL), getMetaValue(USER_AUTH));
         } else {
             MobileAppCommon.log.info("User is not logged in; send to login.");
             Intent intent;
