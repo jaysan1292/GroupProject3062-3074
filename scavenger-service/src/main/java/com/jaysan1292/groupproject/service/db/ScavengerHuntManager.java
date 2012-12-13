@@ -81,7 +81,7 @@ public class ScavengerHuntManager extends AbstractManager<ScavengerHunt> {
                        COMPLETED_CHECKPOINTS_COLUMN + ", " +
                        TEAM_COLUMN + ", " +
                        START_TIME_COLUMN + ", " +
-                       FINISH_TIME_COLUMN + ") VALUES (?, ?, ?, ?)";
+                       FINISH_TIME_COLUMN + ") VALUES (?, ?, ?, ?, ?)";
 
         return runner.insert(query,
                              new ScalarHandler<BigDecimal>(1),

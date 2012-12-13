@@ -171,13 +171,15 @@
             var startTimeMillis = $('#stimeconfirm').data('date');
             var finishTimeMillis = $('#ftimeconfirm').data('date');
 
-            var shjson = '{"id":{id},"team":{team},"path":{path},"startTimeMillis":{start},"finishTimeMillis":{finish}}'.f({
-                id:     $('#scavenger-hunt').data('schid'),
-                team:   JSON.stringify(team),
-                path:   JSON.stringify(path),
-                start:  startTimeMillis,
-                finish: finishTimeMillis
-            });
+            var shjson = {
+                id:               $('#scavenger-hont').data('schid'),
+                team:             team,
+                path:             path,
+                startTimeMillis:  startTimeMillis,
+                finishTimeMillis: finishTimeMillis
+            };
+
+            shjson = JSON.stringify(shjson);
 
             shjson = $.parseJSON(shjson);
             cleanOutput(shjson);
