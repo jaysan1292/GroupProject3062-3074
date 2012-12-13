@@ -115,6 +115,8 @@ public class AuthenticationAccessor {
                                 // Players can look at their own team's information,
                                 // so here authorization is successful
                                 return;
+                            } else {
+                                throw new AuthorizationException();
                             }
                         } catch (GeneralServiceException e) {
                             // The subject is not on any team and is therefore not authorized to

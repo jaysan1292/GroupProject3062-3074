@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.jaysan1292.groupproject.data.Checkpoint;
 import com.jaysan1292.groupproject.data.Player;
 import com.jaysan1292.groupproject.data.ScavengerHunt;
+import com.jaysan1292.groupproject.data.Team;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import com.jaysan1292.groupproject.service.db.CheckpointManager;
 import com.jaysan1292.groupproject.service.db.PlayerManager;
@@ -56,7 +57,6 @@ public class ScavengerHuntAccessor extends AbstractAccessor<ScavengerHunt> {
     @Path("/checkin")
     public Response doCheckIn(MultivaluedMap<String, String> formParams) {
         try {
-            AuthenticationAccessor.authorize(headers, AuthorizationLevel.MOBILE_USER);
             String scavengerHuntId = formParams.getFirst("scavengerHuntId");
             String checkpointId = formParams.getFirst("checkpointId");
 
@@ -68,6 +68,8 @@ public class ScavengerHuntAccessor extends AbstractAccessor<ScavengerHunt> {
 
             ScavengerHunt scavengerHunt = manager.get(shid);
             Checkpoint checkpoint = new CheckpointManager().get(cid);
+
+            AuthenticationAccessor.authorize(headers, AuthorizationLevel.MOBILE_USER, Team.class, scavengerHunt.getTeam().getId());
 
             scavengerHunt.checkIn(checkpoint);
             manager.update(scavengerHunt);

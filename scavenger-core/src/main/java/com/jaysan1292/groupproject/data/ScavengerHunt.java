@@ -2,6 +2,8 @@ package com.jaysan1292.groupproject.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.jaysan1292.groupproject.exceptions.GeneralServiceException;
 import org.apache.commons.lang3.StringUtils;
@@ -150,10 +152,10 @@ public final class ScavengerHunt extends BaseEntity {
     }
 
     public String description() {
-        return String.format("SCHT%02d: %d %s, %s completed",
+        return String.format("SCHT%02d: %dP, CP(%s) | %s",
                              scavengerHuntId,
                              team.getTeamMembers().size(),
-                             (team.getTeamMembers().size() != 1) ? "members" : "member",
+                             path.getCheckpointString(),
                              completionStatus());
     }
 
@@ -169,6 +171,17 @@ public final class ScavengerHunt extends BaseEntity {
         Preconditions.checkArgument(path.getCheckpoints().contains(checkpoint));
         if (completedCheckpoints.contains(checkpoint)) {
             throw new GeneralServiceException("You've already visited this checkpoint!");
+        }
+
+        List<Checkpoint> remaining = Lists.newArrayList(path.getCheckpoints());
+        Iterables.removeIf(remaining, new Predicate<Checkpoint>() {
+            public boolean apply(Checkpoint input) {
+                return completedCheckpoints.contains(input);
+            }
+        });
+
+        if (remaining.indexOf(checkpoint) != 0) {
+            throw new GeneralServiceException("This isn't your currently assigned checkpoint!");
         }
         completedCheckpoints.add(checkpoint);
     }
