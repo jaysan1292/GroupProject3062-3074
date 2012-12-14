@@ -64,14 +64,14 @@ public class DatabaseTest {
         public void testGet() throws Exception {
             log.info("Test: Get single player");
             Player expected = new PlayerBuilder()
-                    .setPlayerId(0)
+                    .setPlayerId(1)
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
                     .setPasswordUnencrypted("123456")
                     .build();
 
-            Player actual = manager.get(0);
+            Player actual = manager.get(1);
 
             assertEquals(expected, actual);
         }
@@ -187,15 +187,15 @@ public class DatabaseTest {
             Team expected = new TeamBuilder()
                     .setTeamId(0)
                     .setTeamMembers(new HashMap<Long, Player>(2) {{
-                        put(1L, new PlayerBuilder()
-                                .setPlayerId(1)
+                        put(2L, new PlayerBuilder()
+                                .setPlayerId(2)
                                 .setFirstName("Peter")
                                 .setLastName("Le")
                                 .setStudentId("100145965")
                                 .setPasswordUnencrypted("123456")
                                 .build());
-                        put(2L, new PlayerBuilder()
-                                .setPlayerId(2)
+                        put(3L, new PlayerBuilder()
+                                .setPlayerId(3)
                                 .setFirstName("Mellicent")
                                 .setLastName("Dres")
                                 .setStudentId("100793317")
@@ -216,9 +216,9 @@ public class DatabaseTest {
 
             Team expected = new TeamBuilder(original)
                     .setTeamMembers(new HashMap<Long, Player>(2) {{
-                        put(1L, original.getPlayer(1));
-                        put(0L, new PlayerBuilder()
-                                .setPlayerId(0)
+                        put(2L, original.getPlayer(2));
+                        put(1L, new PlayerBuilder()
+                                .setPlayerId(1)
                                 .setFirstName("Jason")
                                 .setLastName("Recillo")
                                 .setStudentId("100123123")
@@ -337,7 +337,7 @@ public class DatabaseTest {
         public void testGetTeamForPlayer() throws Exception {
             log.info("Test: Get team that contains a specific player");
             final Player player = new PlayerBuilder()
-                    .setPlayerId(0)
+                    .setPlayerId(1)
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
@@ -347,9 +347,9 @@ public class DatabaseTest {
             Team expected = new TeamBuilder()
                     .setTeamId(1)
                     .setTeamMembers(new HashMap<Long, Player>() {{
-                        put(0L, player);
-                        put(3L, new PlayerBuilder()
-                                .setPlayerId(3)
+                        put(1L, player);
+                        put(4L, new PlayerBuilder()
+                                .setPlayerId(4)
                                 .setFirstName("Lincoln")
                                 .setLastName("Earlls")
                                 .setStudentId("100158465")
@@ -404,7 +404,8 @@ public class DatabaseTest {
                     .setPathId(0)
                     .setCheckpoints(Lists.newArrayList(
                             checkpoints.get(0),
-                            checkpoints.get(1)))
+                            checkpoints.get(1),
+                            checkpoints.get(2)))
                     .build();
 
             Path actual = manager.get(0);

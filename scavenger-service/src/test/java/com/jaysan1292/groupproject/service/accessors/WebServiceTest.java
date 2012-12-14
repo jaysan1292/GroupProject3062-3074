@@ -6,7 +6,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 
@@ -62,14 +60,14 @@ public class WebServiceTest {
         public void testGet() throws Exception {
             log.info("Test: Get specific player");
             Player expected = new PlayerBuilder()
-                    .setPlayerId(0)
+                    .setPlayerId(1)
                     .setFirstName("Jason")
                     .setLastName("Recillo")
                     .setStudentId("100123123")
                     .setPasswordUnencrypted("123456")
                     .build();
 
-            Player actual = new Player().readJSON(playerRes.path("0").get(String.class));
+            Player actual = new Player().readJSON(playerRes.path("1").get(String.class));
 
             assertEquals(expected, actual);
         }
@@ -102,20 +100,18 @@ public class WebServiceTest {
         public void testUpdate() throws Exception {
             log.info("Test: Update existing user");
 
-            Player expected = new PlayerBuilder(new Player().<Player>readJSON(playerRes.path("0").get(String.class)))
+            Player expected = new PlayerBuilder(new Player().<Player>readJSON(playerRes.path("1").get(String.class)))
                     .setFirstName("JD")
                     .build();
 
-            MultivaluedMap<String, String> post = new MultivaluedMapImpl();
-            post.putSingle("firstName", "JD");
-
-            ClientResponse response = playerRes.path("0")
-                                               .put(ClientResponse.class, post);
+            ClientResponse response = playerRes.path("1")
+                                               .type(MediaType.APPLICATION_JSON)
+                                               .put(ClientResponse.class, expected.toString());
 
             // HTTP status 204: NO CONTENT
             assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
-            Player actual = new Player().readJSON(playerRes.path("0").get(String.class));
+            Player actual = new Player().readJSON(playerRes.path("1").get(String.class));
 
             assertEquals(expected, actual);
         }
@@ -192,21 +188,14 @@ public class WebServiceTest {
         @Test
         public void testUpdate() throws Exception {
             log.info("Test: Update existing checkpoint");
-            Checkpoint expected = new CheckpointBuilder()
-                    .setCheckpointId(0)
-                    .setLatitude(43.675854f)
-                    .setLongitude(-79.71069f)
-                    .setChallenge(new ChallengeBuilder()
-                                          .setChallengeId(1)
-                                          .setChallengeText("Go here and there.")
-                                          .build())
+            Checkpoint original = new Checkpoint().readJSON(checkpointRes.path("0").get(String.class));
+            Checkpoint expected = new CheckpointBuilder(original)
+                    .setLatitude(-43.123456f)
                     .build();
 
-            MultivaluedMap<String, String> post = new MultivaluedMapImpl();
-            post.putSingle("challenge", "1");
-
             ClientResponse response = checkpointRes.path("0")
-                                                   .put(ClientResponse.class, post);
+                                                   .type(MediaType.APPLICATION_JSON)
+                                                   .put(ClientResponse.class, expected.toString());
 
             assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
@@ -272,11 +261,9 @@ public class WebServiceTest {
             Challenge expected = new Challenge().readJSON(challengeRes.path("0").get(String.class));
             expected.setChallengeText(expected.getChallengeText() + " Also go do this.");
 
-            MultivaluedMap<String, String> post = new MultivaluedMapImpl();
-            post.putSingle("challengeText", expected.getChallengeText());
-
             ClientResponse response = challengeRes.path("0")
-                                                  .put(ClientResponse.class, post);
+                                                  .type(MediaType.APPLICATION_JSON)
+                                                  .put(ClientResponse.class, expected.toString());
 
             assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
